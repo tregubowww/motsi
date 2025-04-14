@@ -6,6 +6,8 @@ import com.example.motsi.messeges.impl.presentation.MessagesLauncher
 
 interface NavigationApi  {
 
+    val splashScreenLauncher: SplashScreenLauncher
+
     val searchLauncher: SearchLauncher
 
     val messagesLauncher: MessagesLauncher

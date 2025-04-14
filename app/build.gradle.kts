@@ -3,6 +3,7 @@ import com.example.motsi.ext.libs
 plugins {
     alias(libs.plugins.motsi.android.application)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 
@@ -30,6 +31,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
 
     implementation (libs.dagger)
     ksp (libs.dagger.compiler)
