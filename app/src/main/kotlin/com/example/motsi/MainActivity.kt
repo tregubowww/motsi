@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.ui.Modifier
 import com.example.motsi.ui.compose.Navigation
 import com.example.motsi.core.ui.theming.MotsiTheme
+import com.example.motsi.ui.compose.MainScreen
+import com.example.motsi.ui.compose.SplashScreen
 
 internal class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,7 +27,7 @@ internal class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize()
                         .padding(top = statusBarPadding.calculateTopPadding())
                 ) {
-                    Navigation()
+                    MainScreen()
                 }
             }
         }
