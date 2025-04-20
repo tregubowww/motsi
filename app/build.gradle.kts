@@ -34,6 +34,8 @@ dependencies {
     implementation (libs.dagger)
     ksp (libs.dagger.compiler)
 
+    implementation(libs.androidx.core.splashscreen)
+
 
     implementation(project(":core:ui"))
     implementation(project(":core:common"))

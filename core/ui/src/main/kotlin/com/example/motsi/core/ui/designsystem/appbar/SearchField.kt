@@ -33,6 +33,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.theming.Title1Primary
+import com.example.motsi.core.ui.theming.Tokens
 
 @Composable
 fun SearchField(
@@ -76,7 +77,7 @@ fun SearchField(
         modifier = modifier
             .height(40.dp)
             .background(
-                color = MaterialTheme.colorScheme.secondary,
+                color = Tokens.Background.getColor() ,
                 shape = RoundedCornerShape(12.dp)
             )
     ) {
