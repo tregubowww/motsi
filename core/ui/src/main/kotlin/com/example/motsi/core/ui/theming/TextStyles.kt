@@ -19,3 +19,35 @@ fun Title1Primary(
         maxLines = maxLines,
     )
 }
+
+@Composable
+fun Body1Brand(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = 1,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Body1,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Body1Inverse(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = 1,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+
+        color = Tokens.Brand.getColor(),
+        style = MotsiTheme.textAppearance.Body1,
+        maxLines = maxLines,
+    )
+}

@@ -4,7 +4,11 @@ package com.example.motsi.core.ui.theming
 enum class Tokens : ColorToken {
     Background,
 
-    TextPrimary
+    TextPrimary,
+
+    Brand,
+
+    Black
     ;
 
     @androidx.compose.runtime.Composable

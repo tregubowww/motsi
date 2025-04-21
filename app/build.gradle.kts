@@ -40,6 +40,7 @@ dependencies {
     implementation(project(":feature:search:impl"))
     implementation(project(":feature:messages:impl"))
     implementation(project(":feature:activitydetails:impl"))
+    implementation(project(":feature:login:impl"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.material3)
