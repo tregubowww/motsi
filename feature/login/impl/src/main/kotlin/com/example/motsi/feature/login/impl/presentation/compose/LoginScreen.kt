@@ -1,86 +1,141 @@
 package com.example.motsi.feature.login.impl.presentation.compose
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.motsi.core.common.presentation.PasswordVisualTransformation
 import com.example.motsi.core.ui.R
-import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonBorderStyle
-import com.example.motsi.core.ui.theming.Black
-import com.example.motsi.core.ui.theming.MotsiTheme
-import com.example.motsi.core.ui.theming.Tokens
-import com.example.motsi.core.ui.designsystem.buttons.mainbutton.MainButton
-import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonColorStyle
+import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
+import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
+import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.feature.login.impl.presentation.LoginViewModel
+import kotlinx.coroutines.delay
 
-
+//Скрин входа по логину и паролю
 @Composable
 internal fun LoginScreen(
-    viewModel: LoginViewModel
+    viewModel: LoginViewModel,
+    onBackPressed: () -> Unit
 ) {
+    var login by rememberSaveable { mutableStateOf("") }
+    var password by rememberSaveable { mutableStateOf("") }
+    var isPasswordVisible by remember { mutableStateOf(false) }
+    var lastCharVisible by remember { mutableStateOf(false) }
+    var lastCharIndex by remember { mutableIntStateOf(-1) }
+
+    LaunchedEffect(password) {
+        if (password.isNotEmpty()) {
+            lastCharIndex = password.length - 1
+            lastCharVisible = true
+            delay(500)
+            lastCharVisible = false
+        }
+    }
+
+    val passwordVisualTransformation = remember(isPasswordVisible, lastCharVisible, lastCharIndex) {
+        if (isPasswordVisible) {
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation(lastCharVisible, lastCharIndex)
+        }
+    }
+
 
     Scaffold { padding ->
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .background(Color.White)
+                .imePadding()
         ) {
+
+            IconButton(
+                onClick = { onBackPressed() },
+                modifier = Modifier
+                    .padding(start = 16.dp, top = 16.dp)
+                    .align(Alignment.TopStart)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_back_24),
+                    contentDescription = stringResource(com.example.motsi.feature.login.impl.R.string.back)
+                )
+            }
+
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 32.dp)
+                    .padding(horizontal = 21.dp)
                     .align(Alignment.Center),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
-
-                Image(
-                    painter = painterResource(id = com.example.motsi.core.ui.R.drawable.ic_launcher_foreground),
-                    contentDescription = "",
-                    modifier = Modifier
-                        .size(120.dp)
+                Title1Primary(
+                    text = stringResource(com.example.motsi.feature.login.impl.R.string.entrance)
                 )
 
-                Text(
-                    text = stringResource(com.example.motsi.core.ui.R.string.log_in_or_register),
-                    textAlign = TextAlign.Center,
-                    style = MotsiTheme.textAppearance.Body1.copy(
-                        color = Tokens.TextPrimary.getColor()
-                    )
+                TextField(
+                    value = login,
+                    onValueChange = { login = it },
+                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.login)) },
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                MainButton(
-                    text = stringResource(R.string.brand),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {  },
-                    style = ButtonColorStyle.BrandButton,
-                    border = null
+                TextField(
+                    value = password,
+                    onValueChange = { password = it },
+                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.password)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    visualTransformation = passwordVisualTransformation,
+                    trailingIcon = {
+                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
+                            val icon: Painter = if (isPasswordVisible) {
+                                painterResource(id = R.drawable.ic_visibility)
+                            } else {
+                                painterResource(id = R.drawable.ic_visibility_off)
+                            }
+                            Icon(
+                                painter = icon,
+                                contentDescription = if (isPasswordVisible) {
+                                    stringResource(id = com.example.motsi.feature.login.impl.R.string.close_password)
+                                }
+                                else stringResource(id = com.example.motsi.feature.login.impl.R.string.show_password)
+                            )
+                        }
+                    },
                 )
 
-                MainButton(
-                    text = stringResource(R.string.inverse),
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    onClick = {  },
-                    style = ButtonColorStyle.InverseButton,
-                    border = ButtonBorderStyle.InverseButtonBorder
+                DoActionButton(
+                    text = stringResource(com.example.motsi.feature.login.impl.R.string.enter),
+                    modifier = Modifier.fillMaxWidth(),
+                    onClick = {
+                        viewModel.onLoginClicked(login, password)
+                    },
+                    style = ButtonStyle.BrandButton
                 )
             }
         }

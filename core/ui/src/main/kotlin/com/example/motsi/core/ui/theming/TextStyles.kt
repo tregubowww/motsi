@@ -13,9 +13,38 @@ fun Title1Primary(
     Text(
         text = text,
         modifier = modifier,
-
         color = Tokens.TextPrimary.getColor(),
         style = MotsiTheme.textAppearance.Title1,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Headline1Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Headline1,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Body1Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Body1,
         maxLines = maxLines,
     )
 }
@@ -29,7 +58,6 @@ fun Body1Brand(
     Text(
         text = text,
         modifier = modifier,
-
         color = Tokens.TextPrimary.getColor(),
         style = MotsiTheme.textAppearance.Body1,
         maxLines = maxLines,
@@ -45,8 +73,7 @@ fun Body1Inverse(
     Text(
         text = text,
         modifier = modifier,
-
-        color = Tokens.Brand.getColor(),
+        color = Tokens.ButtonPrimary.getColor(),
         style = MotsiTheme.textAppearance.Body1,
         maxLines = maxLines,
     )

@@ -6,9 +6,7 @@ enum class Tokens : ColorToken {
 
     TextPrimary,
 
-    Brand,
-
-    Black
+    ButtonPrimary
     ;
 
     @androidx.compose.runtime.Composable

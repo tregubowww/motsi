@@ -1,10 +1,10 @@
 package com.example.motsi.core.ui.designsystem.buttons.mainbutton
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
@@ -16,33 +16,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.MotsiTheme
 import com.example.motsi.core.ui.theming.Tokens
 
 @Composable
-fun MainButton(
+fun DoActionButton(
     text: String,
-    style: ButtonColorStyle,
-    border: ButtonBorderStyle?,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    isEnabled: Boolean = true
-) {
-    MainButtonInternal(
-        text = text,
-        style = style,
-        border = border,
-        onClick = onClick,
-        modifier= modifier,
-        isEnabled = isEnabled
-    )
-}
-
-@Composable
-internal fun MainButtonInternal(
-    text: String,
-    style: ButtonColorStyle,
-    border: ButtonBorderStyle?,
+    style: ButtonStyle,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     isEnabled: Boolean = true,
@@ -55,36 +36,30 @@ internal fun MainButtonInternal(
     backgroundColor = style.backgroundColor.getColor(),
     textColor = style.textColor.getColor(),
     textStyle = MotsiTheme.textAppearance.Body1,
-    borderColor = border?.borderColor?.getColor(),
-    borderWidth = border?.borderWidth,
-    shape = MotsiTheme.roundedShapes.small
+    borderColor = style.borderColor?.getColor(),
+    borderWidth = style.borderWidth,
 )
 
 
-enum class ButtonColorStyle(
+enum class ButtonStyle(
     val backgroundColor: Tokens,
     val textColor: Tokens,
+    val borderColor: Tokens?,
+    val borderWidth: Dp?,
 ) {
     BrandButton(
-        backgroundColor = Tokens.Brand,
+        backgroundColor = Tokens.ButtonPrimary,
         textColor = Tokens.TextPrimary,
+        borderColor = null,
+        borderWidth = null,
     ),
 
     InverseButton(
         backgroundColor = Tokens.Background,
-        textColor = Tokens.Brand,
-    ),
-}
-
-
-enum class ButtonBorderStyle(
-    val borderColor: Tokens,
-    val borderWidth: Dp,
-) {
-    InverseButtonBorder(
+        textColor = Tokens.ButtonPrimary,
         borderColor = Tokens.TextPrimary,
         borderWidth = 1.dp,
-    )
+    ),
 }
 
 @Composable
@@ -98,11 +73,11 @@ internal fun DoActionButton(
     isEnabled: Boolean = true,
     borderColor: Color? = null,
     borderWidth: Dp? = null,
-    shape: RoundedCornerShape = MotsiTheme.roundedShapes.small,
     content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val buttonModifier = if (borderColor != null && borderWidth != null && borderWidth > 0.dp) {
+    val shape = MotsiTheme.roundedShapes.small
+    val buttonModifier = if (borderColor != null && borderWidth != null) {
         modifier.then(
             Modifier.border(
                 width = borderWidth,
@@ -127,13 +102,17 @@ internal fun DoActionButton(
         if (content != null) {
             content()
         } else {
-            Text(
+            Body1Primary(
                 text = text,
-                style = textStyle,
-                color = textColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                maxLines = 1
             )
+//            Text(
+//                text = text,
+//                style = textStyle,
+//                color = textColor,
+//                maxLines = 1,
+//                overflow = TextOverflow.Ellipsis
+//            )
         }
     }
 }

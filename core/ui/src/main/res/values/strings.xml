@@ -1,7 +1,4 @@
 <resources>
     <string name="app_name">motsi</string>
       <string name="title_dynamicfeature">Module Title</string>
-      <string name="brand">"Войти"</string>
-      <string name="inverse">"Зарегистрироваться"</string>
-      <string name="log_in_or_register">"Войдите или зарегистрируйтесь, чтобы пользоваться всеми возможностями приложения"</string>
 </resources>

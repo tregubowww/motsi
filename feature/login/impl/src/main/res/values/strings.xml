@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="enter">"Войти"</string>
+    <string name="entrance">"Вход"</string>
+    <string name="register">"Зарегистрироваться"</string>
+    <string name="login">"Логин"</string>
+    <string name="password">"Пароль"</string>
+    <string name="crete_password">"Придумайте пароль"</string>
+    <string name="repeat_password">"Повторите пароль"</string>
+    <string name="back">"Вернуться"</string>
+    <string name="email">"Email"</string>
+    <string name="username">"Имя"</string>
+    <string name="writeCode">"Введите код"</string>
+    <string name="close_password">"Скрыть пароль"</string>
+    <string name="show_password">"Показать пароль"</string>
+    <string name="enter_email_code">"Введите код из email"</string>
+    <string name="login_or_register">"Войдите или зарегистрируйтесь, чтобы пользоваться всеми возможностями приложения"</string>
+</resources>
