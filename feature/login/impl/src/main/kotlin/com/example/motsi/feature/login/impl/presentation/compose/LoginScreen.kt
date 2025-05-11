@@ -22,6 +22,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -31,6 +32,7 @@ import com.example.motsi.core.common.presentation.PasswordVisualTransformation
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
+import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.feature.login.impl.presentation.LoginViewModel
 import kotlinx.coroutines.delay
@@ -46,6 +48,7 @@ internal fun LoginScreen(
     var isPasswordVisible by remember { mutableStateOf(false) }
     var lastCharVisible by remember { mutableStateOf(false) }
     var lastCharIndex by remember { mutableIntStateOf(-1) }
+    var wrongLogin by remember { mutableStateOf(false) }
 
     LaunchedEffect(password) {
         if (password.isNotEmpty()) {
@@ -101,16 +104,18 @@ internal fun LoginScreen(
                 TextField(
                     value = login,
                     onValueChange = { login = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.login)) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.login)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    singleLine = true
                 )
 
                 TextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.password)) },
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.password)) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = passwordVisualTransformation,
+                    singleLine = true,
                     trailingIcon = {
                         IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
                             val icon: Painter = if (isPasswordVisible) {
@@ -128,14 +133,27 @@ internal fun LoginScreen(
                         }
                     },
                 )
+                if (wrongLogin) {
+                    Text(
+                        text =stringResource(com.example.motsi.feature.login.impl.R.string.wrong_password_message),
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                    )
+                }
 
                 DoActionButton(
                     text = stringResource(com.example.motsi.feature.login.impl.R.string.enter),
                     modifier = Modifier.fillMaxWidth(),
                     onClick = {
-                        viewModel.onLoginClicked(login, password)
+                        val isValid = viewModel.validateAndLogin(login, password)
+                        if (isValid) {
+                            //Переход на главный экран приложения
+                        } else {
+                            wrongLogin = true
+                        }
                     },
-                    style = ButtonStyle.BrandButton
+                    style = ButtonStyle.BrandButton,
+                    isEnabled = login.isNotEmpty() && password.isNotEmpty()
                 )
             }
         }

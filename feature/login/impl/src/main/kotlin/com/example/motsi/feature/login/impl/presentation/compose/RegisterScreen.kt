@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,16 +24,17 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
+import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.feature.login.impl.presentation.LoginViewModel
 import kotlinx.coroutines.delay
@@ -54,6 +56,12 @@ internal fun RegisterScreen(
     var lastCharIndex1 by remember { mutableIntStateOf(-1) }
     var lastCharVisible2 by remember { mutableStateOf(false) }
     var lastCharIndex2 by remember { mutableIntStateOf(-1) }
+
+    // Собор ошибок из ViewModel
+    val usernameError by viewModel.usernameError.collectAsState()
+    val emailError by viewModel.emailError.collectAsState()
+    val password1Error by viewModel.password1Error.collectAsState()
+    val password2Error by viewModel.password2Error.collectAsState()
 
     LaunchedEffect(password1) {
         if (password1.isNotEmpty()) {
@@ -95,6 +103,27 @@ internal fun RegisterScreen(
         }
     }
 
+    val usernameRequired = stringResource(com.example.motsi.feature.login.impl.R.string.username_required)
+    val invalidUsernameFormat = stringResource(com.example.motsi.feature.login.impl.R.string.invalid_username_format)
+    val emailRequired = stringResource(com.example.motsi.feature.login.impl.R.string.email_required)
+    val invalidEmailFormat = stringResource(com.example.motsi.feature.login.impl.R.string.invalid_email_format)
+    val passwordRequired = stringResource(com.example.motsi.feature.login.impl.R.string.password_required)
+    val weakPassword = stringResource(com.example.motsi.feature.login.impl.R.string.weak_password)
+    val passwordRepeatRequired = stringResource(com.example.motsi.feature.login.impl.R.string.password_repeat_required)
+    val passwordsMismatch = stringResource(com.example.motsi.feature.login.impl.R.string.passwords_mismatch)
+
+    val errorMessages = remember {
+        mapOf(
+            "username_required" to usernameRequired,
+            "invalid_username_format" to invalidUsernameFormat,
+            "email_required" to emailRequired,
+            "invalid_email_format" to invalidEmailFormat,
+            "password_required" to passwordRequired,
+            "weak_password" to weakPassword,
+            "password_repeat_required" to passwordRepeatRequired,
+            "passwords_mismatch" to passwordsMismatch
+        )
+    }
 
     Scaffold { padding ->
         Box(
@@ -128,25 +157,43 @@ internal fun RegisterScreen(
                 Title1Primary(
                     text = stringResource(com.example.motsi.feature.login.impl.R.string.register)
                 )
-
                 TextField(
                     value = username,
                     onValueChange = { username = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.username)) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.username)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = usernameError != null,
+                    singleLine = true
                 )
+                if (usernameError != null) {
+                    Text(
+                        text = usernameError!!,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                    )
+                }
 
+                // Поле "Email" с ошибкой
                 TextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.email)) },
-                    modifier = Modifier.fillMaxWidth()
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.email)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    isError = emailError != null,
+                    singleLine = true
                 )
+                if (emailError != null) {
+                    Text(
+                        text = emailError!!,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                    )
+                }
 
                 TextField(
                     value = password1,
                     onValueChange = { password1 = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.crete_password)) },
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.crete_password)) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = passwordTransformation1,
                     trailingIcon = {
@@ -165,13 +212,21 @@ internal fun RegisterScreen(
                             )
                         }
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+                    singleLine = true
                 )
+                if (password1Error != null) {
+                    Text(
+                        text = password1Error!!,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                    )
+                }
 
                 TextField(
                     value = password2,
                     onValueChange = { password2 = it },
-                    label = { Text(stringResource(com.example.motsi.feature.login.impl.R.string.repeat_password)) },
+                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.repeat_password)) },
                     modifier = Modifier.fillMaxWidth(),
                     visualTransformation = passwordTransformation2,
                     trailingIcon = {
@@ -190,14 +245,28 @@ internal fun RegisterScreen(
                             )
                         }
                     },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password)
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
+                    singleLine = true
                 )
+                if (password2Error != null) {
+                    Text(
+                        text = password2Error!!,
+                        color = Color.Red,
+                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
+                    )
+                }
 
                 DoActionButton(
                     text = stringResource(com.example.motsi.feature.login.impl.R.string.register),
                     modifier = Modifier.fillMaxWidth(),
-                    onClick = { onRegisterClicked() },
-                    style = ButtonStyle.BrandButton
+                    onClick = {
+                        val isValid = viewModel.validateAndRegister(username, email, password1, password2, errorMessages)
+                        if (isValid) {
+                            onRegisterClicked()
+                        }
+                    },
+                    style = ButtonStyle.BrandButton,
+                    isEnabled = username.isNotEmpty() && email.isNotEmpty() && password1.isNotEmpty() && password2.isNotEmpty()
                 )
             }
         }

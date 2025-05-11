@@ -14,5 +14,16 @@
     <string name="close_password">"Скрыть пароль"</string>
     <string name="show_password">"Показать пароль"</string>
     <string name="enter_email_code">"Введите код из email"</string>
+    <string name="wrong_password_message">"Неверный логин или пароль"</string>
     <string name="login_or_register">"Войдите или зарегистрируйтесь, чтобы пользоваться всеми возможностями приложения"</string>
+
+
+    <string name="username_required">Имя пользователя обязательно</string>
+    <string name="invalid_username_format">Имя должно быть от 3 до 30 символов, не содержать пробелов и специальных символов, кроме _.-</string>
+    <string name="email_required">Email обязателен</string>
+    <string name="invalid_email_format">Введите корректный email, например, user@example.com</string>
+    <string name="password_required">Пароль обязателен</string>
+    <string name="weak_password">Пароль должен содержать минимум одну заглавную букву, одну строчную букву, одну цифру и спецсимвол (!@#$%^*()_+)</string>
+    <string name="password_repeat_required">Повторите пароль</string>
+    <string name="passwords_mismatch">Пароли не совпадают</string>
 </resources>
