@@ -2,22 +2,15 @@ package com.example.motsi.feature.search.impl.presentation
 
 import androidx.navigation.NavHostController
 import com.example.motsi.api.ActivityDetailsGraph
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import javax.inject.Inject
 
-internal class SearchClickHandler @AssistedInject constructor(@Assisted private val navController: NavHostController) {
+internal class SearchClickHandler @Inject constructor() {
 
-    fun onActivityClick(){
+    fun onActivityClick(navController: NavHostController) {
         navController.navigate(
             ActivityDetailsGraph
-                (id = "123"),
-
+//            хардкод
+                (id = (0..100).random().toString()),
         )
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(navController: NavHostController): SearchClickHandler
     }
 }

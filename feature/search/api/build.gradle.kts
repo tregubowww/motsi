@@ -17,6 +17,7 @@ android {
 
 dependencies {
 //    implementation(project(":core"))
+    implementation(project(":core:navigation"))
 
     implementation(libs.kotlinx.serialization.json)
 //    implementation(libs.androidx.core.ktx)
