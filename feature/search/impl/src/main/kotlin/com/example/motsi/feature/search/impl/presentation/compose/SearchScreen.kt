@@ -21,7 +21,8 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.utils.LifecycleEffect
-import com.example.motsi.feature.search.impl.models.domain.SearchScreenDomainModel
+import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
 import com.example.motsi.feature.search.impl.presentation.SearchClickHandler
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 
@@ -32,11 +33,11 @@ internal fun SearchScreen(
     clickHandler: SearchClickHandler,
     bottomNavBar: @Composable () -> Unit,
 ) {
-    val loadingScreenState by viewModel.loadingScreenState.collectAsState()
+    val screenState by viewModel.screenState.collectAsState()
     LifecycleEffect(onCreate = { viewModel.initViewModel() })
-    when (val state = loadingScreenState) {
+    when (val state = screenState.loadingState) {
         is LoadingState.Loading -> {
-//            Loading()
+            //            Loading()
         }
 
         is LoadingState.Success -> {
@@ -50,8 +51,11 @@ internal fun SearchScreen(
         }
 
         is LoadingState.Error -> {
-            hideSplashScreen.invoke()
 //            Error()
+        }
+
+        else -> {
+//            nothing
         }
     }
 }
@@ -59,14 +63,14 @@ internal fun SearchScreen(
 
 @Composable
 private fun Success(
-    model: SearchScreenDomainModel,
+    model: SearchScreenModel,
     viewModel: SearchViewModel,
     bottomNavBar: @Composable () -> Unit,
     clickHandler: SearchClickHandler,
 ) {
-    val loadingSearchListState by viewModel.loadingSearchListState.collectAsState()
+    val listActivityState by viewModel.listActivityState.collectAsState()
 
-    when (loadingSearchListState) {
+    when (val state = listActivityState.loadingState) {
         is LoadingState.Loading -> {
 //            Loading() шимиризация
         }
@@ -110,6 +114,10 @@ private fun Success(
 
         is LoadingState.Error -> {
 //            Error() загрузка из кэша
+        }
+
+        else -> {
+//            nothing
         }
     }
 }

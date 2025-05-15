@@ -1,7 +1,6 @@
 package com.example.motsi.impl.presentation
 
 import androidx.lifecycle.ViewModel
-import com.example.motsi.core.common.models.presentation.LoadingState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

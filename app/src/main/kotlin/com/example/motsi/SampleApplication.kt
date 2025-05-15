@@ -14,7 +14,7 @@ class SampleApplication : Application() {
         super.onCreate()
 
         appComponent = DaggerAppComponent.builder()
-            .context(this)
+            .application(this)
             .build()
         WrappersCoreHolder.init(appComponent)
     }

@@ -11,11 +11,13 @@ package com.example.motsi.core.common.models.presentation
 //    data class Success<out T>(val data: T) : LoadingState<T>()
 //
 //    /** Состояние с ошибкой */
-//    data class Error<out E>(val error: E) : LoadingState<E>()
+//    data class Error<out E>(val error: E)
+//    : LoadingState<E>()
 //}
 
 sealed class LoadingState<out T, out E> {
-    object Loading : LoadingState<Nothing, Nothing>()
+    data object Idle : LoadingState<Nothing, Nothing>()
+    data object Loading : LoadingState<Nothing, Nothing>()
     data class Success<out T>(val data: T) : LoadingState<T, Nothing>()
     data class Error<out E>(val error: E) : LoadingState<Nothing, E>()
 }
