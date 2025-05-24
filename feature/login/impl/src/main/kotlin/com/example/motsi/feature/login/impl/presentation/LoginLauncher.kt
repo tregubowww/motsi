@@ -12,8 +12,8 @@ import com.example.motsi.feature.login.impl.models.presentation.EmailCodeScreenD
 import com.example.motsi.feature.login.impl.models.presentation.LoginScreenDestination
 import com.example.motsi.feature.login.impl.models.presentation.RegisterScreenDestination
 import com.example.motsi.feature.login.impl.models.presentation.MainLoginScreenDestination
+import com.example.motsi.feature.login.impl.presentation.compose.AuthScreen
 import com.example.motsi.feature.login.impl.presentation.compose.EmailCodeScreen
-import com.example.motsi.feature.login.impl.presentation.compose.LoginScreen
 import com.example.motsi.feature.login.impl.presentation.compose.RegisterScreen
 import com.example.motsi.feature.login.impl.presentation.compose.MainLoginScreen
 import jakarta.inject.Inject
@@ -40,26 +40,26 @@ class LoginLauncher @Inject constructor() :
             }
 
             composable<RegisterScreenDestination> {
-                val viewModel = injectedViewModel { api.viewModel }
+                val viewModel = injectedViewModel { api.registerViewModel }
                 RegisterScreen(
                     viewModel = viewModel,
                     onBackPressed = { navController.popBackStack() },
-                    onRegisterClicked = {
+                    onRegisterSuccess = {
                         navController.navigate(EmailCodeScreenDestination)
                     }
                 )
             }
 
             composable<LoginScreenDestination> {
-                val viewModel = injectedViewModel { api.viewModel }
-                LoginScreen(
+                val viewModel = injectedViewModel { api.authViewModel }
+                AuthScreen(
                     viewModel = viewModel,
                     onBackPressed = { navController.popBackStack() }
                 )
             }
 
             composable<EmailCodeScreenDestination> {
-                val viewModel = injectedViewModel { api.viewModel }
+                val viewModel = injectedViewModel { api.authViewModel } //заменить на другой viewModel
                 EmailCodeScreen(
                     viewModel = viewModel,
                     onBackPressed = { navController.popBackStack() }

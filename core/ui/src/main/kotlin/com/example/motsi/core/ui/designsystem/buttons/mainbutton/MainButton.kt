@@ -1,19 +1,16 @@
 package com.example.motsi.core.ui.designsystem.buttons.mainbutton
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.theming.Body1Primary
@@ -49,15 +46,15 @@ enum class ButtonStyle(
 ) {
     BrandButton(
         backgroundColor = Tokens.ButtonPrimary,
-        textColor = Tokens.TextPrimary,
+        textColor = Tokens.InverseTextPrimary,
         borderColor = null,
         borderWidth = null,
     ),
 
     InverseButton(
-        backgroundColor = Tokens.Background,
-        textColor = Tokens.ButtonPrimary,
-        borderColor = Tokens.TextPrimary,
+        backgroundColor = Tokens.InverseButtonPrimary,
+        textColor = Tokens.TextPrimary,
+        borderColor = Tokens.ButtonPrimary,
         borderWidth = 1.dp,
     ),
 }
@@ -94,7 +91,8 @@ internal fun DoActionButton(
         enabled = isEnabled,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
+            containerColor = backgroundColor,
+            contentColor = textColor
         ),
         interactionSource = interactionSource,
         modifier = buttonModifier
@@ -104,15 +102,9 @@ internal fun DoActionButton(
         } else {
             Body1Primary(
                 text = text,
+                color = textColor,
                 maxLines = 1
             )
-//            Text(
-//                text = text,
-//                style = textStyle,
-//                color = textColor,
-//                maxLines = 1,
-//                overflow = TextOverflow.Ellipsis
-//            )
         }
     }
 }

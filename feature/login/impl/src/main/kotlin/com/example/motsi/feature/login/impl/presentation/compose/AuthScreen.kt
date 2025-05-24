@@ -34,13 +34,13 @@ import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
-import com.example.motsi.feature.login.impl.presentation.LoginViewModel
+import com.example.motsi.feature.login.impl.presentation.view_model.AuthViewModel
 import kotlinx.coroutines.delay
 
 //Скрин входа по логину и паролю
 @Composable
-internal fun LoginScreen(
-    viewModel: LoginViewModel,
+internal fun AuthScreen(
+    viewModel: AuthViewModel,
     onBackPressed: () -> Unit
 ) {
     var login by rememberSaveable { mutableStateOf("") }

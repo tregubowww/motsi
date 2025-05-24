@@ -1,140 +1,60 @@
 package com.example.motsi.feature.login.impl.presentation.compose
 
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Body1Primary
+import com.example.motsi.core.ui.theming.MotsiTheme
+import com.example.motsi.core.ui.theming.Text1Warning
 import com.example.motsi.core.ui.theming.Title1Primary
-import com.example.motsi.feature.login.impl.presentation.LoginViewModel
-import kotlinx.coroutines.delay
+import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.feature.login.impl.presentation.view_model.RegisterViewModel
 
 //Скрин регистрации
 @Composable
 internal fun RegisterScreen(
-    viewModel: LoginViewModel,
+    viewModel: RegisterViewModel,
     onBackPressed: () -> Unit,
-    onRegisterClicked: () -> Unit
+    onRegisterSuccess: () -> Unit
 ) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var username by rememberSaveable { mutableStateOf("") }
-    var password1 by rememberSaveable { mutableStateOf("") }
-    var password2 by rememberSaveable { mutableStateOf("") }
-    var isPasswordVisible by remember { mutableStateOf(false) }
-
-    var lastCharVisible1 by remember { mutableStateOf(false) }
-    var lastCharIndex1 by remember { mutableIntStateOf(-1) }
-    var lastCharVisible2 by remember { mutableStateOf(false) }
-    var lastCharIndex2 by remember { mutableIntStateOf(-1) }
-
-    // Собор ошибок из ViewModel
-    val usernameError by viewModel.usernameError.collectAsState()
-    val emailError by viewModel.emailError.collectAsState()
-    val password1Error by viewModel.password1Error.collectAsState()
-    val password2Error by viewModel.password2Error.collectAsState()
-
-    LaunchedEffect(password1) {
-        if (password1.isNotEmpty()) {
-            lastCharIndex1 = password1.length - 1
-            lastCharVisible1 = true
-            delay(500)
-            lastCharVisible1 = false
-        }
-    }
-
-    LaunchedEffect(password2) {
-        if (password2.isNotEmpty()) {
-            lastCharIndex2 = password2.length - 1
-            lastCharVisible2 = true
-            delay(500)
-            lastCharVisible2 = false
-        }
-    }
-
-    val passwordTransformation1 = remember(isPasswordVisible, lastCharVisible1, lastCharIndex1) {
-        if (isPasswordVisible) {
-            VisualTransformation.None
-        } else {
-            com.example.motsi.core.common.presentation.PasswordVisualTransformation(
-                lastCharVisible1,
-                lastCharIndex1
-            )
-        }
-    }
-
-    val passwordTransformation2 = remember(isPasswordVisible, lastCharVisible2, lastCharIndex2) {
-        if (isPasswordVisible) {
-            VisualTransformation.None
-        } else {
-            com.example.motsi.core.common.presentation.PasswordVisualTransformation(
-                lastCharVisible2,
-                lastCharIndex2
-            )
-        }
-    }
-
-    val usernameRequired = stringResource(com.example.motsi.feature.login.impl.R.string.username_required)
-    val invalidUsernameFormat = stringResource(com.example.motsi.feature.login.impl.R.string.invalid_username_format)
-    val emailRequired = stringResource(com.example.motsi.feature.login.impl.R.string.email_required)
-    val invalidEmailFormat = stringResource(com.example.motsi.feature.login.impl.R.string.invalid_email_format)
-    val passwordRequired = stringResource(com.example.motsi.feature.login.impl.R.string.password_required)
-    val weakPassword = stringResource(com.example.motsi.feature.login.impl.R.string.weak_password)
-    val passwordRepeatRequired = stringResource(com.example.motsi.feature.login.impl.R.string.password_repeat_required)
-    val passwordsMismatch = stringResource(com.example.motsi.feature.login.impl.R.string.passwords_mismatch)
-
-    val errorMessages = remember {
-        mapOf(
-            "username_required" to usernameRequired,
-            "invalid_username_format" to invalidUsernameFormat,
-            "email_required" to emailRequired,
-            "invalid_email_format" to invalidEmailFormat,
-            "password_required" to passwordRequired,
-            "weak_password" to weakPassword,
-            "password_repeat_required" to passwordRepeatRequired,
-            "passwords_mismatch" to passwordsMismatch
-        )
-    }
+    val state by viewModel.state.collectAsState()
+    val scrollState = rememberScrollState()
 
     Scaffold { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+                .verticalScroll(scrollState)
                 .imePadding()
         ) {
-
             IconButton(
-                onClick = { onBackPressed() },
+                onClick = onBackPressed,
                 modifier = Modifier
                     .padding(start = 16.dp, top = 16.dp)
                     .align(Alignment.TopStart)
@@ -148,127 +68,180 @@ internal fun RegisterScreen(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 21.dp)
-                    .align(Alignment.Center),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(24.dp)
+                    .padding(horizontal = 16.dp)
+                    .align(Alignment.TopStart),
+                horizontalAlignment = Alignment.Start
             ) {
-
                 Title1Primary(
-                    text = stringResource(com.example.motsi.feature.login.impl.R.string.register)
+                    text = stringResource(com.example.motsi.feature.login.impl.R.string.register),
+                    modifier = Modifier.padding(horizontal = 70.dp, vertical = 21.dp)
                 )
-                TextField(
-                    value = username,
-                    onValueChange = { username = it },
-                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.username)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = usernameError != null,
-                    singleLine = true
-                )
-                if (usernameError != null) {
-                    Text(
-                        text = usernameError!!,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-                    )
-                }
 
-                // Поле "Email" с ошибкой
-                TextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.email)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    isError = emailError != null,
-                    singleLine = true
+                // Username Field
+                TextFieldSection(
+                    label = stringResource(com.example.motsi.feature.login.impl.R.string.username),
+                    value = state.username,
+                    onValueChange = viewModel::updateUsername,
+                    isError = state.usernameError != null,
+                    errorMessage = state.usernameError
                 )
-                if (emailError != null) {
-                    Text(
-                        text = emailError!!,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-                    )
-                }
 
-                TextField(
-                    value = password1,
-                    onValueChange = { password1 = it },
-                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.crete_password)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = passwordTransformation1,
-                    trailingIcon = {
-                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                            val icon: Painter = if (isPasswordVisible) {
-                                painterResource(id = R.drawable.ic_visibility)
-                            } else {
-                                painterResource(id = R.drawable.ic_visibility_off)
-                            }
-                            Icon(
-                                painter = icon,
-                                contentDescription = if (isPasswordVisible) {
-                                    stringResource(id = com.example.motsi.feature.login.impl.R.string.close_password)
-                                }
-                                else stringResource(id = com.example.motsi.feature.login.impl.R.string.show_password)
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-                    singleLine = true
+                // Email Field
+                TextFieldSection(
+                    label = stringResource(com.example.motsi.feature.login.impl.R.string.email),
+                    value = state.email,
+                    onValueChange = viewModel::updateEmail,
+                    isError = state.emailError != null,
+                    errorMessage = state.emailError
                 )
-                if (password1Error != null) {
-                    Text(
-                        text = password1Error!!,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-                    )
-                }
 
-                TextField(
-                    value = password2,
-                    onValueChange = { password2 = it },
-                    label = { Body1Primary(stringResource(com.example.motsi.feature.login.impl.R.string.repeat_password)) },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = passwordTransformation2,
-                    trailingIcon = {
-                        IconButton(onClick = { isPasswordVisible = !isPasswordVisible }) {
-                            val icon: Painter = if (isPasswordVisible) {
-                                painterResource(id = R.drawable.ic_visibility)
-                            } else {
-                                painterResource(id = R.drawable.ic_visibility_off)
-                            }
-                            Icon(
-                                painter = icon,
-                                contentDescription = if (isPasswordVisible) {
-                                    stringResource(id = com.example.motsi.feature.login.impl.R.string.close_password)
-                                }
-                                else stringResource(id = com.example.motsi.feature.login.impl.R.string.show_password)
-                            )
-                        }
-                    },
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Password),
-                    singleLine = true
+                // Password Fields
+                PasswordFieldSection(
+                    label = stringResource(com.example.motsi.feature.login.impl.R.string.create_password),
+                    value = state.password1,
+                    onValueChange = viewModel::updatePassword1,
+                    isError = state.password1Error != null,
+                    errorMessage = state.password1Error,
+                    transformation = state.passwordTransformation1,
+                    isPasswordVisible = state.isPasswordVisible,
+                    onToggleVisibility = viewModel::togglePasswordVisibility
                 )
-                if (password2Error != null) {
-                    Text(
-                        text = password2Error!!,
-                        color = Color.Red,
-                        modifier = Modifier.fillMaxWidth().padding(start = 16.dp)
-                    )
-                }
+
+                PasswordFieldSection(
+                    label = stringResource(com.example.motsi.feature.login.impl.R.string.repeat_password),
+                    value = state.password2,
+                    onValueChange = viewModel::updatePassword2,
+                    isError = state.password2Error != null,
+                    errorMessage = state.password2Error,
+                    transformation = state.passwordTransformation2,
+                    isPasswordVisible = state.isPasswordVisible,
+                    onToggleVisibility = viewModel::togglePasswordVisibility
+                )
 
                 DoActionButton(
                     text = stringResource(com.example.motsi.feature.login.impl.R.string.register),
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                     onClick = {
-                        val isValid = viewModel.validateAndRegister(username, email, password1, password2, errorMessages)
-                        if (isValid) {
-                            onRegisterClicked()
+                        if (viewModel.validateAndRegister()) {
+                            onRegisterSuccess()
                         }
                     },
-                    style = ButtonStyle.BrandButton,
-                    isEnabled = username.isNotEmpty() && email.isNotEmpty() && password1.isNotEmpty() && password2.isNotEmpty()
+                    style = ButtonStyle.BrandButton
+                )
+
+                state.error?.let { error ->
+                    Text1Warning(text = error, modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun TextFieldSection(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    errorMessage: String?
+) {
+    Body1Primary(
+        text = label,
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Tokens.TextFieldPrimary.getColor(),
+                shape = MotsiTheme.roundedShapes.small
+            )
+            .border(
+                width = 1.dp,
+                color = if (isError) Tokens.Warning.getColor()
+                else Tokens.TextFieldPrimary.getColor(),
+                shape = MotsiTheme.roundedShapes.small
+            )
+    ) {
+        BasicTextField(
+            value = value,
+            onValueChange = onValueChange,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            textStyle = MotsiTheme.textAppearance.Body1,
+            singleLine = true
+        )
+    }
+    errorMessage?.let {
+        Text1Warning(text = it, modifier = Modifier.fillMaxWidth().padding(start = 16.dp))
+    }
+}
+
+@Composable
+private fun PasswordFieldSection(
+    label: String,
+    value: String,
+    onValueChange: (String) -> Unit,
+    isError: Boolean,
+    errorMessage: String?,
+    transformation: VisualTransformation,
+    isPasswordVisible: Boolean,
+    onToggleVisibility: () -> Unit
+) {
+    Body1Primary(
+        text = label,
+        modifier = Modifier.padding(start = 16.dp, top = 16.dp)
+    )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(
+                color = Tokens.TextFieldPrimary.getColor(),
+                shape = MotsiTheme.roundedShapes.small
+            )
+            .border(
+                width = 1.dp,
+                color = if (isError) Tokens.Warning.getColor()
+                else Tokens.TextFieldPrimary.getColor(),
+                shape = MotsiTheme.roundedShapes.small
+            )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.padding(end = 8.dp)
+        ) {
+            BasicTextField(
+                value = value,
+                onValueChange = onValueChange,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                textStyle = MotsiTheme.textAppearance.Body1.copy(
+                    color = Tokens.TextPrimary.getColor()
+                ),
+                visualTransformation = transformation,
+                singleLine = true,
+                decorationBox = { it() }
+            )
+
+            IconButton(
+                onClick = onToggleVisibility,
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    painter = painterResource(
+                        id = if (isPasswordVisible) R.drawable.ic_visibility
+                        else R.drawable.ic_visibility_off
+                    ),
+                    contentDescription = if (isPasswordVisible) stringResource(com.example.motsi.feature.login.impl.R.string.hide_password)
+                    else stringResource(com.example.motsi.feature.login.impl.R.string.show_password),
+                    tint = Tokens.TextPrimary.getColor()
                 )
             }
         }
+    }
+    errorMessage?.let {
+        Text1Warning(text = it, modifier = Modifier.fillMaxWidth().padding(start = 16.dp))
     }
 }

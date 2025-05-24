@@ -6,7 +6,16 @@ enum class Tokens : ColorToken {
 
     TextPrimary,
 
-    ButtonPrimary
+    InverseTextPrimary,
+
+    ButtonPrimary,
+
+    InverseButtonPrimary,
+
+    TextFieldPrimary,
+
+    Warning,
+
     ;
 
     @androidx.compose.runtime.Composable
