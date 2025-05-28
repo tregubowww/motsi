@@ -45,7 +45,10 @@ internal fun RegisterScreen(
     val state by viewModel.state.collectAsState()
     val scrollState = rememberScrollState()
 
-    Scaffold { padding ->
+    Scaffold (
+        containerColor = Tokens.Background.getColor(),
+    ) {
+        padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

@@ -34,6 +34,7 @@ import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
+import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.feature.login.impl.presentation.view_model.AuthViewModel
 import kotlinx.coroutines.delay
 
@@ -68,7 +69,9 @@ internal fun AuthScreen(
     }
 
 
-    Scaffold { padding ->
+    Scaffold(
+        containerColor = Tokens.Background.getColor(),
+    ) { padding ->
 
         Box(
             modifier = Modifier

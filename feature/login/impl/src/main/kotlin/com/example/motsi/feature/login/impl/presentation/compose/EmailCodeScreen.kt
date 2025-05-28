@@ -51,6 +51,7 @@ import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Title1Primary
+import com.example.motsi.core.ui.theming.Tokens
 import kotlinx.coroutines.delay
 
 @Composable
@@ -64,7 +65,9 @@ fun EmailCodeScreen(
     val focusRequester = remember { FocusRequester() }
 
 
-    Scaffold { padding ->
+    Scaffold(
+        containerColor = Tokens.Background.getColor(),
+    ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()

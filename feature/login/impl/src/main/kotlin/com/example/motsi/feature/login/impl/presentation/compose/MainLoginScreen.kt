@@ -21,6 +21,7 @@ import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Headline1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
+import com.example.motsi.core.ui.theming.Tokens
 
 
 @Composable
@@ -29,7 +30,9 @@ internal fun MainLoginScreen(
     onBrandClicked: () -> Unit
 ) {
 
-    Scaffold { padding ->
+    Scaffold(
+        containerColor = Tokens.Background.getColor(),
+    ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
