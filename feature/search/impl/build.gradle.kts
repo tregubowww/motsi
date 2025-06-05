@@ -21,15 +21,28 @@ dependencies {
     api(project(":feature::search:api"))
 
     implementation(project(":core:ui"))
+    implementation(project(":core:wrappers"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:common"))
+    implementation(project(":core:network"))
     implementation(project(":feature:activitydetails:api"))
 
     implementation(libs.androidx.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.collections.immutable)
+
+//ksp
+    implementation(project(":core:di"))
+//    ksp(project(":core:di"))
+
+    implementation(libs.retrofit)
+//    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0")
+//    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 
     implementation(libs.dagger)
     ksp(libs.dagger.compiler)
+
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

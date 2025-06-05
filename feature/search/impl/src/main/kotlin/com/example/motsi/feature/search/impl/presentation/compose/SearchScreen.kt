@@ -1,9 +1,7 @@
 package com.example.motsi.feature.search.impl.presentation.compose
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -15,83 +13,108 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.motsi.core.ui.designsystem.appbar.SearchField
+import com.example.motsi.core.common.models.presentation.LoadingState
+import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
+import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
+import com.example.motsi.core.ui.utils.LifecycleEffect
+import com.example.motsi.feature.search.impl.models.domain.SearchScreenDomainModel
 import com.example.motsi.feature.search.impl.presentation.SearchClickHandler
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 
 @Composable
 internal fun SearchScreen(
     viewModel: SearchViewModel,
+    hideSplashScreen: () -> Unit,
     clickHandler: SearchClickHandler,
-    bottomNavBar: @Composable () -> Unit
-) {
-    SearchScreenSuccess(bottomNavBar, clickHandler)
-}
-
-
-@Composable
-private fun SearchScreenSuccess(
     bottomNavBar: @Composable () -> Unit,
-    clickHandler: SearchClickHandler
 ) {
+    val loadingScreenState by viewModel.loadingScreenState.collectAsState()
+    LifecycleEffect(onCreate = { viewModel.initViewModel() })
+    when (val state = loadingScreenState) {
+        is LoadingState.Loading -> {
+//            Loading()
+        }
 
-    Scaffold(
-        modifier = Modifier,
-        topBar = { SearchAppBar() },
-        bottomBar = bottomNavBar
-    ) { padding ->
-        Box(
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize()
-        ) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(120.dp)
-                    .padding(16.dp)
-                    .clickable(onClick = { clickHandler.onActivityClick() }),
-                shape = RoundedCornerShape(20.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                ),
-            ) {
-                Text(modifier = Modifier
-                    .fillMaxSize(), text = " детальная инфа по активности ")
-            }
+        is LoadingState.Success -> {
+            hideSplashScreen.invoke()
+            Success(
+                model = state.data,
+                viewModel = viewModel,
+                bottomNavBar = bottomNavBar,
+                clickHandler = clickHandler,
+            )
+        }
+
+        is LoadingState.Error -> {
+            hideSplashScreen.invoke()
+//            Error()
         }
     }
 }
 
+
 @Composable
-private fun SearchAppBar() {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
+private fun Success(
+    model: SearchScreenDomainModel,
+    viewModel: SearchViewModel,
+    bottomNavBar: @Composable () -> Unit,
+    clickHandler: SearchClickHandler,
+) {
+    val loadingSearchListState by viewModel.loadingSearchListState.collectAsState()
 
-        var query: String by rememberSaveable { mutableStateOf("") }
+    when (loadingSearchListState) {
+        is LoadingState.Loading -> {
+//            Loading() шимиризация
+        }
 
-        SearchField(
-            query = query,
-            onTextChange1 = { query = it },
-            modifier = Modifier.padding(horizontal = 16.dp),
-            hint = "Поиск в Геленджике",
-            isNeedToFocused = false,
-            isEnabled = true,
-            onSearchClicked = { Log.e("sadasd", "asdsad") }
-        )
+        is LoadingState.Success -> {
+            Scaffold(
+                modifier = Modifier,
+                topBar = {
+                    SearchAppBar(
+                        hint = model.appbar.titleSearchField,
+                        isEnabled = false
+                    )
+                },
+                bottomBar = bottomNavBar
+            ) { padding ->
+                Box(
+                    modifier = Modifier
+                        .padding(padding)
+                        .fillMaxSize()
+                ) {
+                    val navController = LocalAppNavController.current
+                    Card(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(120.dp)
+                            .padding(16.dp)
+                            .clickable(onClick = { clickHandler.onActivityClick(navController) }),
+                        shape = RoundedCornerShape(20.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                        ),
+                    ) {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxSize(), text = " детальная инфа по активности "
+                        )
+                    }
+                }
+            }
+        }
+
+        is LoadingState.Error -> {
+//            Error() загрузка из кэша
+        }
     }
 }
+
+
 
 
 

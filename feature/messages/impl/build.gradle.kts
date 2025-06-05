@@ -20,6 +20,8 @@ dependencies {
     api(project(":feature::messages:api"))
 
     implementation(project(":core:ui"))
+    implementation(project(":core:di"))
+    implementation(project(":core:navigation"))
     implementation(project(":core:common"))
 
     implementation(libs.androidx.compose.navigation)
