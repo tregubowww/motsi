@@ -9,7 +9,7 @@ internal data object MainLoginScreenDestination
 internal data object RegisterScreenDestination
 
 @Serializable
-internal data object LoginScreenDestination
+internal data object AuthScreenDestination
 
 @Serializable
 internal data object EmailCodeScreenDestination

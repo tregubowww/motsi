@@ -2,7 +2,6 @@ package com.example.motsi.feature.login.impl.presentation.compose
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,20 +14,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
-import com.example.motsi.core.ui.theming.Body1Primary
-import com.example.motsi.core.ui.theming.Headline1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.feature.login.impl.presentation.LoginClickHandler
 
 
 @Composable
 internal fun MainLoginScreen(
-    onInverseClicked: () -> Unit,
-    onBrandClicked: () -> Unit
+    clickHandler: LoginClickHandler
 ) {
+    val navController = LocalAppNavController.current
 
     Scaffold(
         containerColor = Tokens.Background.getColor(),
@@ -57,7 +56,7 @@ internal fun MainLoginScreen(
                 text = stringResource(com.example.motsi.feature.login.impl.R.string.enter),
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { onBrandClicked() },
+                onClick = { clickHandler.onBrandClicked(navController) },
                 style = ButtonStyle.BrandButton
             )
 
@@ -65,7 +64,7 @@ internal fun MainLoginScreen(
                 text = stringResource(com.example.motsi.feature.login.impl.R.string.register),
                 modifier = Modifier
                     .fillMaxWidth(),
-                onClick = { onInverseClicked() },
+                onClick = { clickHandler.onInverseClicked(navController)},
                 style = ButtonStyle.InverseButton
             )
         }

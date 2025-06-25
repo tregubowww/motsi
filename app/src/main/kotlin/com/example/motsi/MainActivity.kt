@@ -22,19 +22,19 @@ internal class MainActivity : ComponentActivity() {
 
         val api =  application.appComponent
         setContent {
-            val sharedSplashScreenViewModel: SharedSplashScreenViewModel =  viewModel(
-                viewModelStoreOwner =  LocalActivity.current as ComponentActivity,
-                factory = api.viewModelFactory()
-            )
-
-            val isShowSplashScreen by sharedSplashScreenViewModel.isShowSplashScreen.collectAsState()
-            splashScreen.setKeepOnScreenCondition {
-                isShowSplashScreen
-            }
+//            val sharedSplashScreenViewModel: SharedSplashScreenViewModel =  viewModel(
+//                viewModelStoreOwner =  LocalActivity.current as ComponentActivity,
+//                factory = api.viewModelFactory()
+//            )
+//
+//            val isShowSplashScreen by sharedSplashScreenViewModel.isShowSplashScreen.collectAsState()
+//            splashScreen.setKeepOnScreenCondition {
+//                isShowSplashScreen
+//            }
             MotsiTheme {
                 Navigation(
                     navEntrySet = api.navManager().featureNavEntrySet,
-                    startDestination = api.navManager().startDestination,
+                    startDestination = api.navManager().startDestination, //Для тестов фичи логина поменян на LoginGraph
                     itemsBottomNavBar = api.navManager().getNavBottomBarItem()
                 )
             }

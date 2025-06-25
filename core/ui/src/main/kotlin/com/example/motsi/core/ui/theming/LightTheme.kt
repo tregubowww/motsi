@@ -8,6 +8,6 @@ fun lightThemeTokensMap(): Map<Tokens, Color> = mapOf(
     Tokens.InverseTextPrimary to White,
     Tokens.ButtonPrimary to Black,
     Tokens.InverseButtonPrimary to White,
-    Tokens.TextFieldPrimary to Gray1,
+    Tokens.TextFieldPrimary to Gray76,
     Tokens.Warning to Red4,
 )

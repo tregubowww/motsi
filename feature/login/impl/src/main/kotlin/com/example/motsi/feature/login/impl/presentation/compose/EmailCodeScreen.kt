@@ -47,22 +47,25 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.feature.login.impl.presentation.LoginClickHandler
 import kotlinx.coroutines.delay
 
 @Composable
-fun EmailCodeScreen(
+internal fun EmailCodeScreen(
     viewModel: ViewModel,
-    onBackPressed: () -> Unit,
+    clickHandler: LoginClickHandler
 ) {
     var emailCode by rememberSaveable { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
+    val navController = LocalAppNavController.current
 
 
     Scaffold(
@@ -75,7 +78,7 @@ fun EmailCodeScreen(
                 .imePadding()
         ) {
             IconButton(
-                onClick = { onBackPressed() },
+                onClick = { clickHandler.onBackPressed(navController) },
                 modifier = Modifier
                     .padding(start = 16.dp, top = 16.dp)
                     .align(Alignment.TopStart)

@@ -51,6 +51,7 @@ dependencies {
     implementation(project(":feature:activitydetails:impl"))
     implementation(project(":feature:messages:impl"))
     implementation(project(":feature:search:impl"))
+    implementation(project(":feature:login:impl"))
 
 
 }

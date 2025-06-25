@@ -29,12 +29,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.common.presentation.PasswordVisualTransformation
+import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.ButtonStyle
 import com.example.motsi.core.ui.designsystem.buttons.mainbutton.DoActionButton
 import com.example.motsi.core.ui.theming.Body1Primary
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.feature.login.impl.presentation.LoginClickHandler
 import com.example.motsi.feature.login.impl.presentation.view_model.AuthViewModel
 import kotlinx.coroutines.delay
 
@@ -42,7 +44,7 @@ import kotlinx.coroutines.delay
 @Composable
 internal fun AuthScreen(
     viewModel: AuthViewModel,
-    onBackPressed: () -> Unit
+    clickHandler: LoginClickHandler
 ) {
     var login by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
@@ -50,6 +52,7 @@ internal fun AuthScreen(
     var lastCharVisible by remember { mutableStateOf(false) }
     var lastCharIndex by remember { mutableIntStateOf(-1) }
     var wrongLogin by remember { mutableStateOf(false) }
+    val navController = LocalAppNavController.current
 
     LaunchedEffect(password) {
         if (password.isNotEmpty()) {
@@ -81,7 +84,7 @@ internal fun AuthScreen(
         ) {
 
             IconButton(
-                onClick = { onBackPressed() },
+                onClick = { clickHandler.onBackPressed(navController) },
                 modifier = Modifier
                     .padding(start = 16.dp, top = 16.dp)
                     .align(Alignment.TopStart)

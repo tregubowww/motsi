@@ -73,7 +73,7 @@ internal fun DoActionButton(
     content: @Composable (RowScope.() -> Unit)? = null
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    val shape = MotsiTheme.roundedShapes.small
+    val shape = MotsiTheme.roundedShapes.doActionButtonRoundedShape
     val buttonModifier = if (borderColor != null && borderWidth != null) {
         modifier.then(
             Modifier.border(

@@ -2,14 +2,19 @@ package com.example.motsi.feature.login.impl.presentation.view_model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.motsi.core.common.presentation.BaseViewModel
+import com.example.motsi.feature.login.impl.di.LoginHolder
+import com.example.motsi.feature.login.impl.domain.interactor.LoginInteractor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal class AuthViewModel @Inject constructor() : ViewModel() {
-//    private val _loginState = MutableStateFlow<LoginState>(LoginState.Loading)
-//    val loginState: StateFlow<LoginState> = _loginState
+internal class AuthViewModel @Inject constructor(
+    private val interactor: LoginInteractor
+) : BaseViewModel() {
+    private val _state = MutableStateFlow(RegisterState())
+    val state: StateFlow<RegisterState> = _state
 
 
     fun validateAndLogin(
@@ -40,5 +45,16 @@ internal class AuthViewModel @Inject constructor() : ViewModel() {
     private suspend fun registerUser(login: String, password1: String, password2: String): Boolean {
         // Вызов своего API для регистрации
         return true // заглушка
+    }
+
+    override fun onInit() {
+        viewModelScope.launch {
+//            launch { interactor.getSearchScreen().handleState(_loadingScreenState) }
+//            launch { interactor.getSearchList().handleState(_loadingSearchListState) }
+        }
+    }
+
+    override fun onRelease() {
+        LoginHolder.release()
     }
 }

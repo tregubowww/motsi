@@ -48,7 +48,7 @@ fun Body1Primary(
         text = text,
         modifier = modifier,
         color = color,
-        style = MotsiTheme.textAppearance.Body1,
+        style = MotsiTheme.textAppearance.Body3,
         maxLines = maxLines,
     )
 }
@@ -96,7 +96,7 @@ fun Text1Warning(
         text = text,
         modifier = modifier,
         color = color,
-        style = MotsiTheme.textAppearance.Body1,
+        style = MotsiTheme.textAppearance.Caption,
         maxLines = maxLines,
     )
 }
