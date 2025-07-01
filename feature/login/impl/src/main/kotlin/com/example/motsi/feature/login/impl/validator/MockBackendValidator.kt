@@ -6,13 +6,12 @@ import com.example.motsi.feature.login.impl.models.data.RegisterResponse
 import com.example.motsi.feature.login.impl.models.data.RegisterScreenDataModel
 import com.example.motsi.feature.login.impl.models.data.ValidationRequest
 import com.example.motsi.feature.login.impl.models.data.ValidationResponse
-import kotlinx.coroutines.delay
 import retrofit2.Response
 import javax.inject.Inject
 import kotlin.random.Random
 
 
-internal class MockBackendValidator @Inject constructor() : LoginRemoteDataSource {
+class MockBackendValidator @Inject constructor() : LoginRemoteDataSource {
 
     private var lastPassword1: String? = null
 

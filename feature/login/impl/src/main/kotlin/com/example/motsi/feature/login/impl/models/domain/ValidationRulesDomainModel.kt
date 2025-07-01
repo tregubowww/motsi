@@ -1,9 +1,9 @@
 package com.example.motsi.feature.login.impl.models.domain
 
-import com.example.motsi.feature.login.impl.presentation.view_model.FieldType
+import com.example.motsi.feature.login.impl.data.repository.FieldType
 
 /** Доменная модель экрана регистрации */
-internal data class RegisterScreenDomainModel(
+data class RegisterScreenDomainModel(
     val title: String,
     val fields: List<RegisterField>
 ) {
@@ -21,7 +21,7 @@ internal data class RegisterScreenDomainModel(
 }
 
 /** Доменная модель ответа валидации */
-internal data class ValidationResultDomain(
+data class ValidationResultDomain(
     val isValid: Boolean,
     val errors: List<ValidationErrorDomain>
 )

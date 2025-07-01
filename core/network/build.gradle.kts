@@ -32,12 +32,15 @@ dependencies {
 
 
     implementation (libs.dagger)
+    implementation(libs.androidx.datastore.core.android)
     ksp (libs.dagger.compiler)
 
 
     implementation(libs.retrofit)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
     implementation(libs.logging.interceptor)
+    implementation(libs.androidx.datastore.preferences)
+
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.lifecycle.runtime.ktx)

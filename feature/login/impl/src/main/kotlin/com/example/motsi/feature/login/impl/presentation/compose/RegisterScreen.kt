@@ -99,10 +99,12 @@ internal fun RegisterScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp),
-                    /** Не исправил. Должен быть переход, когда нет ошибок */
                     onClick = {
-                        viewModel.register()
-                        clickHandler.onRegisterSuccess(navController)
+                        viewModel.register { success ->
+                            if (success) {
+                                clickHandler.onRegisterSuccess(navController)
+                            }
+                        }
                     },
                     style = ButtonStyle.BrandButton
                 )
@@ -143,7 +145,7 @@ internal fun RegisterScreen(
                 isError = state.password1Error != null,
                 errorMessage = state.password1Error,
                 transformation = state.passwordTransformation1,
-                isPasswordVisible = state.isPasswordVisible,
+                isPasswordVisible = state.isPassword1Visible,
                 onToggleVisibility = viewModel::togglePasswordVisibility1
             )
 
@@ -154,7 +156,7 @@ internal fun RegisterScreen(
                 isError = state.password2Error != null,
                 errorMessage = state.password2Error,
                 transformation = state.passwordTransformation2,
-                isPasswordVisible = state.isPasswordVisible,
+                isPasswordVisible = state.isPassword2Visible,
                 onToggleVisibility = viewModel::togglePasswordVisibility2
             )
         }
@@ -189,8 +191,15 @@ private fun TextFieldSection(
             )
     ) {
         BasicTextField(
-            value = value,
-            onValueChange = onValueChange,
+            value = value.trim(),
+            onValueChange = { newText ->
+                val filteredText = newText.replace(" ", "")
+                if (filteredText != newText) {
+                    onValueChange(filteredText)
+                } else {
+                    onValueChange(newText)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp, vertical = 12.dp),
@@ -239,8 +248,15 @@ private fun PasswordFieldSection(
             modifier = Modifier.padding(end = 8.dp)
         ) {
             BasicTextField(
-                value = value,
-                onValueChange = onValueChange,
+                value = value.trim(),
+                onValueChange = { newText ->
+                    val filteredText = newText.replace(" ", "")
+                    if (filteredText != newText) {
+                        onValueChange(filteredText)
+                    } else {
+                        onValueChange(newText)
+                    }
+                },
                 modifier = Modifier
                     .weight(1f)
                     .padding(horizontal = 12.dp, vertical = 12.dp),

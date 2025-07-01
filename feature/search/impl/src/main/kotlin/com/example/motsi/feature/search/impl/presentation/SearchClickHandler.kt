@@ -6,7 +6,9 @@ import javax.inject.Inject
 
 internal class SearchClickHandler @Inject constructor() {
 
+    @Synchronized
     fun onActivityClick(navController: NavHostController) {
+
         navController.navigate(
             ActivityDetailsGraph
 //            хардкод
