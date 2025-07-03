@@ -5,10 +5,8 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
@@ -25,7 +23,6 @@ import androidx.compose.material3.TopAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,10 +38,8 @@ import com.example.motsi.core.ui.theming.MotsiTheme
 import com.example.motsi.core.ui.theming.Text1Warning
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.core.ui.theming.Tokens
-import com.example.motsi.feature.login.impl.domain.interactor.LoginInteractor
 import com.example.motsi.feature.login.impl.presentation.LoginClickHandler
 import com.example.motsi.feature.login.impl.presentation.view_model.RegisterViewModel
-import kotlinx.coroutines.launch
 
 //Скрин регистрации
 @OptIn(ExperimentalMaterial3Api::class)
@@ -100,7 +95,7 @@ internal fun RegisterScreen(
                         .fillMaxWidth()
                         .padding(16.dp),
                     onClick = {
-                        viewModel.register { success ->
+                        viewModel.validAndRegister { success ->
                             if (success) {
                                 clickHandler.onRegisterSuccess(navController)
                             }

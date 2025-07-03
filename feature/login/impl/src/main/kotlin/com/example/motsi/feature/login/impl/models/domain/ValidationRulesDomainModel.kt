@@ -1,6 +1,5 @@
 package com.example.motsi.feature.login.impl.models.domain
 
-import com.example.motsi.feature.login.impl.data.repository.FieldType
 
 /** Доменная модель экрана регистрации */
 data class RegisterScreenDomainModel(
@@ -8,7 +7,6 @@ data class RegisterScreenDomainModel(
     val fields: List<RegisterField>
 ) {
     data class RegisterField(
-        val type: FieldType,
         val label: String,
         val hint: String,
         val validationRules: List<ValidationRule>

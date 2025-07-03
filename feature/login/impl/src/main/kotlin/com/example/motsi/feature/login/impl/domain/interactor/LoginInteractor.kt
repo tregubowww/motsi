@@ -1,14 +1,14 @@
 package com.example.motsi.feature.login.impl.domain.interactor
 
-import com.example.motsi.feature.login.impl.data.repository.FieldType
-
 internal interface LoginInteractor {
-    suspend fun validateFields(
-        username: String,
-        email: String,
-        password1: String,
-        password2: String
-    ): Map<FieldType, String?>
+
+    suspend fun validateUsername(username: String): String?
+
+    suspend fun validateEmail(email: String): String?
+
+    suspend fun validatePassword(password: String): String?
+
+    suspend fun validatePasswordMatch(password1: String, password2: String): String?
 
     suspend fun registerUser(
         username: String,

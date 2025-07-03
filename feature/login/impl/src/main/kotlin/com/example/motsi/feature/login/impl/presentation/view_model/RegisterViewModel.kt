@@ -2,23 +2,14 @@ package com.example.motsi.feature.login.impl.presentation.view_model
 
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.lifecycle.viewModelScope
-import com.example.motsi.core.common.models.data.ResultWrapper
-import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.PasswordVisualTransformation
-import com.example.motsi.core.common.presentation.utils.handleState
-import com.example.motsi.core.network.models.domain.MotsiError
-import com.example.motsi.feature.login.impl.data.repository.FieldType
 import com.example.motsi.feature.login.impl.di.LoginHolder
 import com.example.motsi.feature.login.impl.domain.interactor.LoginInteractor
-import com.example.motsi.feature.login.impl.models.domain.RegisterScreenDomainModel
-import com.example.motsi.feature.login.impl.models.domain.ValidationErrorDomain
-import com.example.motsi.feature.login.impl.models.domain.ValidationResultDomain
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -30,19 +21,27 @@ internal class RegisterViewModel @Inject constructor(
     private val _state = MutableStateFlow(RegisterState())
     val state: StateFlow<RegisterState> = _state
 
-    private val _isFormValid = MutableStateFlow(false)
-    val isFormValid: StateFlow<Boolean> = _isFormValid
-
-    private var validationJobs = mutableMapOf<FieldType, Job>()
+    private var validationUsernameJob: Job? = null
+    private var validationEmailJob: Job? = null
+    private var validationPassword1Job: Job? = null
+    private var validationPassword2Job: Job? = null
 
     fun updateUsername(username: String) {
-        _state.update { it.copy(username = username, usernameTouched = true) }
-        validateWithDebounce(FieldType.USERNAME, username)
+        _state.update { it.copy(username = username) }
+        validationUsernameJob?.cancel()
+        validationUsernameJob = viewModelScope.launch {
+            delay(1000)
+            _state.update { it.copy(usernameError = interactor.validateUsername(username)) }
+        }
     }
 
     fun updateEmail(email: String) {
-        _state.update { it.copy(email = email, emailTouched = true) }
-        validateWithDebounce(FieldType.EMAIL, email)
+        _state.update { it.copy(email = email) }
+        validationEmailJob?.cancel()
+        validationEmailJob = viewModelScope.launch {
+            delay(1000)
+            _state.update { it.copy(emailError = interactor.validateEmail(email)) }
+        }
     }
 
     fun updatePassword1(password: String) {
@@ -51,7 +50,6 @@ internal class RegisterViewModel @Inject constructor(
         _state.update {
             it.copy(
                 password1 = password,
-                password1Touched = true,
                 lastCharVisible1 = lastCharVisible,
                 lastCharIndex1 = password.length - 1
             )
@@ -64,9 +62,11 @@ internal class RegisterViewModel @Inject constructor(
                 }
             }
         }
-
-        validateWithDebounce(FieldType.PASSWORD1, password)
-//        validatePasswordMatch()
+        validationPassword1Job?.cancel()
+        validationPassword1Job = viewModelScope.launch {
+            delay(1000)
+            _state.update { it.copy(password1Error = interactor.validatePassword(password)) }
+        }
     }
 
     fun updatePassword2(password: String) {
@@ -75,7 +75,6 @@ internal class RegisterViewModel @Inject constructor(
         _state.update {
             it.copy(
                 password2 = password,
-                password2Touched = true,
                 lastCharVisible2 = lastCharVisible,
                 lastCharIndex2 = password.length - 1
             )
@@ -88,102 +87,37 @@ internal class RegisterViewModel @Inject constructor(
                 }
             }
         }
-
-        validatePasswordMatch()
+        validationPassword2Job?.cancel()
+        validationPassword2Job = viewModelScope.launch {
+            delay(1000)
+            _state.update { it.copy(password2Error = interactor.validatePasswordMatch(state.value.password1,password)) }
+        }
     }
 
 
-
-    fun register(onResult: (Boolean) -> Unit) {
-        if (!_isFormValid.value) {
-            onResult(false)
-            return
-        }
-
+    fun validAndRegister(onResult: (Boolean) -> Unit) {
         viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
+            onResult(false)
+            _state.update { it.copy(usernameError = interactor.validateUsername(state.value.username)) }
+            _state.update { it.copy(emailError = interactor.validateEmail(state.value.email)) }
+            _state.update { it.copy(password1Error = interactor.validatePassword(state.value.password1)) }
+            _state.update { it.copy(password2Error = interactor.validatePasswordMatch(state.value.password1, state.value.password2)) }
+            if (
+                interactor.validateUsername(state.value.username) == null &&
+                interactor.validateEmail(state.value.email) == null &&
+                interactor.validatePassword(state.value.password1) == null &&
+                interactor.validatePasswordMatch(state.value.password1, state.value.password2) == null
+            ){
 
-            val result = try {
                 interactor.registerUser(
                     username = _state.value.username,
                     email = _state.value.email,
                     password = _state.value.password1
                 )
-            } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Ошибка сети: ${e.message}"
-                    )
-                }
-                onResult(false)
-                return@launch
+                onResult(true)
             }
-
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    error = if (!result) "Ошибка регистрации" else null
-                )
-            }
-
-            onResult(result)
         }
     }
-
-    private fun updateFormValidity(errors: Map<FieldType, String?>) {
-        val isValid = errors.values.all { it == null } &&
-                _state.value.usernameTouched &&
-                _state.value.emailTouched &&
-                _state.value.password1Touched &&
-                _state.value.password2Touched
-
-        _isFormValid.value = isValid
-    }
-
-    private fun validateWithDebounce(field: FieldType, value: String) {
-        validationJobs[field]?.cancel()
-        validationJobs[field] = viewModelScope.launch {
-            delay(800)
-
-            val errors = interactor.validateFields(
-                username = if (field == FieldType.USERNAME) value else _state.value.username,
-                email = if (field == FieldType.EMAIL) value else _state.value.email,
-                password1 = if (field == FieldType.PASSWORD1) value else _state.value.password1,
-                password2 = _state.value.password2
-            )
-
-            _state.update { current ->
-                current.copy(
-                    usernameError = if (current.usernameTouched) errors[FieldType.USERNAME] else null,
-                    emailError = if (current.emailTouched) errors[FieldType.EMAIL] else null,
-                    password1Error = if (current.password1Touched) errors[FieldType.PASSWORD1] else null,
-                    password2Error = if (current.password2Touched) errors[FieldType.PASSWORD2] else null
-                )
-            }
-            updateFormValidity(errors)
-        }
-    }
-
-    private fun validatePasswordMatch() {
-        viewModelScope.launch {
-            val errors = interactor.validateFields(
-                username = _state.value.username,
-                email = _state.value.email,
-                password1 = _state.value.password1,
-                password2 = _state.value.password2
-            )
-
-            _state.update { current ->
-                current.copy(
-                    password2Error = if (current.password2Touched) errors[FieldType.PASSWORD2] else null
-                )
-            }
-            updateFormValidity(errors)
-        }
-    }
-
-
 
     fun togglePasswordVisibility1() {
         _state.update {
@@ -220,23 +154,19 @@ data class RegisterState(
     val email: String = "",
     val password1: String = "",
     val password2: String = "",
+
     val usernameError: String? = null,
     val emailError: String? = null,
     val password1Error: String? = null,
     val password2Error: String? = null,
-    val isLoading: Boolean = false,
-    val error: String? = null,
+
     val isPassword1Visible: Boolean = false,
     val isPassword2Visible: Boolean = false,
+
     val lastCharVisible1: Boolean = false,
     val lastCharIndex1: Int = -1,
     val lastCharVisible2: Boolean = false,
     val lastCharIndex2: Int = -1,
-
-    val usernameTouched: Boolean = false,
-    val emailTouched: Boolean = false,
-    val password1Touched: Boolean = false,
-    val password2Touched: Boolean = false
 ) {
 
     val passwordTransformation1: VisualTransformation
