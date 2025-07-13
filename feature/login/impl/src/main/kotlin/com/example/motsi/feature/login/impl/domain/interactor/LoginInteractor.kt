@@ -10,9 +10,5 @@ internal interface LoginInteractor {
 
     suspend fun validatePasswordMatch(password1: String, password2: String): String?
 
-    suspend fun registerUser(
-        username: String,
-        email: String,
-        password: String
-    ): Boolean
+    suspend fun registerUser(username: String, email: String, password: String)
 }
