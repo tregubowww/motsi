@@ -5,11 +5,11 @@ import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.persistentSetOf
 
 internal data class SearchScreenModel(
-    val appbar: AppBar = AppBar(),
+    val appbar: AppBar,
 ) {
     data class AppBar(
-        val navigationAction: AppBarAction? = null,
-        val titleSearchField: String = "",
-        val actions: ImmutableSet<AppBarAction> = persistentSetOf()
+        val navigationAction: AppBarAction?,
+        val titleSearchField: String,
+        val actions: ImmutableSet<AppBarAction>
     )
 }

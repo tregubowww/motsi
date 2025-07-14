@@ -22,7 +22,6 @@ import com.example.motsi.core.navigation.presentation.compose.LocalAppNavControl
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.utils.LifecycleEffect
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
-import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
 import com.example.motsi.feature.search.impl.presentation.SearchClickHandler
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 
@@ -68,51 +67,62 @@ private fun Success(
     bottomNavBar: @Composable () -> Unit,
     clickHandler: SearchClickHandler,
 ) {
-    val listActivityState by viewModel.listActivityState.collectAsState()
 
+    Scaffold(
+        modifier = Modifier,
+        topBar = {
+            SearchAppBar(
+                hint = model.appbar.titleSearchField,
+                isEnabled = false
+            )
+        },
+        bottomBar = bottomNavBar
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            ListActivity(viewModel, clickHandler)
+        }
+    }
+
+}
+
+@Composable
+private fun ListActivity(viewModel: SearchViewModel, clickHandler: SearchClickHandler,){
+    val listActivityState by viewModel.listActivityState.collectAsState()
+    val navController = LocalAppNavController.current
     when (val state = listActivityState.loadingState) {
         is LoadingState.Loading -> {
 //            Loading() шимиризация
         }
 
         is LoadingState.Success -> {
-            Scaffold(
-                modifier = Modifier,
-                topBar = {
-                    SearchAppBar(
-                        hint = model.appbar.titleSearchField,
-                        isEnabled = false
-                    )
-                },
-                bottomBar = bottomNavBar
-            ) { padding ->
-                Box(
+            val navController = LocalAppNavController.current
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(16.dp)
+                    .clickable(onClick = { clickHandler.onActivityClick(navController) }),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
+            ) {
+                Text(
                     modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize()
-                ) {
-                    val navController = LocalAppNavController.current
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(16.dp)
-                            .clickable(onClick = { clickHandler.onActivityClick(navController) }),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                        ),
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(), text = " детальная инфа по активности "
-                        )
-                    }
-                }
+                        .fillMaxSize(), text = " детальная инфа по активности "
+                )
             }
         }
 
         is LoadingState.Error -> {
+            Text(
+                modifier = Modifier
+                    .fillMaxSize(), text = state.error.message
+            )
 //            Error() загрузка из кэша
         }
 
