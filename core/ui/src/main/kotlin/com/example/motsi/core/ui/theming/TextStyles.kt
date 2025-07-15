@@ -5,6 +5,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
+fun SubTitlePrimary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+
+        color = Tokens.TextSecondary.getColor(),
+        style = MotsiTheme.textAppearance.Body3,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
 fun Title1Primary(
     text: String,
     modifier: Modifier = Modifier,

@@ -2,6 +2,11 @@ package com.example.motsi.feature.search.impl.domain.interactor
 
 import com.example.motsi.core.common.models.data.ResultWrapper
 import com.example.motsi.core.network.models.domain.MotsiError
+import com.example.motsi.core.ui.designsystem.appbar.searchappbar.AppBarAction
+import com.example.motsi.core.ui.theming.MotsiTheme
+import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.core.ui.utils.toColor
+import com.example.motsi.core.ui.utils.toIconRes
 import com.example.motsi.feature.search.impl.domain.repository.SearchRepository
 import com.example.motsi.feature.search.impl.models.domain.SearchListActivityModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
@@ -16,13 +21,10 @@ internal class SearchInteractorImpl @Inject constructor(private val repository: 
         ResultWrapper.Success(
             SearchScreenModel(
                 appbar = AppBar(
-                    navigationAction = null,
-                    titleSearchField = "titleSearchField",
-                    actions = persistentSetOf()
+                    titleSearchField = "Поиск в Азовской",
                 )
             )
         )
-//        repository.getSearchScreen()
 
     override suspend fun getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError> =
         repository.getSearchList()
