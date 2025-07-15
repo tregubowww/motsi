@@ -1,6 +1,6 @@
 package com.example.motsi.core.wrappers.di
 
-import android.content.Context
+import android.app.Application
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -12,7 +12,7 @@ class WrappersModule() {
 
     @Provides
     @Singleton
-    fun provideResourceManager( context: Context): ResourceManager {
-        return ResourceManagerImpl(context)
+    fun provideResourceManager( application: Application): ResourceManager {
+        return ResourceManagerImpl(application)
     }
 }

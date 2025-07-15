@@ -15,7 +15,9 @@ import com.example.motsi.feature.search.api.SearchGraph
 import com.example.motsi.feature.search.impl.di.SearchHolder
 import com.example.motsi.feature.search.impl.di.SearchInternalApi
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
+import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
 import com.example.motsi.feature.search.impl.presentation.compose.SearchScreen
+import com.example.motsi.feature.search.impl.presentation.compose.SearchTipsScreen
 import javax.inject.Inject
 
 class SearchNavEntry @Inject constructor() : FeatureNavEntry {
@@ -30,8 +32,8 @@ class SearchNavEntry @Inject constructor() : FeatureNavEntry {
                 val clickHandler = api.clickHandler()
 
                 composable<SearchDestination> {
-
                     val viewModel: SearchViewModel = viewModel(factory = factory)
+
                     val sharedSplashScreenViewModel: SharedSplashScreenViewModel = viewModel(
                         viewModelStoreOwner = LocalActivity.current as ComponentActivity,
                         factory = factory
@@ -39,6 +41,19 @@ class SearchNavEntry @Inject constructor() : FeatureNavEntry {
                     SearchScreen(
                         viewModel = viewModel,
                         hideSplashScreen = { sharedSplashScreenViewModel.hideSplashScreen() },
+                        clickHandler = clickHandler,
+                        bottomNavBar = bottomNavBar
+                    )
+                }
+
+                composable(
+                    route = "${SearchTipsDestination}?query={appBarHint}",
+
+                ) {
+                    val viewModel: SearchTipsViewModel = viewModel(factory = factory)
+
+                    SearchTipsScreen(
+                        viewModel = viewModel,
                         clickHandler = clickHandler,
                         bottomNavBar = bottomNavBar
                     )

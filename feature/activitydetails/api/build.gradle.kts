@@ -1,3 +1,5 @@
+import com.example.motsi.ext.libs
+
 plugins {
     alias(libs.plugins.motsi.android.library)
     alias(libs.plugins.kotlinx.serialization)
@@ -10,4 +12,5 @@ android {
 dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(project(":core:navigation"))
+    testImplementation(libs.junit)
 }

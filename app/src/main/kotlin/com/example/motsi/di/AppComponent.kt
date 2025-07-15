@@ -1,5 +1,6 @@
 package com.example.motsi.di
 
+import android.app.Application
 import android.content.Context
 import androidx.lifecycle.ViewModelProvider
 import com.example.motsi.NavManager
@@ -19,7 +20,7 @@ interface AppComponent: AppDeps {
     @Component.Builder
     interface Builder {
         @BindsInstance
-        fun context(context: Context): Builder
+        fun application(application: Application): Builder
 
         fun build(): AppComponent
     }

@@ -4,3 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 internal data object SearchDestination
+
+@Serializable
+internal data object SearchTipsDestination

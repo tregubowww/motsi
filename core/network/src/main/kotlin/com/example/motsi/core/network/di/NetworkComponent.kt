@@ -6,7 +6,7 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(dependencies = [WrappersCoreApi::class], modules = [NetworkModule::class])
-interface NetworkComponent : NetworkApi {
+internal interface NetworkComponent : NetworkApi {
 
     @Component.Factory
     interface Factory {

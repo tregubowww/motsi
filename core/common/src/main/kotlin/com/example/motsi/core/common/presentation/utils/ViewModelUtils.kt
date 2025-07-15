@@ -53,3 +53,15 @@ fun <T, E> ResultWrapper<T, E>.handleState(
         is ResultWrapper.Error -> stateFlow.value = LoadingState.Error(error)
     }
 }
+
+fun <T, E> ResultWrapper<T, E>.handleState(eventOnSuccess:()-> Unit = {}, eventOnError:()-> Unit = {}) =
+    when (this) {
+        is ResultWrapper.Success -> {
+            eventOnSuccess.invoke()
+            LoadingState.Success(value)
+        }
+        is ResultWrapper.Error -> {
+            eventOnError.invoke()
+            LoadingState.Error(error)
+        }
+    }

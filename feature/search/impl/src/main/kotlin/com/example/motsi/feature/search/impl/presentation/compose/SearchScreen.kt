@@ -21,7 +21,7 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.utils.LifecycleEffect
-import com.example.motsi.feature.search.impl.models.domain.SearchScreenDomainModel
+import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 import com.example.motsi.feature.search.impl.presentation.SearchClickHandler
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 
@@ -32,11 +32,11 @@ internal fun SearchScreen(
     clickHandler: SearchClickHandler,
     bottomNavBar: @Composable () -> Unit,
 ) {
-    val loadingScreenState by viewModel.loadingScreenState.collectAsState()
+    val screenState by viewModel.screenState.collectAsState()
     LifecycleEffect(onCreate = { viewModel.initViewModel() })
-    when (val state = loadingScreenState) {
+    when (val state = screenState.loadingState) {
         is LoadingState.Loading -> {
-//            Loading()
+            //            Loading()
         }
 
         is LoadingState.Success -> {
@@ -50,8 +50,11 @@ internal fun SearchScreen(
         }
 
         is LoadingState.Error -> {
-            hideSplashScreen.invoke()
 //            Error()
+        }
+
+        else -> {
+//            nothing
         }
     }
 }
@@ -59,57 +62,77 @@ internal fun SearchScreen(
 
 @Composable
 private fun Success(
-    model: SearchScreenDomainModel,
+    model: SearchScreenModel,
     viewModel: SearchViewModel,
     bottomNavBar: @Composable () -> Unit,
     clickHandler: SearchClickHandler,
 ) {
-    val loadingSearchListState by viewModel.loadingSearchListState.collectAsState()
+    val navController = LocalAppNavController.current
+    val searchQuery by viewModel.searchQuery.collectAsState()
 
-    when (loadingSearchListState) {
+    Scaffold(
+        modifier = Modifier,
+        topBar = {
+            SearchAppBar(
+                onSearchFieldClick = {clickHandler.onSearFieldClick(navController, model.appbar.titleSearchField)},
+                hint = model.appbar.titleSearchField,
+                textSearch = searchQuery,
+                onTextChange = {viewModel.onSearchQueryChange(it)},
+                isEnabled = false
+            )
+        },
+        bottomBar = bottomNavBar
+    ) { padding ->
+        Box(
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+            ListActivity(viewModel, clickHandler)
+        }
+    }
+
+}
+
+@Composable
+private fun ListActivity(viewModel: SearchViewModel, clickHandler: SearchClickHandler,){
+    val listActivityState by viewModel.listActivityState.collectAsState()
+    val navController = LocalAppNavController.current
+    when (val state = listActivityState.loadingState) {
         is LoadingState.Loading -> {
 //            Loading() шимиризация
         }
 
         is LoadingState.Success -> {
-            Scaffold(
-                modifier = Modifier,
-                topBar = {
-                    SearchAppBar(
-                        hint = model.appbar.titleSearchField,
-                        isEnabled = false
-                    )
-                },
-                bottomBar = bottomNavBar
-            ) { padding ->
-                Box(
+            val navController = LocalAppNavController.current
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp)
+                    .padding(16.dp)
+                    .clickable(onClick = { clickHandler.onActivityClick(navController) }),
+                shape = RoundedCornerShape(20.dp),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                ),
+            ) {
+                Text(
                     modifier = Modifier
-                        .padding(padding)
-                        .fillMaxSize()
-                ) {
-                    val navController = LocalAppNavController.current
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(120.dp)
-                            .padding(16.dp)
-                            .clickable(onClick = { clickHandler.onActivityClick(navController) }),
-                        shape = RoundedCornerShape(20.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.primary,
-                        ),
-                    ) {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxSize(), text = " детальная инфа по активности "
-                        )
-                    }
-                }
+                        .fillMaxSize(), text = " детальная инфа по активности "
+                )
             }
         }
 
         is LoadingState.Error -> {
+            Text(
+                modifier = Modifier
+                    .fillMaxSize(), text = state.error.message
+            )
 //            Error() загрузка из кэша
+        }
+
+        else -> {
+//            nothing
         }
     }
 }
