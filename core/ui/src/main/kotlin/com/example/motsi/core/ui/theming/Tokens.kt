@@ -3,8 +3,16 @@ package com.example.motsi.core.ui.theming
 @kotlinx.parcelize.Parcelize
 enum class Tokens : ColorToken {
     Background,
+    BackgroundSecondary,
 
-    TextPrimary
+    TextPrimary,
+    TextSecondary,
+    TextBrand,
+
+    IconPrimary,
+    //Поменять название
+    IconPrimaryActiv,
+    IconSecondary
     ;
 
     @androidx.compose.runtime.Composable

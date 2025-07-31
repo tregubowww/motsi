@@ -63,6 +63,3 @@ internal class SearchViewModel @Inject constructor(
         SearchHolder.release()
     }
 }
-
-
-

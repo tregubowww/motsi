@@ -34,6 +34,7 @@ kotlinxSerialization = "1.8.0"
 runtimeAndroid = "1.7.8"
 kotlinParceble = "1.4.20"
 lifecycleViewmodelAndroid = "2.9.0"
+coil = "2.7.0"
 
 
 [libraries]
@@ -62,6 +63,8 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
