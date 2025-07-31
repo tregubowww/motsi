@@ -26,18 +26,19 @@ fun SearchAppBar(
     textSearch: String = "",
     isNeedToFocused: Boolean = true,
     isEnabled: Boolean = true,
-    onSearchClicked: (String) -> Unit = {},
+    onKeyboardSearchButtonClick: (String) -> Unit = {},
+    onSearchFieldClick: () -> Unit = {},
     actions: Set<AppBarAction> = emptySet(),
     hint: String?,
 ) {
+
     Row(
         modifier = modifier
             .windowInsetsPadding(WindowInsets.statusBars)
             .fillMaxWidth()
-            .height(56.dp),
+            .height(58.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         if (navigationItem != null) {
             Icon(
                 painter = painterResource(id = navigationItem.iconRes),
@@ -52,35 +53,30 @@ fun SearchAppBar(
             )
         }
 
-
         SearchField(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp),
+                .clickable(onClick = onSearchFieldClick),
             query = textSearch,
             onTextChange = { onTextChange(it) },
-            hint = hint?: stringResource(R.string.search_title),
+            hint = hint ?: stringResource(R.string.search_title),
             isNeedToFocused = isNeedToFocused,
             isEnabled = isEnabled,
-            onSearchClicked = { onSearchClicked(it) }
+            onKeyboardSearchButtonClick = { onKeyboardSearchButtonClick(it) }
         )
 
-        Row(
-            modifier = Modifier.padding(end = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            actions.forEach {
-                Icon(
-                    painter = painterResource(id = it.iconRes),
-                    tint = it.iconTint,
-                    contentDescription = it.iconContentDescription,
-                    modifier = Modifier
-                        .clickable(
-                            role = Role.Button,
-                            onClick = { it.onClick.invoke() }
-                        )
-                )
-            }
+        actions.forEach {
+            Icon(
+                painter = painterResource(id = it.iconRes),
+                tint = it.iconTint,
+                contentDescription = it.iconContentDescription,
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .clickable(
+                        role = Role.Button,
+                        onClick = { it.onClick.invoke() }
+                    )
+            )
         }
     }
 }

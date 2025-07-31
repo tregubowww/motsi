@@ -67,11 +67,13 @@ private fun Success(
     bottomNavBar: @Composable () -> Unit,
     clickHandler: SearchClickHandler,
 ) {
+    val navController = LocalAppNavController.current
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             SearchAppBar(
+                onSearchFieldClick = {clickHandler.onSearchFieldClick(navController)},
                 hint = model.appbar.titleSearchField,
                 isEnabled = false
             )

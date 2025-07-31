@@ -6,7 +6,6 @@ import com.example.motsi.feature.search.impl.domain.repository.SearchRepository
 import com.example.motsi.feature.search.impl.models.domain.SearchListActivityModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel.AppBar
-import kotlinx.collections.immutable.persistentSetOf
 import javax.inject.Inject
 
 internal class SearchInteractorImpl @Inject constructor(private val repository: SearchRepository) :
@@ -16,13 +15,10 @@ internal class SearchInteractorImpl @Inject constructor(private val repository: 
         ResultWrapper.Success(
             SearchScreenModel(
                 appbar = AppBar(
-                    navigationAction = null,
-                    titleSearchField = "titleSearchField",
-                    actions = persistentSetOf()
+                    titleSearchField = "Поиск в Азовской",
                 )
             )
         )
-//        repository.getSearchScreen()
 
     override suspend fun getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError> =
         repository.getSearchList()
