@@ -19,10 +19,6 @@ object MotsiTheme {
         @ReadOnlyComposable
         get() = LocalTextAppearance.current
 
-    val roundedShapes: RoundedShapes
-        @Composable
-        @ReadOnlyComposable
-        get() = LocalRoundedShapes.current
 }
 
 val LocalTokens: ProvidableCompositionLocal<Map<Tokens, Color>> =

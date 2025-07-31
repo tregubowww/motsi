@@ -6,7 +6,8 @@ import com.example.motsi.feature.search.impl.domain.repository.SearchRepository
 import com.example.motsi.feature.search.impl.models.domain.SearchListActivityModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel.AppBar
-import kotlinx.collections.immutable.persistentSetOf
+import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
+import kotlinx.collections.immutable.persistentListOf
 import javax.inject.Inject
 
 internal class SearchInteractorImpl @Inject constructor(private val repository: SearchRepository) :
@@ -16,14 +17,86 @@ internal class SearchInteractorImpl @Inject constructor(private val repository: 
         ResultWrapper.Success(
             SearchScreenModel(
                 appbar = AppBar(
-                    navigationAction = null,
-                    titleSearchField = "titleSearchField",
-                    actions = persistentSetOf()
+                    titleSearchField = "Поиск в Азовской",
                 )
             )
         )
-//        repository.getSearchScreen()
+
 
     override suspend fun getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError> =
         repository.getSearchList()
+
+
+//    override suspend fun getSearchTips(text: String): ResultWrapper<SearchTipsListModel, MotsiError> =
+//        repository.getSearchTips(text)
+
+
+    override suspend fun getSearchTips(text: String): ResultWrapper<SearchTipsListModel, MotsiError> {
+        return ResultWrapper.Success(
+            SearchTipsListModel(
+                tipsList = persistentListOf(
+                    SearchTipsListModel.Item(
+                        tip = "собака",
+                        tipCategory = "животные",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "программирование на kotlin",
+                        tipCategory = "IT",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "рецепты пиццы",
+                        tipCategory = "кулинария",
+                        isInSearchHistory = false
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "путешествия по европе",
+                        tipCategory = null,
+                        isInSearchHistory = false
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "собака",
+                        tipCategory = "животные",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "программирование на kotlin",
+                        tipCategory = "IT",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "рецепты пиццы",
+                        tipCategory = "кулинария",
+                        isInSearchHistory = false
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "путешествия по европе",
+                        tipCategory = null,
+                        isInSearchHistory = false
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "собака",
+                        tipCategory = "животные",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "программирование на kotlin",
+                        tipCategory = "IT",
+                        isInSearchHistory = true
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "рецепты пиццы",
+                        tipCategory = "кулинария",
+                        isInSearchHistory = false
+                    ),
+                    SearchTipsListModel.Item(
+                        tip = "путешествия по европе",
+                        tipCategory = null,
+                        isInSearchHistory = false
+                    )
+                )
+            )
+        )
+    }
 }

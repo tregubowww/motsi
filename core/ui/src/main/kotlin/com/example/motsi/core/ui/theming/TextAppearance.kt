@@ -106,20 +106,20 @@ object TextAppearance {
 internal val LocalTextAppearance = staticCompositionLocalOf { TextAppearance }
 
 private val bold = FontFamily(
-    Font(R.font.montserrat_alternates_bold, FontWeight.Medium)
+    Font(R.font.roboto_bold, FontWeight.Medium)
 )
 
 private val medium = FontFamily(
-    Font(R.font.montserrat_alternates_medium, FontWeight.Medium)
+    Font(R.font.roboto_medium, FontWeight.Medium)
 )
 
 private val semibold = FontFamily(
-    Font(R.font.montserrat_alternates_semibold, FontWeight.SemiBold)
+    Font(R.font.roboto_semibold, FontWeight.SemiBold)
 )
 
 
 private val regular = FontFamily(
-    Font(R.font.montserrat_alternates_regular, FontWeight.Normal)
+    Font(R.font.roboto_regular, FontWeight.Normal)
 )
 
 private val motsiTextStyle =
