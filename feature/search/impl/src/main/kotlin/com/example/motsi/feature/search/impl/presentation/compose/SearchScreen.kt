@@ -31,6 +31,7 @@ internal fun SearchScreen(
     hideSplashScreen: () -> Unit,
     clickHandler: SearchClickHandler,
     bottomNavBar: @Composable () -> Unit,
+    searchQuery: String
 ) {
     val screenState by viewModel.screenState.collectAsState()
     LifecycleEffect(onCreate = { viewModel.initViewModel() })
@@ -46,6 +47,7 @@ internal fun SearchScreen(
                 viewModel = viewModel,
                 bottomNavBar = bottomNavBar,
                 clickHandler = clickHandler,
+                searchQuery = searchQuery
             )
         }
 
@@ -66,6 +68,7 @@ private fun Success(
     viewModel: SearchViewModel,
     bottomNavBar: @Composable () -> Unit,
     clickHandler: SearchClickHandler,
+    searchQuery: String
 ) {
     val navController = LocalAppNavController.current
 
@@ -73,8 +76,16 @@ private fun Success(
         modifier = Modifier,
         topBar = {
             SearchAppBar(
-                onSearchFieldClick = {clickHandler.onSearchFieldClick(navController)},
+                onSearchFieldClick = {
+                    clickHandler.onSearchFieldClick(
+                        navController = navController,
+                        searchQuery = searchQuery,
+                        appBarHint = model.appbar.titleSearchField,
+                    )
+                },
                 hint = model.appbar.titleSearchField,
+                textSearch = searchQuery,
+                onTextChange = {},
                 isEnabled = false
             )
         },
