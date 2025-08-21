@@ -1,6 +1,15 @@
 package com.example.motsi.feature.search.impl.models.presentation.screen
 
+import androidx.navigation.NavHostController
+import com.example.motsi.feature.search.impl.models.domain.SearchTip
+import kotlinx.collections.immutable.ImmutableList
+
 
 internal sealed class SearchScreenIntent {
-    data object ClickSearchField : SearchScreenIntent()
+    data class ClickSearchField(
+        val navController: NavHostController,
+        val searchQuery: String,
+        val searchHint: String,
+        val historyTipList: ImmutableList<SearchTip>
+    ) : SearchScreenIntent()
 }

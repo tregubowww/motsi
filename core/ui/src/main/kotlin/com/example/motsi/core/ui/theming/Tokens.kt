@@ -7,8 +7,10 @@ enum class Tokens : ColorToken {
 
     TextPrimary,
     TextSecondary,
+    TextBrand,
 
     IconPrimary,
+    IconPrimaryReverse,
     IconSecondary
     ;
 

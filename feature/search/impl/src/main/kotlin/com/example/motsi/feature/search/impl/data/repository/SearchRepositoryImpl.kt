@@ -19,17 +19,17 @@ internal class SearchRepositoryImpl @Inject constructor(
     private val apiResponseHandler: ApiResponseHandler,
 ) : SearchRepository {
 
-    override suspend fun getSearchScreen(): ResultWrapper<SearchScreenModel, MotsiError> =
-         apiResponseHandler.requestMapped(
-            call = { remoteDataSource.getSearchScreen() },
-            mapper = searchScreenConverter::toDomain
-        )
-
-
-
-    override suspend fun getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError> =
-        apiResponseHandler.requestMapped(
-            call = { remoteDataSource.getSearchList() },
-            mapper = searchListConverter::toDomain
-        )
+//    override suspend fun getSearchScreen(): ResultWrapper<SearchScreenModel, MotsiError> =
+//         apiResponseHandler.requestMapped(
+//            call = { remoteDataSource.getSearchScreen() },
+//            mapper = searchScreenConverter::toDomain
+//        )
+//
+//
+//
+//    override suspend fun getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError> =
+//        apiResponseHandler.requestMapped(
+//            call = { remoteDataSource.getSearchList() },
+//            mapper = searchListConverter::toDomain
+//        )
 }

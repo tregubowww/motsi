@@ -5,7 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun SubtitlePrimary(
+fun Subtitle1Primary(
     text: String,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
@@ -15,6 +15,21 @@ fun SubtitlePrimary(
         modifier = modifier,
         color = Tokens.TextSecondary.getColor(),
         style = MotsiTheme.textAppearance.Body3,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Subtitle2Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextSecondary.getColor(),
+        style = MotsiTheme.textAppearance.Footnote2,
         maxLines = maxLines,
     )
 }
@@ -30,6 +45,36 @@ fun Title1Primary(
         modifier = modifier,
         color = Tokens.TextPrimary.getColor(),
         style = MotsiTheme.textAppearance.Title1,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Title2Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Title3,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun SubtitleBrand(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextBrand.getColor(),
+        style = MotsiTheme.textAppearance.Body3,
         maxLines = maxLines,
     )
 }

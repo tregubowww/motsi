@@ -8,5 +8,6 @@ fun String.toIconRes(): Int =
 
 private val icons = mapOf(
     "ic_search_20" to R.drawable.ic_search_20dp,
-    "ic_filter_24" to R.drawable.ic_filter_24dp
+    "ic_filter_24" to R.drawable.ic_filter_24dp,
+    "ic_clock_history_20" to R.drawable.ic_clock_history_20dp
 )

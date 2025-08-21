@@ -7,7 +7,7 @@ import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 
 internal interface SearchRepository {
 
-    suspend fun  getSearchScreen(): ResultWrapper<SearchScreenModel, MotsiError>
-
-    suspend fun  getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError>
+//    suspend fun  getSearchScreen(): ResultWrapper<SearchScreenModel, MotsiError>
+//
+//    suspend fun  getSearchList(): ResultWrapper<SearchListActivityModel, MotsiError>
 }

@@ -4,7 +4,10 @@ import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
 internal data class SearchListActivityModel(
-    val recommendationList: ImmutableList<Activity> = persistentListOf()
+    val searchQuery: String?,
+    val searchHint: String?,
+    val recommendationActivityList: ImmutableList<Activity> = persistentListOf(),
+    val historyTipList: ImmutableList<SearchTip> = persistentListOf(),
 ){
     data class Activity(val id: String)
 }

@@ -1,13 +1,15 @@
 package com.example.motsi.feature.search.impl.presentation
 
 import androidx.lifecycle.viewModelScope
+import com.example.motsi.api.ActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.feature.search.impl.di.SearchHolder
 import com.example.motsi.feature.search.impl.domain.interactor.SearchInteractor
-import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityState
+import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
 import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityIntent
+import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityState
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,23 +32,7 @@ internal class SearchViewModel @Inject constructor(
     private val _listActivityState =
         MutableStateFlow(SearchListActivityState(loadingState = LoadingState.Loading))
 
-    fun onScreenIntent(intent: SearchScreenIntent) {
-        when (intent) {
-            SearchScreenIntent.ClickSearchField -> {
-//                to search screen
-            }
-        }
-    }
-
-    fun onListActivityIntent(intent: SearchListActivityIntent) {
-        when (intent) {
-            SearchListActivityIntent.ClickActivity -> {
-//                 to details
-            }
-        }
-    }
-
-    override fun onInit() {
+    fun initViewModel() {
         viewModelScope.launch {
             launch {
                 _screenState.value =
@@ -54,7 +40,46 @@ internal class SearchViewModel @Inject constructor(
             }
             launch {
                 _listActivityState.value =
-                    SearchListActivityState(loadingState = interactor.getSearchList().handleState())
+                    SearchListActivityState(
+                        loadingState = interactor.getActivityList().handleState()
+                    )
+            }
+        }
+    }
+
+    fun onScreenIntent(intent: SearchScreenIntent) {
+        when (intent) {
+            is SearchScreenIntent.ClickSearchField -> {
+                intent.navController.navigate(
+                    SearchTipsDestination(
+                        entryData = SearchTipsDestination.EntryData(
+                            searchQuery = intent.searchQuery,
+                            searchHint = intent.searchHint,
+                            historyTipList = intent.historyTipList
+                        )
+                    )
+                )
+            }
+        }
+    }
+
+    fun onListActivityIntent(intent: SearchListActivityIntent) {
+        when (intent) {
+            is SearchListActivityIntent.ClickActivity -> {
+                intent.navController.navigate(
+                    ActivityDetailsGraph
+//            хардкод
+                        (id = (0..100).random().toString()),
+                )
+            }
+            is SearchListActivityIntent.AddFilter -> {
+                viewModelScope.launch {
+                    _listActivityState.value =
+                        SearchListActivityState(
+                            loadingState = interactor.getActivityList(filterData = intent.filterData)
+                                .handleState()
+                        )
+                }
             }
         }
     }
@@ -63,6 +88,3 @@ internal class SearchViewModel @Inject constructor(
         SearchHolder.release()
     }
 }
-
-
-

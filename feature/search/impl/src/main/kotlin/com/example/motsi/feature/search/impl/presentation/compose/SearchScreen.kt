@@ -22,15 +22,18 @@ import com.example.motsi.core.navigation.presentation.compose.LocalAppNavControl
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.utils.LifecycleEffect
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
-import com.example.motsi.feature.search.impl.presentation.SearchClickHandler
+import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
+import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityIntent
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
+import kotlinx.collections.immutable.persistentListOf
 
 @Composable
 internal fun SearchScreen(
     viewModel: SearchViewModel,
     hideSplashScreen: () -> Unit,
-    clickHandler: SearchClickHandler,
     bottomNavBar: @Composable () -> Unit,
+    filterData: SearchDestination.SearchFilterData
 ) {
     val screenState by viewModel.screenState.collectAsState()
     LifecycleEffect(onCreate = { viewModel.initViewModel() })
@@ -45,7 +48,6 @@ internal fun SearchScreen(
                 model = state.data,
                 viewModel = viewModel,
                 bottomNavBar = bottomNavBar,
-                clickHandler = clickHandler,
             )
         }
 
@@ -65,16 +67,35 @@ private fun Success(
     model: SearchScreenModel,
     viewModel: SearchViewModel,
     bottomNavBar: @Composable () -> Unit,
-    clickHandler: SearchClickHandler,
 ) {
     val navController = LocalAppNavController.current
+    val listActivityState by viewModel.listActivityState.collectAsState()
+
+    val searchQuery =
+        (listActivityState.loadingState as? LoadingState.Success)?.data?.searchQuery.orEmpty()
+    val searchHint = (listActivityState.loadingState as? LoadingState.Success)?.data?.searchHint
+        ?: model.defaultSearchHint
+    val historyTipList =
+        (listActivityState.loadingState as? LoadingState.Success)?.data?.historyTipList
+            ?: persistentListOf()
 
     Scaffold(
         modifier = Modifier,
         topBar = {
             SearchAppBar(
-                onSearchFieldClick = {clickHandler.onSearchFieldClick(navController)},
-                hint = model.appbar.titleSearchField,
+                onSearchFieldClick = {
+                    viewModel.onScreenIntent(
+                        SearchScreenIntent.ClickSearchField(
+                            navController = navController,
+                            searchQuery = searchQuery,
+                            searchHint = searchHint,
+                            historyTipList = historyTipList,
+                        )
+                    )
+                },
+                hint = searchHint,
+                textSearch = searchQuery,
+                onTextChange = {},
                 isEnabled = false
             )
         },
@@ -85,14 +106,14 @@ private fun Success(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            ListActivity(viewModel, clickHandler)
+            ListActivity(viewModel)
         }
     }
 
 }
 
 @Composable
-private fun ListActivity(viewModel: SearchViewModel, clickHandler: SearchClickHandler,){
+private fun ListActivity(viewModel: SearchViewModel) {
     val listActivityState by viewModel.listActivityState.collectAsState()
     val navController = LocalAppNavController.current
     when (val state = listActivityState.loadingState) {
@@ -101,13 +122,16 @@ private fun ListActivity(viewModel: SearchViewModel, clickHandler: SearchClickHa
         }
 
         is LoadingState.Success -> {
-            val navController = LocalAppNavController.current
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp)
                     .padding(16.dp)
-                    .clickable(onClick = { clickHandler.onActivityClick(navController) }),
+                    .clickable(onClick = {
+                        viewModel.onListActivityIntent(
+                            SearchListActivityIntent.ClickActivity(navController)
+                        )
+                    }),
                 shape = RoundedCornerShape(20.dp),
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -121,10 +145,6 @@ private fun ListActivity(viewModel: SearchViewModel, clickHandler: SearchClickHa
         }
 
         is LoadingState.Error -> {
-            Text(
-                modifier = Modifier
-                    .fillMaxSize(), text = state.error.message
-            )
 //            Error() загрузка из кэша
         }
 

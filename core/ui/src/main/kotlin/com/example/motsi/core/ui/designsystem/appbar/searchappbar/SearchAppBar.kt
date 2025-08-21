@@ -56,7 +56,8 @@ fun SearchAppBar(
         SearchField(
             modifier = Modifier
                 .weight(1f)
-                .clickable(onClick = onSearchFieldClick),
+                .clickable(onClick = onSearchFieldClick, role = Role.Button)
+                .padding(horizontal = 16.dp, vertical = 6.dp),
             query = textSearch,
             onTextChange = { onTextChange(it) },
             hint = hint ?: stringResource(R.string.search_title),
