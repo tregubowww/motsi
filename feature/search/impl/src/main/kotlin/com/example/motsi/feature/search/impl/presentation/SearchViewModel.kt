@@ -1,7 +1,7 @@
 package com.example.motsi.feature.search.impl.presentation
 
 import androidx.lifecycle.viewModelScope
-import com.example.motsi.api.ActivityDetailsGraph
+import com.example.motsi.api.SportActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.utils.handleState
@@ -67,7 +67,7 @@ internal class SearchViewModel @Inject constructor(
         when (intent) {
             is SearchListActivityIntent.ClickActivity -> {
                 intent.navController.navigate(
-                    ActivityDetailsGraph
+                    SportActivityDetailsGraph
 //            хардкод
                         (id = (0..100).random().toString()),
                 )

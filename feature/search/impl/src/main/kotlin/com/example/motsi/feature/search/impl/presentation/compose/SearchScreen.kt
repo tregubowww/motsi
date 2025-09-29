@@ -71,13 +71,10 @@ private fun Success(
     val navController = LocalAppNavController.current
     val listActivityState by viewModel.listActivityState.collectAsState()
 
-    val searchQuery =
-        (listActivityState.loadingState as? LoadingState.Success)?.data?.searchQuery.orEmpty()
-    val searchHint = (listActivityState.loadingState as? LoadingState.Success)?.data?.searchHint
-        ?: model.defaultSearchHint
-    val historyTipList =
-        (listActivityState.loadingState as? LoadingState.Success)?.data?.historyTipList
-            ?: persistentListOf()
+    val loadingStateSuccess = listActivityState.loadingState as? LoadingState.Success
+    val searchQuery = loadingStateSuccess?.data?.searchQuery.orEmpty()
+    val searchHint = loadingStateSuccess?.data?.searchHint ?: model.defaultSearchHint
+    val historyTipList = loadingStateSuccess?.data?.historyTipList ?: persistentListOf()
 
     Scaffold(
         modifier = Modifier,

@@ -4,5 +4,5 @@ import com.example.motsi.core.navigation.models.Destination
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ActivityDetailsGraph(val id: String): Destination
+data class SportActivityDetailsGraph(val id: String): Destination
 

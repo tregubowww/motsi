@@ -6,6 +6,6 @@ import androidx.compose.ui.graphics.Color
 data class AppBarAction(
     @DrawableRes val iconRes: Int,
     val iconTint: Color,
-    val iconContentDescription: String,
+    val iconContentDescription: String? = null,
     val onClick: () -> Unit
 )

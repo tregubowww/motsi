@@ -25,6 +25,10 @@ gradlePlugin {
             id = libs.plugins.motsi.android.library.get().pluginId
             implementationClass = "com.example.motsi.conventions.AndroidLibraryConventionPlugin"
         }
+        register("androidFeatureConventionPlugin") {
+            id = libs.plugins.motsi.android.feature.get().pluginId
+            implementationClass = "com.example.motsi.conventions.AndroidFeatureConventionPlugin"
+        }
     }
 }
 

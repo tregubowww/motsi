@@ -15,12 +15,13 @@ activityCompose = "1.10.1"
 composeBom = "2025.03.01"
 appcompat = "1.7.0"
 loggingInterceptor = "4.12.0"
+
 material = "1.12.0"
 ksp = "2.1.10-1.0.31"
 androidTools = "31.9.1"
 java = "17"
 jvmTarget = "17"
-minSdk = "24"
+minSdk = "26"
 retrofit = "2.11.0"
 retrofit2KotlinxSerializationConverter = "0.8.0"
 retrofitVersion = "2.9.0"
@@ -29,12 +30,15 @@ compileSdk = "35"
 appVersionCode = "1"
 appVersionName = "1.0"
 applicationId = "com.example.motsi"
-navVersion = "2.9.3"
+navVersion = "2.8.9"
 kotlinxSerialization = "1.8.0"
 runtimeAndroid = "1.7.8"
 kotlinParceble = "1.4.20"
 lifecycleViewmodelAndroid = "2.9.0"
-
+coil = "2.7.0"
+mapsMobile = "4.19.0-full"
+servicesLocation = "21.3.0"
+playServicesTasks = "18.3.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +66,11 @@ kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "daggerCompiler" }
 ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.ref = "ksp" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
+maps-mobile = { group = "com.yandex.android", name = "maps.mobile", version.ref = "mapsMobile" }
+services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "servicesLocation" }
+play-services-tasks = { group = "com.google.android.gms", name = "play-services-tasks", version.ref = "playServicesTasks" }
 
 # Dependencies of the included build-logic
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
@@ -91,3 +100,5 @@ kotlinx-parcelize = { id = "kotlin-parcelize"}
 # Plugins defined by this project
 motsi-android-application = { id = "com.example.motsi.convention.android.application" }
 motsi-android-library = { id = "com.example.motsi.convention.android.library" }
+motsi-android-feature = { id = "com.example.motsi.convention.android.feature" }
+

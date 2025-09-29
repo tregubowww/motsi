@@ -2,7 +2,7 @@ package com.example.motsi.di
 
 import com.example.motsi.core.navigation.presentation.FeatureNavEntry
 import com.example.motsi.feature.search.impl.presentation.SearchNavEntry
-import com.example.motsi.impl.presentation.ActivityDetailsNavEntry
+import com.example.motsi.impl.presentation.SportActivityDetailsNavEntry
 import com.example.motsi.messeges.impl.presentation.MessagesLauncher
 import dagger.Binds
 import dagger.Module
@@ -25,5 +25,5 @@ internal interface LauncherModule {
     @Binds
     @Singleton
     @IntoSet
-    fun activityDetailsLauncher(launcher: ActivityDetailsNavEntry): FeatureNavEntry
+    fun activityDetailsLauncher(launcher: SportActivityDetailsNavEntry): FeatureNavEntry
 }

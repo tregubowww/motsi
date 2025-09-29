@@ -13,6 +13,21 @@ fun Subtitle1Primary(
     Text(
         text = text,
         modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Body3,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Subtitle1Secondary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
         color = Tokens.TextSecondary.getColor(),
         style = MotsiTheme.textAppearance.Body3,
         maxLines = maxLines,
@@ -20,7 +35,52 @@ fun Subtitle1Primary(
 }
 
 @Composable
+fun Subtitle1PrimaryInverse(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimaryInverse.getColor(),
+        style = MotsiTheme.textAppearance.Body3,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
 fun Subtitle2Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Footnote2,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Subtitle2PrimaryInverse(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimaryInverse.getColor(),
+        style = MotsiTheme.textAppearance.Footnote2,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
+fun Subtitle2Secondary(
     text: String,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
