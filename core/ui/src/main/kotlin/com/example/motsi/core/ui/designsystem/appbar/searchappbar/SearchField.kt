@@ -35,7 +35,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.motsi.core.ui.R
-import com.example.motsi.core.ui.theming.Subtitle1Primary
+import com.example.motsi.core.ui.theming.Subtitle1Secondary
 import com.example.motsi.core.ui.theming.Tokens
 
 @Composable
@@ -114,7 +114,7 @@ fun SearchField(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     if (textFieldValueState.text.isEmpty()) {
-                        Subtitle1Primary(
+                        Subtitle1Secondary(
                             text = hint
                         )
                     }

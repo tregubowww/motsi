@@ -7,7 +7,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import com.example.motsi.core.navigation.models.Destination
-import com.example.motsi.core.navigation.models.NavBottomBarItem
 import com.example.motsi.core.navigation.presentation.FeatureNavEntry
 
 
@@ -16,12 +15,23 @@ val LocalAppNavController = staticCompositionLocalOf<NavHostController> {
 }
 
 @Composable
-fun Navigation(navEntrySet: Set<@JvmSuppressWildcards FeatureNavEntry>, startDestination: Destination, itemsBottomNavBar: List<NavBottomBarItem>) {
+fun Navigation(
+    navEntrySet: Set<@JvmSuppressWildcards FeatureNavEntry>,
+    startDestination: Destination,
+    bottomNavBar: @Composable (NavHostController) -> Unit
+) {
     val navController = rememberNavController()
-    val bottomNavBar: @Composable () -> Unit = { BottomNavBar(navController, itemsBottomNavBar) }
     CompositionLocalProvider(LocalAppNavController provides navController) {
         NavHost(navController = navController, startDestination = startDestination) {
-            navEntrySet.forEach { it.apply { register(bottomNavBar = bottomNavBar) } }
+            navEntrySet.forEach {
+                it.apply {
+                    register(bottomNavBar = {
+                        bottomNavBar.invoke(
+                            navController
+                        )
+                    })
+                }
+            }
         }
     }
 }

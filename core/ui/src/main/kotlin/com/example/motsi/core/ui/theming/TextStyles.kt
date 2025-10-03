@@ -80,6 +80,21 @@ fun Subtitle2PrimaryInverse(
 }
 
 @Composable
+fun Subtitle3PrimaryInverse(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimaryInverse.getColor(),
+        style = MotsiTheme.textAppearance.SpecialCaption,
+        maxLines = maxLines,
+    )
+}
+
+@Composable
 fun Subtitle2Secondary(
     text: String,
     modifier: Modifier = Modifier,

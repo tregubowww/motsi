@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
@@ -13,13 +14,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.example.motsi.core.ui.theming.Subtitle2PrimaryInverse
+import com.example.motsi.core.ui.theming.Subtitle3PrimaryInverse
 
 @Composable
 fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: () -> Unit) {
     Box(
         modifier = modifier
             .background(color, shape = RoundedCornerShape(percent = 50))
+            .sizeIn(minWidth = 15.dp, minHeight = 15.dp)
             .wrapContentSize(Alignment.Center)
             .clip(RoundedCornerShape(percent = 50))
             .clickable(
@@ -28,6 +30,6 @@ fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: ()
             ),
         contentAlignment = Alignment.Center
     ) {
-        Subtitle2PrimaryInverse(text = text, modifier = Modifier.padding(4.dp))
+        Subtitle3PrimaryInverse(text = text, modifier = Modifier.padding(2.dp))
     }
 }
