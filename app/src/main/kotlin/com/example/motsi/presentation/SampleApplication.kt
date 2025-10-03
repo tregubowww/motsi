@@ -1,4 +1,4 @@
-package com.example.motsi
+package com.example.motsi.presentation
 
 import android.app.Application
 import com.example.motsi.core.wrappers.di.WrappersCoreHolder

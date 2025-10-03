@@ -1,4 +1,4 @@
-package com.example.motsi
+package com.example.motsi.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -20,10 +20,12 @@ internal class MainActivity : ComponentActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val api =  application.appComponent
+        val api = application.appComponent
         setContent {
-            val sharedSplashScreenViewModel: SharedSplashScreenViewModel =  viewModel(
-                viewModelStoreOwner =  LocalActivity.current as ComponentActivity,
+            val viewModel: MainViewModel = viewModel(factory = api.viewModelFactory())
+            viewModel.initViewModel()
+            val sharedSplashScreenViewModel: SharedSplashScreenViewModel = viewModel(
+                viewModelStoreOwner = LocalActivity.current as ComponentActivity,
                 factory = api.viewModelFactory()
             )
 
@@ -35,7 +37,7 @@ internal class MainActivity : ComponentActivity() {
                 Navigation(
                     navEntrySet = api.navManager().featureNavEntrySet,
                     startDestination = api.navManager().startDestination,
-                    itemsBottomNavBar = api.navManager().getNavBottomBarItem()
+                    bottomNavBar = { navController -> BottomNavBarWidget(navController, viewModel) }
                 )
             }
         }
