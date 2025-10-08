@@ -25,6 +25,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.motsi.core.ui.designsystem.badge.Badge
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.feature.addsportactivity.api.AddSportActivityGraph
 import com.example.motsi.feature.search.api.SearchGraph
 import com.example.motsi.messages.api.MessagesGraph
 
@@ -58,7 +59,7 @@ internal fun BottomNavBarWidget(
         )
         BottomBarIcon(
             navController = navController,
-            route = MessagesGraph,
+            route = AddSportActivityGraph,
             icon = com.example.motsi.core.ui.R.drawable.ic_add_fill_24dp,
             badge = null
         )

@@ -103,14 +103,14 @@ private fun Success(
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            ListActivity(viewModel)
+            ListSportActivity(viewModel)
         }
     }
 
 }
 
 @Composable
-private fun ListActivity(viewModel: SearchViewModel) {
+private fun ListSportActivity(viewModel: SearchViewModel) {
     val listActivityState by viewModel.listActivityState.collectAsState()
     val navController = LocalAppNavController.current
     when (val state = listActivityState.loadingState) {

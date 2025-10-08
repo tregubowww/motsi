@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class SearchTip(
+data class SearchSportActivityTip(
     val type: String,
     val value: String,
     val tipTitle: String,

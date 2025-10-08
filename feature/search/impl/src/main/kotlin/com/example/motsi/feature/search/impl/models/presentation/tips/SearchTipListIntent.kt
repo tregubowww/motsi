@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 
 internal sealed class SearchTipListIntent {
 
-    data class LoadTipList(
+    data class OnSearchQueryChange(
         val searchQuery: String
     ) : SearchTipListIntent()
 

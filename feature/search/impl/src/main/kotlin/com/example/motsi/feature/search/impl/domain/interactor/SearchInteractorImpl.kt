@@ -3,9 +3,9 @@ package com.example.motsi.feature.search.impl.domain.interactor
 import com.example.motsi.core.common.models.data.ResultWrapper
 import com.example.motsi.core.network.models.domain.MotsiError
 import com.example.motsi.feature.search.impl.domain.repository.SearchRepository
-import com.example.motsi.feature.search.impl.models.domain.SearchListActivityModel
+import com.example.motsi.feature.search.impl.models.domain.SearchListSportActivityModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
-import com.example.motsi.feature.search.impl.models.domain.SearchTip
+import com.example.motsi.feature.search.impl.models.domain.SearchSportActivityTip
 import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import kotlinx.collections.immutable.persistentListOf
@@ -22,22 +22,22 @@ internal class SearchInteractorImpl @Inject constructor(private val repository: 
         )
 
 
-    override suspend fun getActivityList(filterData: SearchDestination.SearchFilterData): ResultWrapper<SearchListActivityModel, MotsiError>{
+    override suspend fun getSportActivityList(filterData: SearchDestination.SearchFilterData): ResultWrapper<SearchListSportActivityModel, MotsiError>{
 //        = repository.getSearchList()
         return  ResultWrapper.Success(
-            SearchListActivityModel(
+            SearchListSportActivityModel(
                 searchQuery = null,
                 searchHint = "Поиск в Москве",
                 recommendationActivityList = persistentListOf(),
                 historyTipList = persistentListOf(
-                    SearchTip(
+                    SearchSportActivityTip(
                         type = "вид спорта",
                         value = "футбол",
                         tipTitle = "игра мини футбол",
                         сategoryTitle = "футбол",
                         icon = "ic_clock_history_20"
                     ),
-                    SearchTip(
+                    SearchSportActivityTip(
                         type = "вид спорта",
                         value = "баскетбол",
                         tipTitle = "игра стритбол",
@@ -53,21 +53,21 @@ internal class SearchInteractorImpl @Inject constructor(private val repository: 
         return ResultWrapper.Success(
             SearchTipsListModel(
                 tipList = persistentListOf(
-                    SearchTip(
+                    SearchSportActivityTip(
                         type = "вид спорта",
                         value = "футбол",
                         tipTitle = "игра мини футбол",
                         сategoryTitle = "футбол",
                         icon = "ic_search_20"
                     ),
-                    SearchTip(
+                    SearchSportActivityTip(
                         type = "вид спорта",
                         value = "баскетбол",
                         tipTitle = "игра стритбол",
                         сategoryTitle = "баскетбол",
                         icon = "ic_search_20"
                     ),
-                    SearchTip(
+                    SearchSportActivityTip(
                         type = "вид спорта",
                         value = "теннис",
                         tipTitle = "теннис",

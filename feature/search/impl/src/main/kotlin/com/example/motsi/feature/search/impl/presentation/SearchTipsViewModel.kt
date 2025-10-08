@@ -5,10 +5,10 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.feature.search.impl.domain.interactor.SearchInteractor
+import com.example.motsi.feature.search.impl.models.domain.SearchSportActivityTip
 import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
-import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListIntent
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListState
 import kotlinx.collections.immutable.toImmutableList
@@ -16,6 +16,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,25 +32,44 @@ internal class SearchTipsViewModel @Inject constructor(
     private val _tipListState =
         MutableStateFlow(SearchTipListState(loadingState = LoadingState.Loading))
 
-    fun onSearchQueryChange(text: String) {
-        _searchQuery.value = text
-    }
+    private var historyTipList: List<SearchSportActivityTip> = emptyList()
 
-    fun initViewModel(entryData: SearchTipsDestination.EntryData){
+    fun initViewModel(entryData: SearchTipsDestination.EntryData) {
+        viewModelScope.launch {
+            _searchQuery
+                .debounce(DEBOUNCE)
+                .mapLatest { query ->
+                    if (query.isNotEmpty()) {
+                        interactor.getTipList(query).handleState()
+                    } else {
+                        LoadingState.Success(SearchTipsListModel(tipList = historyTipList.toImmutableList()))
+                    }
+                }
+                .collect { loadingState ->
+                    _tipListState.value = SearchTipListState(loadingState = loadingState)
+                }
+        }
         _tipListState.value = SearchTipListState(
             loadingState = LoadingState.Success(data = SearchTipsListModel(tipList = entryData.historyTipList.toImmutableList()))
         )
-        getSearchTips(entryData.searchQuery.orEmpty())
+        entryData.searchQuery?.let {
+            viewModelScope.launch {
+                delay(2000)
+                _tipListState.value =
+                    SearchTipListState(
+                        loadingState = interactor.getTipList(it).handleState()
+                    )
+            }
+        }
     }
-
-
 
 
     fun onTipListIntent(intent: SearchTipListIntent) {
         when (intent) {
-            is SearchTipListIntent.LoadTipList -> {
-                getSearchTips(intent.searchQuery)
+            is SearchTipListIntent.OnSearchQueryChange -> {
+                _searchQuery.value = intent.searchQuery
             }
+
             is SearchTipListIntent.TipClick -> {
                 intent.navController.popBackStack()
                 intent.navController.navigate(
@@ -62,23 +83,18 @@ internal class SearchTipsViewModel @Inject constructor(
                     launchSingleTop = true
                 }
             }
+
             is SearchTipListIntent.BackClick -> {
                 intent.navController.popBackStack()
             }
         }
     }
 
-    private fun getSearchTips(searchQuery: String) {
-        viewModelScope.launch {
-            delay(2000)
-            _tipListState.value =
-                SearchTipListState(
-                    loadingState = interactor.getTipList(searchQuery).handleState()
-                )
-        }
+    override fun onRelease() {
+        //nothing
     }
 
-    override fun onRelease(){
-        //nothing
+    private companion object {
+        const val DEBOUNCE = 500L
     }
 }

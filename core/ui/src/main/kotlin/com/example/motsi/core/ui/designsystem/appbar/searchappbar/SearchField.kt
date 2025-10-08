@@ -164,7 +164,7 @@ private fun ClearButton(
             Icon(
                 modifier = Modifier
                     .padding(end = 16.dp),
-                painter = painterResource(id = R.drawable.ic_cross_20dp),
+                painter = painterResource(id = R.drawable.ic_cross_outline_24dp),
                 contentDescription = null,
                 tint = Tokens.IconPrimary.getColor()
             )

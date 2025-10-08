@@ -22,10 +22,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "motsi"
 include(":app")
-include(":feature:search:api")
-include(":feature:search:impl")
+include(":feature:addsportactivity:api")
+include(":feature:addsportactivity:impl")
 include(":feature:activitydetails:api")
 include(":feature:activitydetails:impl")
+include(":feature:search:api")
+include(":feature:search:impl")
 include(":feature:messages:api")
 include(":feature:messages:impl")
 include(":core:ui")
@@ -34,3 +36,4 @@ include(":core:network")
 include(":core:navigation")
 include(":core:di")
 include(":core:wrappers")
+

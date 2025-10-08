@@ -1,6 +1,6 @@
 package com.example.motsi.feature.search.impl.models.presentation
 
-import com.example.motsi.feature.search.impl.models.domain.SearchTip
+import com.example.motsi.feature.search.impl.models.domain.SearchSportActivityTip
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -24,6 +24,6 @@ internal data class SearchTipsDestination(
     data class EntryData(
         val searchQuery: String?,
         val searchHint: String,
-        val historyTipList: List<SearchTip>,
+        val historyTipList: List<SearchSportActivityTip>,
     )
 }

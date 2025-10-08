@@ -41,7 +41,7 @@ internal class SearchViewModel @Inject constructor(
             launch {
                 _listActivityState.value =
                     SearchListActivityState(
-                        loadingState = interactor.getActivityList().handleState()
+                        loadingState = interactor.getSportActivityList().handleState()
                     )
             }
         }
@@ -76,7 +76,7 @@ internal class SearchViewModel @Inject constructor(
                 viewModelScope.launch {
                     _listActivityState.value =
                         SearchListActivityState(
-                            loadingState = interactor.getActivityList(filterData = intent.filterData)
+                            loadingState = interactor.getSportActivityList(filterData = intent.filterData)
                                 .handleState()
                         )
                 }
