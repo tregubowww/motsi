@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.example.motsi.core.ui.theming.Subtitle2PrimaryInverse
+import com.example.motsi.core.ui.theming.Footnote2PrimaryInverse
 
 @Composable
 fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: () -> Unit) {
@@ -28,6 +28,6 @@ fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: ()
             ),
         contentAlignment = Alignment.Center
     ) {
-        Subtitle2PrimaryInverse(text = text, modifier = Modifier.padding(4.dp))
+        Footnote2PrimaryInverse(text = text, modifier = Modifier.padding(4.dp))
     }
 }

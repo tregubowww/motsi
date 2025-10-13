@@ -4,6 +4,9 @@ import android.app.Application
 import com.example.motsi.core.wrappers.di.WrappersCoreHolder
 import com.example.motsi.di.AppComponent
 import com.example.motsi.di.DaggerAppComponent
+import com.yandex.mapkit.MapKitFactory
+import com.example.motsi.app.BuildConfig
+
 
 class SampleApplication : Application() {
 
@@ -17,6 +20,9 @@ class SampleApplication : Application() {
             .application(this)
             .build()
         WrappersCoreHolder.init(appComponent)
+
+        MapKitFactory.setApiKey(BuildConfig.MAPKIT_API_KEY)
+        MapKitFactory.initialize(this)
     }
 }
 

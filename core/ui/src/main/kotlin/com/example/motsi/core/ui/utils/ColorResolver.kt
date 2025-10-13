@@ -7,10 +7,9 @@ import com.example.motsi.core.ui.theming.Tokens
 fun String.toColor(): Tokens =
     colors[this] ?: Tokens.Background
 
-
 private val colors: Map<String, Tokens> = mapOf(
     "icon_primary_color" to Tokens.IconPrimary,
-    "icon_brand_color" to Tokens.IconBrand,
+    "icon_brand1_color" to Tokens.IconBrand1,
     "background_secondary_color" to Tokens.BackgroundSecondary,
     "text_secondary_color" to Tokens.TextSecondary
 )

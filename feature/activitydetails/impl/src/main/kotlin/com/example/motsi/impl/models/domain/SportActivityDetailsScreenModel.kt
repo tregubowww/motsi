@@ -10,8 +10,8 @@ internal data class SportActivityDetailsScreenModel(
     val isFavorites: Boolean,
     val level: Level?,
     val participantList: ImmutableList<Participant>,
-    val  privateStatus: PrivateStatus,
-    val  buttons: Buttons
+    val privateStatus: PrivateStatus,
+    val buttons: Buttons
 
     ) {
     data class Participant(

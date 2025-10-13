@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.theming.ColorToken
-import com.example.motsi.core.ui.theming.Subtitle1PrimaryInverse
+import com.example.motsi.core.ui.theming.Body3PrimaryInverse
 
 @Composable
 fun BaseButton(
@@ -39,6 +39,6 @@ fun BaseButton(
         ,
         contentAlignment = Alignment.Center
     ) {
-        Subtitle1PrimaryInverse( text = text)
+        Body3PrimaryInverse( text = text)
     }
 }

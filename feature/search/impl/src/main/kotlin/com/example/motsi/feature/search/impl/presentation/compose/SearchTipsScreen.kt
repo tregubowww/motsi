@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -31,9 +32,9 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchField
-import com.example.motsi.core.ui.theming.Subtitle2Primary
-import com.example.motsi.core.ui.theming.SubtitleBrand
-import com.example.motsi.core.ui.theming.Title2Primary
+import com.example.motsi.core.ui.theming.Footnote2Primary
+import com.example.motsi.core.ui.theming.Body3Brand
+import com.example.motsi.core.ui.theming.Footnote1Primary
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.LifecycleEffect
 import com.example.motsi.core.ui.utils.toIconRes
@@ -92,7 +93,7 @@ internal fun SearchTipsScreen(
                                 },
                                 icon = item.icon.toIconRes(),
                                 title = item.tipTitle,
-                                subtitle = item.сategoryTitle,
+                                subtitle = item.categoryTitle,
                                 isDividerVisible = index != state.data.tipList.lastIndex
                             )
                         }
@@ -143,7 +144,7 @@ private fun TipListAppBar(
             }
         )
 
-        SubtitleBrand(
+        Body3Brand(
             modifier = Modifier
                 .padding(end = 16.dp)
                 .clickable(onClick = {
@@ -184,14 +185,15 @@ private fun TipField(
                 .weight(1f)
                 .padding(horizontal = 16.dp)
         ) {
-            Title2Primary(text = title, maxLines = 2)
+            Footnote1Primary(text = title, maxLines = 2)
             if (subtitle != null) {
-                Subtitle2Primary(text = subtitle, maxLines = 1)
+                Footnote2Primary(text = subtitle, maxLines = 1)
             }
         }
 
         Icon(
-            painter = painterResource(id = R.drawable.ic_arrow_forward_14dp),
+            modifier = Modifier.size(14.dp),
+            painter = painterResource(id = R.drawable.ic_arrow_forward_outline_24dp),
             tint = Tokens.IconPrimary.getColor(),
             contentDescription = null,
         )

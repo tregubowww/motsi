@@ -17,7 +17,6 @@ import com.example.motsi.feature.search.api.SearchGraph
 import com.example.motsi.feature.search.impl.di.SearchHolder
 import com.example.motsi.feature.search.impl.di.SearchInternalApi
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
-import com.example.motsi.feature.search.impl.models.presentation.SearchDestination.SearchFilterData
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
 import com.example.motsi.feature.search.impl.presentation.compose.SearchScreen
 import com.example.motsi.feature.search.impl.presentation.compose.SearchTipsScreen
@@ -35,8 +34,8 @@ class SearchNavEntry @Inject constructor() : FeatureNavEntry {
                 val factory = api.viewModelFactory()
 
 //                костыль для сериализации SearchFilterData может быть в более новых версиях compose navigation  поправится и добавится возможность использовать разные типы
-                val searchFilterDataNavType = MotsiNavType(SearchFilterData.serializer())
-                composable<SearchDestination>( typeMap = mapOf(typeOf<SearchFilterData>() to searchFilterDataNavType)) { entry ->
+                val searchFilterDataNavType = MotsiNavType(SearchDestination.SearchFilterData.serializer())
+                composable<SearchDestination>( typeMap = mapOf(typeOf<SearchDestination.SearchFilterData>() to searchFilterDataNavType)) { entry ->
 
                     val args = entry.toRoute<SearchDestination>()
                     val viewModel: SearchViewModel = viewModel(factory = factory)

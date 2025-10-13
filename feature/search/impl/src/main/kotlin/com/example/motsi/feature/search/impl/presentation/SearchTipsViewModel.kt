@@ -8,7 +8,6 @@ import com.example.motsi.feature.search.impl.domain.interactor.SearchInteractor
 import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
-import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListIntent
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListState
 import kotlinx.collections.immutable.toImmutableList
@@ -40,9 +39,6 @@ internal class SearchTipsViewModel @Inject constructor(
         )
         getSearchTips(entryData.searchQuery.orEmpty())
     }
-
-
-
 
     fun onTipListIntent(intent: SearchTipListIntent) {
         when (intent) {

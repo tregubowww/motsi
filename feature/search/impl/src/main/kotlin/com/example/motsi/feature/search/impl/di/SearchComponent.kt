@@ -9,7 +9,7 @@ import dagger.Component
     dependencies = [NetworkApi::class, ],
     modules = [SearchModule::class, SearchViewModelModule::class]
 )
-internal interface SearchComponent : SearchInternalApi {
+internal interface  SearchComponent : SearchInternalApi {
 
     @Component.Factory
     interface Factory {

@@ -20,7 +20,7 @@ internal class SportActivityDetailsInteractorImpl @Inject constructor(
                 typeSportActivityDescription = "3 по 1км по 3:30 через 2 мин трусцы ",
                 isFavorites = true,
                 dateText = "18 августа 14:00",
-                level = SportActivityDetailsScreenModel.Level(text = "3.5", color = "icon_brand_color"),
+                level = SportActivityDetailsScreenModel.Level(text = "3.5", color = "icon_brand1_color"),
                 buttons = SportActivityDetailsScreenModel.Buttons(titleChat = "Чат", titleAddSportActivity = "Участвовать"),
                 participantList = persistentListOf(
                     Participant(

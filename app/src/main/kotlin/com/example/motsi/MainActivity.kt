@@ -14,6 +14,7 @@ import com.example.motsi.core.navigation.presentation.compose.Navigation
 import com.example.motsi.core.ui.theming.MotsiTheme
 
 internal class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         val splashScreen = installSplashScreen()
         enableEdgeToEdge()

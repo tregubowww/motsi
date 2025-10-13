@@ -35,10 +35,10 @@ import com.example.motsi.core.ui.designsystem.appbar.searchappbar.AppBarAction
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.BaseAppBar
 import com.example.motsi.core.ui.designsystem.badge.Badge
 import com.example.motsi.core.ui.designsystem.buttons.BaseButton
-import com.example.motsi.core.ui.theming.Subtitle1Primary
-import com.example.motsi.core.ui.theming.Subtitle1Secondary
+import com.example.motsi.core.ui.theming.Body3Primary
+import com.example.motsi.core.ui.theming.Footnote2Secondary
 import com.example.motsi.core.ui.theming.Title1Primary
-import com.example.motsi.core.ui.theming.Title2Primary
+import com.example.motsi.core.ui.theming.Footnote1Primary
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.LifecycleEffect
 import com.example.motsi.core.ui.utils.toColor
@@ -92,14 +92,14 @@ private fun Success(
         topBar = {
             BaseAppBar(
                 navigationItem = AppBarAction(
-                    iconRes = R.drawable.ic_back_24,
+                    iconRes = R.drawable.ic_back_outline_24dp,
                     iconTint = Tokens.IconPrimary.getColor(),
                     onClick = { navController.popBackStack() }
                 ),
                 actions = setOf(
                     AppBarAction(
                         iconRes =
-                            R.drawable.ic_send_filled_outlined,
+                            R.drawable.ic_send_outline_24dp,
                         iconTint =
                             Tokens.IconPrimary.getColor(),
                         onClick = { viewModel.onScreenIntent(SportActivityDetailsScreenIntent.SendSportActivity) }
@@ -188,16 +188,16 @@ private fun Success(
                 }
             }
 
-            Title2Primary(
+            Footnote1Primary(
                 text = model.typeSportActivity,
                 maxLines = 1,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            Subtitle1Primary(
+            Body3Primary(
                 text = model.typeSportActivityDescription,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            Subtitle1Secondary(
+            Footnote2Secondary(
                 text = model.dateText,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )

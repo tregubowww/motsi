@@ -11,19 +11,21 @@ android {
 
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     defaultConfig {
         applicationId = libs.versions.applicationId.get()
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+        val mapkitApiKey: String = project.findProperty("MAPKIT_API_KEY") as String
+        buildConfigField("String", "MAPKIT_API_KEY", "\"$mapkitApiKey\"")
+        buildTypes {
+            release {
+                isMinifyEnabled = false
+                proguardFiles(
+                    getDefaultProguardFile("proguard-android-optimize.txt"),
+                    "proguard-rules.pro"
+                )
+            }
         }
-    }
     }
 }
 
@@ -38,6 +40,9 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.material3)
     testImplementation(libs.junit)
+
+    //Maps mobile for integration
+    implementation(libs.maps.mobile)
 
     // регион core
     implementation(project(":core:wrappers"))
