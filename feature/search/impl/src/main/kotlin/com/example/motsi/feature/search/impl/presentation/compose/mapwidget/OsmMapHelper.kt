@@ -115,7 +115,7 @@ internal fun MapView.updateActivityMarkers(
             id = MarkerTypeId.SPORT_ACTIVITY.name
         }
 
-        // Сперка рисуются маркеры активностей
+        // Сперва рисуются маркеры активностей
         overlays.add(marker)
 
 
