@@ -10,8 +10,8 @@ import javax.inject.Singleton
 
 
 @Singleton
-@Component(modules = [LauncherModule::class, MainViewModelModule::class, MainModule::class])
-interface AppComponent: AppDeps {
+@Component(modules = [AppModule::class, LauncherModule::class, MainViewModelModule::class, MainActivityModule::class])
+interface AppComponent : AppDeps {
 
     fun viewModelFactory(): ViewModelProvider.Factory
     fun navManager(): NavManager

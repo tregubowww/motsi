@@ -3,6 +3,7 @@ package com.example.motsi.core.ui.designsystem.badge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.wrapContentSize
@@ -14,10 +15,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.example.motsi.core.ui.theming.Subtitle3PrimaryInverse
+import com.example.motsi.core.ui.theming.Footnote2PrimaryInverse
 
 @Composable
-fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: () -> Unit) {
+fun Badge(
+    modifier: Modifier = Modifier,
+    color: Color,
+    text: String,
+    onClick: () -> Unit = {},
+    contentPadding: PaddingValues = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
+) {
     Box(
         modifier = modifier
             .background(color, shape = RoundedCornerShape(percent = 50))
@@ -30,6 +37,6 @@ fun Badge(modifier: Modifier = Modifier, color: Color, text: String, onClick: ()
             ),
         contentAlignment = Alignment.Center
     ) {
-        Subtitle3PrimaryInverse(text = text, modifier = Modifier.padding(2.dp))
+        Footnote2PrimaryInverse(text = text, modifier = Modifier.padding(contentPadding))
     }
 }

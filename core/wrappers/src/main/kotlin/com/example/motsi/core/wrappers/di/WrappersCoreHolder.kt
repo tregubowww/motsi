@@ -7,7 +7,9 @@ object WrappersCoreHolder : InitWithDepsHolder<WrappersCoreApi, AppDeps>() {
 
     override fun create(deps: AppDeps): WrappersCoreApi {
         return DaggerWrapperCoreComponent.factory().create(
-            application = deps.application
+            application = deps.application,
+            context = deps.context,
+            preferences = deps.preferences
         )
     }
 }

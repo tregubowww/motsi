@@ -13,10 +13,11 @@ dependencies {
     implementation (libs.dagger)
     ksp (libs.dagger.compiler)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.org.osmdroid)
+    implementation(libs.services.location)
+    implementation(libs.play.services.tasks)
 
 
     implementation(project(":core:di"))
-//    ksp(project(":core:di"))
-
-//    implementation(project(":core:common"))
+    implementation(project(":core:common"))
 }

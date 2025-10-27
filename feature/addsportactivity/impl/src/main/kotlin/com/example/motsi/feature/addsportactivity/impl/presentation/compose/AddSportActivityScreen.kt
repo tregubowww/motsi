@@ -23,7 +23,7 @@ internal fun AddSportActivityScreen(
         topBar = {
             BaseAppBar(
                 navigationItem = AppBarAction(
-                    iconRes = R.drawable.ic_cross_outline_24dp,
+                    iconRes = R.drawable.ic_cross_24dp,
                     iconTint = Tokens.IconPrimary.getColor(),
                     onClick = { navController.popBackStack() }
                 ),

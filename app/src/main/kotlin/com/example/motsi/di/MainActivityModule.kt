@@ -7,7 +7,7 @@ import dagger.Provides
 
 
 @Module
-internal class MainModule
+internal class MainActivityModule
 {
     @Provides
     fun provideMainInteractor(): MainInteractor =

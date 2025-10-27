@@ -27,10 +27,10 @@ import com.example.motsi.core.navigation.presentation.compose.LocalAppNavControl
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchField
 import com.example.motsi.core.ui.designsystem.fields.BaseIconTextField
-import com.example.motsi.core.ui.theming.SubtitleBrand
+import com.example.motsi.core.ui.theming.AppResources
+import com.example.motsi.core.ui.theming.Body3Brand
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.LifecycleEffect
-import com.example.motsi.core.ui.utils.toIconRes
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListIntent
 import com.example.motsi.feature.search.impl.presentation.SearchTipsViewModel
@@ -84,9 +84,9 @@ internal fun SearchTipsScreen(
                                         )
                                     )
                                 },
-                                icon = item.icon.toIconRes(),
+                                icon =  AppResources.iconRes(item.icon),
                                 title = item.tipTitle,
-                                subtitle = item.сategoryTitle,
+                                subtitle = item.categoryTitle,
                                 isDividerVisible = index != state.data.tipList.lastIndex
                             )
                         }
@@ -137,7 +137,7 @@ private fun TipListAppBar(
             }
         )
 
-        SubtitleBrand(
+        Body3Brand(
             modifier = Modifier
                 .padding(end = 16.dp)
                 .clickable(onClick = {
@@ -149,4 +149,3 @@ private fun TipListAppBar(
         )
     }
 }
-

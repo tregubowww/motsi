@@ -22,10 +22,10 @@ import com.example.motsi.core.ui.designsystem.appbar.searchappbar.BaseAppBar
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchField
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.LifecycleEffect
-import com.example.motsi.core.ui.utils.toIconRes
 import com.example.motsi.feature.addsportactivity.impl.models.domain.ChoiceTypeSportModel
 import com.example.motsi.feature.addsportactivity.impl.models.presentation.ChoiceTypeSportScreenIntent
 import com.example.motsi.core.ui.designsystem.fields.BaseIconTextField
+import com.example.motsi.core.ui.theming.AppResources
 
 
 @Composable
@@ -75,7 +75,7 @@ private fun Success(
             BaseAppBar(
                 modifier = Modifier.background(color = Tokens.Background.getColor()),
                 navigationItem = AppBarAction(
-                    iconRes = R.drawable.ic_cross_outline_24dp,
+                    iconRes = R.drawable.ic_cross_24dp,
                     iconTint = Tokens.IconPrimary.getColor(),
                     onClick = { navController.popBackStack() }
                 ),
@@ -122,7 +122,7 @@ private fun Success(
                                     ChoiceTypeSportScreenIntent.ClickTypeSportField(name = item.name)
                                 )
                             },
-                            icon = item.icon.toIconRes(),
+                            icon = AppResources.iconRes(item.icon),
                             title = item.name,
                             subtitle = item.sportGroup,
                             isDividerVisible = index != model.listTypeSport.lastIndex

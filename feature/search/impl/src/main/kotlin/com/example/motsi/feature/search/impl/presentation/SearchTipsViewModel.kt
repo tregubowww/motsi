@@ -5,7 +5,7 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.feature.search.impl.domain.interactor.SearchInteractor
-import com.example.motsi.feature.search.impl.models.domain.SearchSportActivityTip
+import com.example.motsi.feature.search.impl.models.domain.SearchTip
 import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
@@ -32,7 +32,7 @@ internal class SearchTipsViewModel @Inject constructor(
     private val _tipListState =
         MutableStateFlow(SearchTipListState(loadingState = LoadingState.Loading))
 
-    private var historyTipList: List<SearchSportActivityTip> = emptyList()
+    private var historyTipList: List<SearchTip> = emptyList()
 
     fun initViewModel(entryData: SearchTipsDestination.EntryData) {
         viewModelScope.launch {
