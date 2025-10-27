@@ -23,11 +23,7 @@ class MessagesLauncher @Inject constructor() : FeatureNavEntry {
             val api = DaggerMessagesComponent.builder().build()
 
             composable<MessagesDestination> {
-                val viewModel = injectedViewModel { api.viewModel }
-                MessagesScreen(
-                    viewModel = viewModel,
-                    bottomNavBar
-                )
+
             }
         }
     }

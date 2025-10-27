@@ -13,7 +13,8 @@ dependencies {
     api(project(":feature::search:api"))
     implementation(project(":feature:activitydetails:api"))
 
-    implementation(libs.maps.mobile)
+    implementation(libs.org.osmdroid)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.preference.ktx)
 }

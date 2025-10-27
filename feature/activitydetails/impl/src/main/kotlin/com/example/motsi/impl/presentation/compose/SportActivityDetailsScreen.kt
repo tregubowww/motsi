@@ -35,14 +35,13 @@ import com.example.motsi.core.ui.designsystem.appbar.searchappbar.AppBarAction
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.BaseAppBar
 import com.example.motsi.core.ui.designsystem.badge.Badge
 import com.example.motsi.core.ui.designsystem.buttons.BaseButton
-import com.example.motsi.core.ui.theming.Subtitle1Primary
-import com.example.motsi.core.ui.theming.Subtitle1Secondary
+import com.example.motsi.core.ui.theming.AppResources
+import com.example.motsi.core.ui.theming.Body3Primary
+import com.example.motsi.core.ui.theming.Footnote2Secondary
 import com.example.motsi.core.ui.theming.Title1Primary
-import com.example.motsi.core.ui.theming.Title2Primary
+import com.example.motsi.core.ui.theming.Footnote1Primary
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.LifecycleEffect
-import com.example.motsi.core.ui.utils.toColor
-import com.example.motsi.core.ui.utils.toIconRes
 import com.example.motsi.impl.models.domain.SportActivityDetailsScreenModel
 import com.example.motsi.impl.models.presentation.SportActivityDetailsScreenIntent
 import com.example.motsi.impl.presentation.SportActivityDetailsViewModel
@@ -92,14 +91,14 @@ private fun Success(
         topBar = {
             BaseAppBar(
                 navigationItem = AppBarAction(
-                    iconRes = R.drawable.ic_back_24,
+                    iconRes = R.drawable.ic_back_24dp,
                     iconTint = Tokens.IconPrimary.getColor(),
                     onClick = { navController.popBackStack() }
                 ),
                 actions = setOf(
                     AppBarAction(
                         iconRes =
-                            R.drawable.ic_send_filled_outlined,
+                            R.drawable.ic_send_24dp,
                         iconTint =
                             Tokens.IconPrimary.getColor(),
                         onClick = { viewModel.onScreenIntent(SportActivityDetailsScreenIntent.SendSportActivity) }
@@ -108,7 +107,7 @@ private fun Success(
                         iconRes = if (screenState.isFavorites) {
                             R.drawable.ic_like_fill_24dp
                         } else {
-                            R.drawable.ic_like_outline_24dp
+                            R.drawable.ic_like_24dp
                         },
                         iconTint = if (screenState.isFavorites) {
                             Tokens.IconFavorites.getColor()
@@ -142,8 +141,6 @@ private fun Success(
                             .padding(4.dp)
                             .clip(RoundedCornerShape(16.dp))
                             .background(Tokens.BackgroundSecondary.getColor()),
-//                        error = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp),
-//                        placeholder = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp)
                     )
                 }
             }
@@ -162,7 +159,7 @@ private fun Success(
                 if (model.privateStatus is SportActivityDetailsScreenModel.PrivateStatus.Private) {
                     Row(modifier = Modifier.padding(horizontal = 8.dp)) {
                         Icon(
-                            painter = painterResource(model.privateStatus.icon.toIconRes()),
+                            painter = AppResources.icon(model.privateStatus.icon),
                             contentDescription = null,
                             tint = Tokens.IconPrimary.getColor(),
                             modifier = Modifier
@@ -179,7 +176,7 @@ private fun Success(
                 }
                 if (model.level != null) {
                     Badge(
-                        color = model.level.color.toColor().getColor(),
+                        color =  AppResources.color(model.level.color),
                         text = model.level.text,
                         onClick = {
                             viewModel.onScreenIntent(SportActivityDetailsScreenIntent.ShowInfoLevelSportActivity)
@@ -188,16 +185,16 @@ private fun Success(
                 }
             }
 
-            Title2Primary(
+            Footnote1Primary(
                 text = model.typeSportActivity,
                 maxLines = 1,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            Subtitle1Primary(
+            Body3Primary(
                 text = model.typeSportActivityDescription,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )
-            Subtitle1Secondary(
+            Footnote2Secondary(
                 text = model.dateText,
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 4.dp)
             )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -24,18 +25,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.TextRange
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.motsi.core.ui.R
-import com.example.motsi.core.ui.theming.Subtitle1Secondary
+import com.example.motsi.core.ui.theming.MotsiTheme
+import com.example.motsi.core.ui.theming.Body3Secondary
 import com.example.motsi.core.ui.theming.Tokens
 
 @Composable
@@ -48,20 +50,21 @@ fun SearchField(
     isNeedToFocused: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
     onCloseClick: () -> Unit = {},
+    onSearchFieldClick: () -> Unit = {},
     onKeyboardSearchButtonClick: (String) -> Unit = {},
     onFilterClick: () -> Unit = {}
 ) {
     val focusRequester = remember { FocusRequester() }
-    var textFieldValueState by remember {
-        mutableStateOf(TextFieldValue(text = query))
+    var textFieldValue by remember { mutableStateOf(TextFieldValue(query)) }
+
+    // Синхронизация с внешним состоянием query
+    LaunchedEffect(query) {
+        if (query != textFieldValue.text) {
+            textFieldValue = TextFieldValue(query, TextRange(query.length))
+        }
     }
 
-    // Поддержка внешнего обновления query
-    if (textFieldValueState.text != query) {
-        textFieldValueState =
-            textFieldValueState.copy(text = query, selection = TextRange(query.length))
-    }
-
+    // Фокусировка при первом появлении
     LaunchedEffect(isNeedToFocused) {
         if (isNeedToFocused) {
             focusRequester.requestFocus()
@@ -72,25 +75,30 @@ fun SearchField(
         modifier = modifier
             .testTag("SearchField")
             .fillMaxSize()
-            .background(
-                color = Tokens.BackgroundSecondary.getColor(),
-                shape = RoundedCornerShape(12.dp)
-            ),
+            .clip(RoundedCornerShape(12.dp))
+            .clickable(
+                onClick = onSearchFieldClick,
+                role = Role.Button
+            )
+            .background(Tokens.BackgroundSecondary.getColor()),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            modifier = Modifier.padding(start = 16.dp),
-            painter = painterResource(R.drawable.ic_search_20dp),
+            painter = painterResource(R.drawable.ic_search_24dp),
             contentDescription = null,
-            tint = if (textFieldValueState.text.isEmpty()) {
+            tint = if (textFieldValue.text.isEmpty())
                 Tokens.IconSecondary.getColor()
-            } else Tokens.IconPrimaryReverse.getColor()
+            else
+                Tokens.IconPrimaryReverse.getColor(),
+            modifier = Modifier
+                .padding(start = 16.dp)
+                .size(20.dp)
         )
 
         BasicTextField(
-            value = textFieldValueState,
+            value = textFieldValue,
             onValueChange = {
-                textFieldValueState = it
+                textFieldValue = it
                 onTextChange(it.text)
             },
             modifier = Modifier
@@ -99,74 +107,65 @@ fun SearchField(
                 .focusRequester(focusRequester),
             enabled = isEnabled,
             singleLine = true,
-            // Почему не нашa текстовка?
-            textStyle = TextStyle(
-                fontSize = 18.sp,
-                color = Tokens.TextPrimary.getColor()
-            ),
+            textStyle = MotsiTheme.textAppearance.Body2.copy(color = Tokens.TextPrimary.getColor()),
             keyboardOptions = keyboardOptions,
             keyboardActions = KeyboardActions(
-                onSearch = { onKeyboardSearchButtonClick(query) }
+                onSearch = {
+                    onKeyboardSearchButtonClick(textFieldValue.text)
+                }
             ),
             decorationBox = { innerTextField ->
                 Box(
                     contentAlignment = Alignment.CenterStart,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    if (textFieldValueState.text.isEmpty()) {
-                        Subtitle1Secondary(
-                            text = hint
-                        )
+                    if (textFieldValue.text.isEmpty()) {
+                        Body3Secondary(text = hint)
                     }
                     innerTextField()
                 }
             }
         )
 
-        AnimatedVisibility(visible = textFieldValueState.text.isNotEmpty() && isEnabled) {
+        AnimatedVisibility(
+            visible = textFieldValue.text.isNotEmpty() && isEnabled
+        ) {
             ClearButton(
-                text = textFieldValueState.text,
-                onTextChange = onTextChange,
-                onCloseClick = onCloseClick
+                onClear = {
+                    textFieldValue = TextFieldValue("")
+                    onTextChange("")
+                    onCloseClick()
+                }
             )
         }
 
         if (!isEnabled) {
             Icon(
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .clickable(onClick = onFilterClick),
                 painter = painterResource(R.drawable.ic_filter_24dp),
                 contentDescription = null,
                 tint = Tokens.IconPrimary.getColor(),
+                modifier = Modifier
+                    .padding(horizontal = 16.dp)
+                    .clickable(onClick = onFilterClick)
             )
         }
     }
 }
 
 @Composable
-private fun ClearButton(
-    text: String,
-    onTextChange: (String) -> Unit,
-    onCloseClick: () -> Unit,
-) {
+private fun ClearButton(onClear: () -> Unit) {
     CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 8.dp) {
         IconButton(
-            modifier = Modifier
-                .testTag("ClearButton"),
-            onClick = {
-                if (text.isNotEmpty()) {
-                    onTextChange("")
-                    onCloseClick()
-                }
-            }
+            modifier = Modifier.testTag("ClearButton"),
+            onClick = onClear
         ) {
             Icon(
-                modifier = Modifier
-                    .padding(end = 16.dp),
-                painter = painterResource(id = R.drawable.ic_cross_outline_24dp),
+                painter = painterResource(id = R.drawable.ic_cross_24dp),
                 contentDescription = null,
-                tint = Tokens.IconPrimary.getColor()
+                tint = Tokens.IconPrimary.getColor(),
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .size(20.dp)
             )
         }
     }

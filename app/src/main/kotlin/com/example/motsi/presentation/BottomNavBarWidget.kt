@@ -1,16 +1,15 @@
 package com.example.motsi.presentation
 
 import androidx.annotation.DrawableRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
-import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -38,10 +37,10 @@ internal fun BottomNavBarWidget(
 
     Row(
         Modifier
-            .windowInsetsPadding(WindowInsets.systemBars)
+            .navigationBarsPadding()
             .fillMaxWidth()
-            .height(70.dp)
-        ,
+            .height(64.dp)
+            .background(color = Tokens.Background.getColor()),
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.Bottom
     ) {
@@ -88,23 +87,34 @@ private fun BottomBarIcon(
 ) {
     val entry by navController.currentBackStackEntryAsState()
 
-    Box{
+    val isSelected = entry?.destination?.hierarchy?.any { it.hasRoute(route::class) } == true
+
+    Box {
         Icon(
-            modifier = Modifier.align(Alignment.BottomStart).clickable {
-                navController.navigate(route) {
-                    popUpTo(navController.graph.id) {
-                        saveState = true
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .clickable {
+                    navController.navigate(route) {
+                        popUpTo(navController.graph.id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
                     }
-                    launchSingleTop = true
-                    restoreState = true
                 }
-            },
+                .padding(12.dp),
             painter = painterResource(icon),
             contentDescription = null,
-            tint = if (entry?.destination?.hierarchy?.any { it.hasRoute(route::class) } == true) Tokens.IconBrand.getColor() else Tokens.IconSecondary.getColor(),
+            tint = if (isSelected) Tokens.IconBrand1.getColor() else Tokens.IconSecondary.getColor(),
         )
-        if (badge != null){
-            Badge(modifier = Modifier.align(Alignment.TopEnd).padding(start = 13.dp, bottom = 13.dp), text = badge, color = Tokens.IconFavorites.getColor()) { }
+        if (badge != null) {
+            Badge(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(top = 4.dp),
+                text = badge,
+                color = Tokens.IconFavorites.getColor()
+            )
         }
     }
 }

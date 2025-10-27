@@ -2,7 +2,6 @@ package com.example.motsi.feature.search.impl.di
 
 import com.example.motsi.core.di.FeatureScope
 import com.example.motsi.core.network.data.ApiResponseHandler
-import com.example.motsi.feature.search.impl.data.converter.SearchListConverter
 import com.example.motsi.feature.search.impl.data.converter.SearchScreenConverter
 import com.example.motsi.feature.search.impl.data.networkservice.SearchRemoteDataSource
 import com.example.motsi.feature.search.impl.data.repository.SearchRepositoryImpl
@@ -27,20 +26,21 @@ internal class SearchModule {
     @FeatureScope
     @Provides
     fun provideSearchInteractor(searchRepository: SearchRepository): SearchInteractor =
-        SearchInteractorImpl(searchRepository)
+        SearchInteractorImpl()
+
 
     @FeatureScope
     @Provides
     fun provideSearchRepository(
         networkService: SearchRemoteDataSource,
         searchScreenConverter: SearchScreenConverter,
-        searchListConverter: SearchListConverter,
+//        searchListConverter: SearchListConverter,
         apiResponseHandler: ApiResponseHandler,
     ): SearchRepository =
         SearchRepositoryImpl(
             networkService,
             searchScreenConverter,
-            searchListConverter,
-            apiResponseHandler
+//            searchListConverter,
+            apiResponseHandler,
         )
 }

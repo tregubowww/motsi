@@ -5,15 +5,19 @@ import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 import android.content.Context
+import android.content.SharedPreferences
 
 @Singleton
 @Component(modules = [WrappersModule::class])
- interface WrapperCoreComponent: WrappersCoreApi {
-
+interface WrapperCoreComponent : WrappersCoreApi {
 
 
     @Component.Factory
     interface Factory {
-        fun create(@BindsInstance application: Application): WrapperCoreComponent
+        fun create(
+            @BindsInstance application: Application,
+            @BindsInstance context: Context,
+            @BindsInstance preferences: SharedPreferences
+        ): WrapperCoreComponent
     }
 }
