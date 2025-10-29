@@ -207,12 +207,6 @@ private fun ListActivity(
 
         is LoadingState.Success -> {
 
-            val view = LocalView.current
-
-            SideEffect {
-                val window = (view.context as Activity).window
-                WindowCompat.setDecorFitsSystemWindows(window, false)
-            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
