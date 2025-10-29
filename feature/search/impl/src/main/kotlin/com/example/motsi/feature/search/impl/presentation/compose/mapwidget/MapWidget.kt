@@ -1,9 +1,6 @@
 package com.example.motsi.feature.search.impl.presentation.compose.mapwidget
 
 import android.content.Context
-import android.content.Intent
-import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -32,7 +29,6 @@ import androidx.compose.ui.viewinterop.AndroidView
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.common.models.presentation.LoadingState
-import com.example.motsi.core.ui.designsystem.snackbar.CustomSnackbarHost
 import com.example.motsi.core.ui.designsystem.indicators.ProgressIndicatorCircular
 import com.example.motsi.core.ui.theming.Body3Primary
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
@@ -48,6 +44,7 @@ internal fun MapWidget(
     viewModel: SearchViewModel,
     snackbarHostState: SnackbarHostState,
     screenModel: SearchScreenModel,
+    modifier: Modifier = Modifier,
 ) {
     val listActivityState by viewModel.listActivityState.collectAsState()
     val mapState by viewModel.mapState.collectAsState()
@@ -56,10 +53,9 @@ internal fun MapWidget(
     val onGeoPointChange by rememberUpdatedState { lat: Double, lon: Double, zoom: Double, rotation: Float ->
         viewModel.onMapIntent(SearchMapIntent.ChangeGeoPoint(lat, lon, zoom, rotation))
     }
+    val onMapClick by rememberUpdatedState { viewModel.onMapIntent(SearchMapIntent.ShowMap) }
 
-    val mapView = remember {
-        getMapView(context, onGeoPointChange)
-    }
+    val mapView = remember { getMapView(context, onGeoPointChange, onMapClick) }
 
     LaunchedEffect(Unit) {
         getInstance().load(
@@ -69,6 +65,7 @@ internal fun MapWidget(
     }
 
     Map(
+        modifier = modifier,
         screenModel = screenModel,
         viewModel = viewModel,
         mapState = mapState,
@@ -116,8 +113,9 @@ private fun Map(
     mapView: MapView,
     context: Context,
     snackbarHostState: SnackbarHostState,
+    modifier: Modifier,
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier) {
 
         AndroidView(
             factory = { mapView },
@@ -128,22 +126,19 @@ private fun Map(
             }
         )
 
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Tokens.Background.getColor().copy(alpha = mapState.alpha)),
+        )
+
         if (mapState.isLocationLoading) {
             ProgressIndicatorCircular(
                 modifier = Modifier.align(Alignment.Center)
             )
         }
 
-        if (!mapState.isMapOpen) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(color = Tokens.Background.getColor().copy(mapState.alpha))
-                    .clickable {
-                        viewModel.onMapIntent(SearchMapIntent.ShowMap)
-                    }
-            )
-        } else {
+        if (mapState.isMapOpen) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)

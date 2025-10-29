@@ -105,7 +105,7 @@ internal class SearchInteractorImpl @Inject constructor(
                         )
                     ),
                     SearchSportActivityListModel.SportActivity(
-                        id = "1",
+                        id = "2",
                         participantList = persistentListOf(
                             SearchSportActivityListModel.SportActivity.Participant(
                                 urlUserPic = "https://avatars.mds.yandex.net/i?id=9b20bc9c3d7884532228551baf8c5bd2_l-5219738-images-thumbs&n=13",
@@ -137,7 +137,7 @@ internal class SearchInteractorImpl @Inject constructor(
                         )
                     ),
                     SearchSportActivityListModel.SportActivity(
-                        id = "1",
+                        id = "3",
                         participantList = persistentListOf(
                             SearchSportActivityListModel.SportActivity.Participant(
                                 urlUserPic = "https://avatars.mds.yandex.net/i?id=9b20bc9c3d7884532228551baf8c5bd2_l-5219738-images-thumbs&n=13",

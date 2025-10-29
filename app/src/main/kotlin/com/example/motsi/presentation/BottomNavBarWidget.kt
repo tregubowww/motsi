@@ -37,10 +37,11 @@ internal fun BottomNavBarWidget(
 
     Row(
         Modifier
-            .navigationBarsPadding()
             .fillMaxWidth()
+            .background(color = Tokens.Background.getColor())
+            .navigationBarsPadding()
             .height(64.dp)
-            .background(color = Tokens.Background.getColor()),
+        ,
         horizontalArrangement = Arrangement.SpaceEvenly,
         verticalAlignment = Alignment.Bottom
     ) {

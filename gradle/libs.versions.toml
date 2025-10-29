@@ -97,7 +97,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 android-lint = { id = "com.android.lint", version.ref = "agp" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-kotlinx-parcelize = { id = "kotlin-parcelize"}
+kotlinx-parcelize = { id = "kotlin-parcelize" }
 
 # Plugins defined by this project
 motsi-android-application = { id = "com.example.motsi.convention.android.application" }

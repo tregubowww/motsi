@@ -1,6 +1,7 @@
 package com.example.motsi.feature.search.impl.presentation.compose.mapwidget
 
 import android.content.Context
+import android.view.MotionEvent
 import com.example.motsi.core.ui.utils.createUserLocationBitmap
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -14,11 +15,13 @@ import org.osmdroid.events.ScrollEvent
 import org.osmdroid.events.ZoomEvent
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 
 internal fun getMapView(
     context: Context,
-    onChangeGeoPoint: (Double, Double, Double, Float) -> Unit
+    onChangeGeoPoint: (Double, Double, Double, Float) -> Unit,
+    onMapClick: () -> Unit
 ): MapView =
     MapView(context).apply {
         setUseDataConnection(true)
@@ -51,7 +54,16 @@ internal fun getMapView(
                 return false
             }
         })
+        //Клик по карте
+        overlays.add(object : Overlay() {
+            override fun onSingleTapConfirmed(event: MotionEvent?, mapView: MapView?): Boolean {
+                event?.let { onMapClick() }
+                return true
+            }
+        })
+
     }
+
 
 internal fun MapView.updateUserLocationPlacemark(
     userLocationPlacemark: GeoPoint?,
