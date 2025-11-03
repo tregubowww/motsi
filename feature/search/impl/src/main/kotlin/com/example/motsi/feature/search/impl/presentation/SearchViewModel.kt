@@ -1,10 +1,13 @@
 package com.example.motsi.feature.search.impl.presentation
 
-import android.annotation.SuppressLint
+import android.util.Log
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetValue
 import androidx.lifecycle.viewModelScope
-import com.example.motsi.api.SportActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
+import com.example.motsi.core.common.presentation.EffectHandler
+import com.example.motsi.core.common.presentation.UiReducer
 import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.core.ui.models.DataSnackbar
 import com.example.motsi.core.wrappers.infrastructure.LocationHelperWrapper
@@ -12,11 +15,13 @@ import com.example.motsi.core.wrappers.infrastructure.MapboxWrapper
 import com.example.motsi.core.wrappers.infrastructure.NetworkHelperWrapper
 import com.example.motsi.feature.search.impl.di.SearchHolder
 import com.example.motsi.feature.search.impl.domain.interactor.SearchInteractor
+import com.example.motsi.feature.search.impl.models.presentation.SearchIntent
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
 import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityIntent
 import com.example.motsi.feature.search.impl.models.presentation.listactivity.SearchListActivityState
 import com.example.motsi.feature.search.impl.models.presentation.map.MapState
 import com.example.motsi.feature.search.impl.models.presentation.map.SearchMapIntent
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenEffect
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
 import kotlinx.coroutines.FlowPreview
@@ -24,13 +29,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.osmdroid.util.GeoPoint
 import javax.inject.Inject
@@ -38,26 +41,27 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class)
 internal class SearchViewModel @Inject constructor(
     private val interactor: SearchInteractor,
-    private val mapboxWrapper: MapboxWrapper,
     private val locationHelper: LocationHelperWrapper,
-    private val networkHelper: NetworkHelperWrapper
-) : BaseViewModel() {
+    private val networkHelper: NetworkHelperWrapper,
+    mapboxWrapper: MapboxWrapper,
+) : BaseViewModel<SearchIntent>() {
 
     /** Состояние экрана */
-    private val _screenState =
-        MutableStateFlow(SearchScreenState(loadingState = LoadingState.Loading))
-    val screenState: StateFlow<SearchScreenState> get() = _screenState.asStateFlow()
+    private val screenReducer = UiReducer(SearchScreenState(loadingState = LoadingState.Loading))
+    val screenState: StateFlow<SearchScreenState> get() = screenReducer.state
 
-    /** Состояние списка активностей */
-    private val _listActivityState =
-        MutableStateFlow(SearchListActivityState(loadingState = LoadingState.Loading))
-    val listActivityState: StateFlow<SearchListActivityState> get() = _listActivityState.asStateFlow()
+    /** Состояние списка */
+    private val listReducer = UiReducer(SearchListActivityState(loadingState = LoadingState.Loading))
+    val listActivityState: StateFlow<SearchListActivityState> get() = listReducer.state
 
     /** Состояние карты */
-    private val _mapState = MutableStateFlow(MapState())
-    val mapState: StateFlow<MapState> get() = _mapState.asStateFlow()
+    private val mapReducer = UiReducer(MapState())
+    val mapState: StateFlow<MapState> get() = mapReducer.state
 
-    /** Поток изменений GeoPoint */
+    /** Эффекты */
+    private val effectHandler = EffectHandler<SearchScreenEffect>()
+    val effect: SharedFlow<SearchScreenEffect> get() = effectHandler.effect
+
     private val _geoPointFlow = MutableSharedFlow<SearchMapIntent.ChangeGeoPoint>(
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
@@ -66,187 +70,183 @@ internal class SearchViewModel @Inject constructor(
     private val delayLoading = 500L
 
     init {
-        mapboxWrapper.initialize()
+        runCatching { mapboxWrapper.initialize() }
+            .onFailure { Log.e("SearchViewModel", "Mapbox init failed", it) }
+
         observeGeoPointChanges()
         loadInitialData()
     }
 
-    /** Helper для обновления состояния карты */
-    private fun updateMapState(update: MapState.() -> MapState) {
-        _mapState.update { it.update() }
-    }
-
-    /** Загрузка данных экрана и списка активностей параллельно */
-    private fun loadInitialData() {
-        viewModelScope.launch {
-            val screenDeferred = async { interactor.getSearchScreen() }
-            val listDeferred = async { interactor.getSportActivityList() }
-
-            _screenState.value = SearchScreenState(
-                loadingState = screenDeferred.await().handleState()
-            )
-
-            _listActivityState.value = SearchListActivityState(
-                loadingState = listDeferred.await().handleState(eventOnSuccess = { list ->
-                    updateMapState {
-                        copy(
-                            currentGeoPoint = GeoPoint(
-                                list.cityLocation.cityPoint.first,
-                                list.cityLocation.cityPoint.second
-                            ),
-                            currentZoom = list.cityLocation.cityZoom
-                        )
-                    }
-                })
-            )
+    /** Универсальная функция отправки Intent */
+    override fun dispatch(intent: SearchIntent) {
+        when (intent) {
+            is SearchIntent.Screen -> handleScreenIntent(intent.value)
+            is SearchIntent.Map -> handleMapIntent(intent.value)
+            is SearchIntent.List -> handleListIntent(intent.value)
         }
     }
 
-    /** Обработка интентов экрана */
-    fun onScreenIntent(intent: SearchScreenIntent) {
+    /** Screen Intents */
+    @OptIn(ExperimentalMaterial3Api::class)
+    private fun handleScreenIntent(intent: SearchScreenIntent) {
         when (intent) {
             is SearchScreenIntent.ClickSearchField -> {
-                intent.navController.navigate(
-                    SearchTipsDestination(
-                        entryData = SearchTipsDestination.EntryData(
-                            searchQuery = intent.searchQuery,
-                            searchHint = intent.searchHint,
-                            historyTipList = intent.historyTipList
-                        )
+                SearchScreenEffect.NavigateToSearchTips(
+                    entryData = SearchTipsDestination.EntryData(
+                        searchQuery = intent.searchQuery,
+                        searchHint = intent.searchHint,
+                        historyTipList = intent.historyTipList
                     )
-                )
+                ).emit()
             }
-        }
-    }
 
-    /** Обработка интентов карты */
-    fun onMapIntent(intent: SearchMapIntent) {
-        when (intent) {
-            is SearchMapIntent.ShowSnackbar -> updateMapState { copy(dataSnackbar = dataSnackbar) }
-            is SearchMapIntent.OnLocationClick -> takeUserLocation()
-            is SearchMapIntent.OnShowUserGeoposition -> updateMapState { copy(moveToUserGeoPosition = false) }
-            is SearchMapIntent.ChangeGeoPoint -> _geoPointFlow.tryEmit(intent)
-            is SearchMapIntent.ShowMap -> updateMapState { copy(isMapOpen = true) }
-            is SearchMapIntent.HideMap -> updateMapState { copy(isMapOpen = false) }
-            is SearchMapIntent.UpdateAlpha -> updateMapState { copy(alpha = intent.alpha) }
-        }
-    }
-
-    /** Обработка интентов списка активностей */
-    fun onListActivityIntent(intent: SearchListActivityIntent) {
-        when (intent) {
-            is SearchListActivityIntent.ClickSportActivity -> intent.navController.navigate(
-                SportActivityDetailsGraph(id = intent.activityId)
-            )
-
-            is SearchListActivityIntent.AddFilter -> {
-                viewModelScope.launch {
-                    _listActivityState.value = SearchListActivityState(
-                        loadingState = interactor.getSportActivityList(filterData = intent.filterData)
-                            .handleState()
-                    )
+            is SearchScreenIntent.ChangeScreenState -> {
+                val newState = when (intent.currentValue) {
+                    SheetValue.Hidden -> SearchScreenState.ScreenState.MAP
+                    SheetValue.PartiallyExpanded -> SearchScreenState.ScreenState.MAP_AND_LIST
+                    SheetValue.Expanded -> SearchScreenState.ScreenState.LIST
                 }
+                screenReducer.update { copy(screenState = newState) }
             }
         }
     }
 
-    /** Отслеживание изменений GeoPoint с дебаунсом */
+    /** Map Intents */
+    private fun handleMapIntent(intent: SearchMapIntent) {
+        when (intent) {
+            is SearchMapIntent.OnLocationClick -> takeUserLocation()
+            is SearchMapIntent.OnShowUserGeoposition -> mapReducer.update { copy(moveToUserGeoPosition = false) }
+            is SearchMapIntent.ChangeGeoPoint -> _geoPointFlow.tryEmit(intent)
+            is SearchMapIntent.UpdateAlpha -> mapReducer.update { copy(alpha = intent.alpha) }
+        }
+    }
+
+    /**  List Intents */
+    private fun handleListIntent(intent: SearchListActivityIntent) {
+        when (intent) {
+            is SearchListActivityIntent.ClickSportActivity -> SearchScreenEffect.NavigateToActivityDetails(intent.activityId).emit()
+            is SearchListActivityIntent.AddFilter -> viewModelScope.launch {
+//                //поход на бэк
+            }
+        }
+    }
+
+    private fun SearchScreenEffect.emit() = viewModelScope.launch { effectHandler.emit(this@emit) }
     private fun observeGeoPointChanges(debounceMillis: Long = 300L) {
-        _geoPointFlow
-            .debounce(debounceMillis)
+        _geoPointFlow.debounce(debounceMillis)
             .onEach { handleGeoPointChange(it) }
             .launchIn(viewModelScope)
     }
 
-    /** Обработка изменения геопозиции */
     private fun handleGeoPointChange(intent: SearchMapIntent.ChangeGeoPoint) {
-        if (GeoPoint(
-                intent.latitude,
-                intent.longitude
-            ) != mapState.value.currentGeoPoint || intent.zoom != mapState.value.currentZoom
-        ) {
-            updateMapState {
+        val current = mapReducer.current() // Чтение через reducer
+        val newPoint = GeoPoint(intent.latitude, intent.longitude)
+
+        if (current.currentGeoPoint != newPoint || current.currentZoom != intent.zoom || current.currentRotation != intent.rotation) {
+            mapReducer.update { // Обновление через reducer
                 copy(
                     currentGeoPoint = GeoPoint(intent.latitude, intent.longitude),
                     currentZoom = intent.zoom,
                     currentRotation = intent.rotation
                 )
             }
-
-            // TODO: здесь можно вызывать backend
         }
     }
 
-    /** Получение геопозиции пользователя с безопасными проверками */
-    @SuppressLint("MissingPermission")
     private fun takeUserLocation() {
-        val dataSnackbarText =
-            (screenState.value.loadingState as? LoadingState.Success)?.data?.dataSnackbarText
-
-        fun String.show() =
-            updateMapState { copy(dataSnackbar = DataSnackbar(message = this@show)) }
+        val dataSnackbar = (screenReducer.current().loadingState as? LoadingState.Success)?.data?.dataSnackbarText // Чтение через reducer
 
         when {
             !locationHelper.hasLocationPermission() -> {
-                updateMapState { copy(isLocationLoading = false) }
-                updateMapState { copy(dataSnackbar = dataSnackbar) }
-                dataSnackbarText?.dataSnackbarPermission?.message.orEmpty().show()
+                mapReducer.update { copy(isLocationLoading = false) }
+                showSnackbar(dataSnackbar?.dataSnackbarPermission?.message.orEmpty())
                 return
             }
-
             !networkHelper.isInternetAvailable() -> {
-                updateMapState { copy(isLocationLoading = false) }
-                dataSnackbarText?.dataSnackbarInternet?.message.orEmpty().show()
+                mapReducer.update { copy(isLocationLoading = false) }
+                showSnackbar(dataSnackbar?.dataSnackbarInternet?.message.orEmpty())
                 return
             }
-
             !locationHelper.isLocationEnabled() -> {
-                updateMapState { copy(isLocationLoading = false) }
-                updateMapState {
-                    copy(
-                        dataSnackbar = DataSnackbar(
-                            message = dataSnackbarText?.dataSnackbarLocation?.message.orEmpty(),
-                            actionLabel = dataSnackbarText?.dataSnackbarLocation?.actionLabel.orEmpty(),
-                            type = DataSnackbar.SnackbarType.Action
-                        )
-                    )
-                }
+                mapReducer.update { copy(isLocationLoading = false) }
+                showSnackbar(
+                    message = dataSnackbar?.dataSnackbarLocation?.message.orEmpty(),
+                    actionLabel = dataSnackbar?.dataSnackbarLocation?.actionLabel.orEmpty(),
+                    type = DataSnackbar.SnackbarType.Action
+                )
                 return
             }
         }
 
-        updateMapState { copy(isLocationLoading = true) }
+        mapReducer.update { copy(isLocationLoading = true) }
 
         viewModelScope.launch {
             val snackbarJob = launch {
                 delay(delayLoading)
-                dataSnackbarText?.dataSnackbarLoadingLocation?.message.orEmpty().show()
+                dataSnackbar?.dataSnackbarLoadingLocation?.message?.let { msg ->
+                    showSnackbar(msg)
+                }
             }
 
             val location = try {
-                locationHelper.getCurrentLocationOrNull()
-            } catch (_: Exception) {
+                kotlinx.coroutines.withTimeoutOrNull(10_000L) {
+                    locationHelper.getCurrentLocationOrNull()
+                }
+            } catch (t: Throwable) {
+                Log.e("SearchViewModel", "Failed to get location", t)
                 null
             }
 
             snackbarJob.cancel()
 
             if (location != null) {
-                updateMapState {
+                mapReducer.update {
                     copy(
                         isLocationLoading = false,
                         userGeoPosition = GeoPoint(location.latitude, location.longitude),
-                        dataSnackbar = null,
                         moveToUserGeoPosition = true
                     )
                 }
             } else {
-                updateMapState { copy(isLocationLoading = false) }
+                mapReducer.update { copy(isLocationLoading = false) }
+                showSnackbar(dataSnackbar?.dataSnackbarLocation?.message.orEmpty())
             }
         }
     }
 
-    override fun onRelease() {
-        SearchHolder.release()
+    private fun showSnackbar(message: String, actionLabel: String = "", type: DataSnackbar.SnackbarType = DataSnackbar.SnackbarType.Default) {
+        if (message.isEmpty()) return
+        SearchScreenEffect.ShowSnackbar(
+            DataSnackbar(
+                message = message,
+                actionLabel = actionLabel,
+                type = type
+            )
+        ).emit()
     }
+
+    private fun loadInitialData() {
+        viewModelScope.launch {
+            val screenDeferred = async { interactor.getSearchScreen() }
+            val listDeferred = async { interactor.getSportActivityList() }
+
+            val screenResult = screenDeferred.await().handleState()
+            val listResult = listDeferred.await().handleState(eventOnSuccess = { list ->
+                mapReducer.update {
+                    copy(
+                        currentGeoPoint = GeoPoint(
+                            list.cityLocation.cityPoint.first,
+                            list.cityLocation.cityPoint.second
+                        ),
+                        currentZoom = list.cityLocation.cityZoom
+                    )
+                }
+            })
+
+            screenReducer.update { copy(loadingState = screenResult) }
+            listReducer.update { copy(loadingState = listResult) }
+        }
+    }
+
+    override fun onRelease() { SearchHolder.release() }
 }

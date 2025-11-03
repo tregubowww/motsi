@@ -5,35 +5,39 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.common.models.presentation.LoadingState
+import com.example.motsi.core.ui.designsystem.buttons.IconTextButton
 import com.example.motsi.core.ui.designsystem.indicators.ProgressIndicatorCircular
-import com.example.motsi.core.ui.theming.Body3Primary
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
+import com.example.motsi.feature.search.impl.models.presentation.SearchIntent
 import com.example.motsi.feature.search.impl.models.presentation.map.MapState
 import com.example.motsi.feature.search.impl.models.presentation.map.SearchMapIntent
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.osmdroid.config.Configuration.getInstance
@@ -42,22 +46,33 @@ import org.osmdroid.views.MapView
 @Composable
 internal fun MapWidget(
     viewModel: SearchViewModel,
-    snackbarHostState: SnackbarHostState,
-    screenModel: SearchScreenModel,
     modifier: Modifier = Modifier,
+    showWidgetFullScreen: () -> Unit,
 ) {
     val listActivityState by viewModel.listActivityState.collectAsState()
     val mapState by viewModel.mapState.collectAsState()
+
     val context = LocalContext.current
 
-    val onGeoPointChange by rememberUpdatedState { lat: Double, lon: Double, zoom: Double, rotation: Float ->
-        viewModel.onMapIntent(SearchMapIntent.ChangeGeoPoint(lat, lon, zoom, rotation))
-    }
-    val onMapClick by rememberUpdatedState { viewModel.onMapIntent(SearchMapIntent.ShowMap) }
+    val mapView = rememberMapViewWithLifecycle(
+        context = context,
+        onGeoPointChange = { lat, lon, zoom, rotation ->
+            viewModel.dispatch(
+                SearchIntent.Map(
+                    SearchMapIntent.ChangeGeoPoint(
+                        lat,
+                        lon,
+                        zoom,
+                        rotation
+                    )
+                )
+            )
+        },
+        onMapClick = showWidgetFullScreen,
+        backgroundColor = Tokens.Background.getColor().toArgb()
+    )
 
-    val mapView = remember { getMapView(context, onGeoPointChange, onMapClick) }
-
-    LaunchedEffect(Unit) {
+    LaunchedEffect(context.applicationContext) {
         getInstance().load(
             context,
             androidx.preference.PreferenceManager.getDefaultSharedPreferences(context)
@@ -66,63 +81,56 @@ internal fun MapWidget(
 
     Map(
         modifier = modifier,
-        screenModel = screenModel,
         viewModel = viewModel,
         mapState = mapState,
         mapView = mapView,
         context = context,
-        snackbarHostState = snackbarHostState
     )
 
-    LaunchedEffect(Unit) {
-        snapshotFlow { mapState.moveToUserGeoPosition }
-            .collectLatest { shouldMove ->
-                if (shouldMove && mapState.userGeoPosition != null) {
-                    mapView.updateUserLocationPlacemark(mapState.userGeoPosition)
-                    viewModel.onMapIntent(SearchMapIntent.OnShowUserGeoposition)
-                }
-            }
-    }
-
-    LaunchedEffect(mapState.dataSnackbar) {
-        mapState.dataSnackbar?.let { dataSnackBar ->
-            snackbarHostState.showSnackbar(dataSnackBar)
+    LaunchedEffect(mapState.moveToUserGeoPosition) {
+        if (mapState.moveToUserGeoPosition && mapState.userGeoPosition != null) {
+            mapView.updateUserLocationPlacemark(mapState.userGeoPosition)
+            viewModel.dispatch(SearchIntent.Map(SearchMapIntent.OnShowUserGeoposition))
         }
     }
 
     when (val listState = listActivityState.loadingState) {
         is LoadingState.Success -> {
             LaunchedEffect(listState.data.sportActivityList) {
-                mapView.updateActivityMarkers(
-                    listActivityState = listState.data,
-                    context = context
-                )
+                mapView.updateActivityMarkers(listState.data, context)
             }
         }
 
-        else -> Unit // Остальные состояния игнорируем пока
+        else -> Unit
     }
 }
 
 
 @Composable
 private fun Map(
-    screenModel: SearchScreenModel,
     viewModel: SearchViewModel,
     mapState: MapState,
     mapView: MapView,
     context: Context,
-    snackbarHostState: SnackbarHostState,
     modifier: Modifier,
 ) {
+    val screenState by viewModel.screenState.collectAsState()
     Box(modifier = modifier) {
 
         AndroidView(
             factory = { mapView },
-            update = {
-                it.controller.setCenter(mapState.currentGeoPoint)
-                it.controller.setZoom(mapState.currentZoom)
-                it.mapOrientation = mapState.currentRotation
+            update = { view ->
+                val shouldUpdateCenter = view.mapCenter != mapState.currentGeoPoint
+                val shouldUpdateZoom = view.zoomLevel.toDouble() != mapState.currentZoom
+
+                if (shouldUpdateCenter || shouldUpdateZoom) {
+                    view.controller.setCenter(mapState.currentGeoPoint)
+                    view.controller.setZoom(mapState.currentZoom)
+                }
+
+                if (view.mapOrientation != mapState.currentRotation) {
+                    view.mapOrientation = mapState.currentRotation
+                }
             }
         )
 
@@ -138,7 +146,7 @@ private fun Map(
             )
         }
 
-        if (mapState.isMapOpen) {
+        if (screenState.screenState == SearchScreenState.ScreenState.MAP) {
             Column(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -151,20 +159,15 @@ private fun Map(
 
                 LocationButton(
                     onClick = {
-                        viewModel.onMapIntent(SearchMapIntent.OnLocationClick(context))
+                        viewModel.dispatch(
+                            SearchIntent.Map(
+                                SearchMapIntent.OnLocationClick(context)
+                            )
+                        )
                     }
                 )
-            }
 
-            ShowListButton(
-                modifier = Modifier
-                    .padding(16.dp)
-                    .align(Alignment.BottomStart),
-                text = screenModel.buttonTextForListOpen.orEmpty(),
-                onClick = {
-                    viewModel.onMapIntent(SearchMapIntent.HideMap)
-                }
-            )
+            }
         }
     }
 }
@@ -188,39 +191,6 @@ private fun LocationButton(onClick: () -> Unit) {
         contentDescription = null,
         tint = Tokens.IconPrimary.getColor()
     )
-}
-
-@Composable
-fun ShowListButton(
-    modifier: Modifier,
-    text: String,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = modifier
-            .shadow(
-                elevation = 4.dp,
-                shape = RoundedCornerShape(12.dp),
-            )
-            .clickable { onClick() }
-            .background(
-                color = Tokens.Background.getColor(),
-                shape = RoundedCornerShape(12.dp)
-            )
-            .padding(16.dp)
-
-    ) {
-        Icon(
-            painter = painterResource(R.drawable.ic_view_list_24dp),
-            contentDescription = null,
-            tint = Tokens.IconPrimary.getColor()
-        )
-
-        Body3Primary(
-            modifier = Modifier.padding(start = 8.dp),
-            text = text
-        )
-    }
 }
 
 @Composable
@@ -265,4 +235,38 @@ fun ZoomControlsButtons(
             tint = Tokens.IconPrimary.getColor()
         )
     }
+}
+
+@Composable
+fun rememberMapViewWithLifecycle(
+    context: Context,
+    onGeoPointChange: (Double, Double, Double, Float) -> Unit,
+    onMapClick: () -> Unit,
+    backgroundColor: Int
+): MapView {
+    val mapView = remember(context) {
+        getMapView(context, onGeoPointChange, onMapClick, backgroundColor)
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner, mapView) {
+        val observer = LifecycleEventObserver { _, event ->
+            when (event) {
+                Lifecycle.Event.ON_RESUME -> mapView.onResume()
+                Lifecycle.Event.ON_PAUSE -> mapView.onPause()
+                else -> Unit
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+            // освобождаем ресурсы osmdroid
+            mapView.overlays.clear()
+            mapView.onDetach()
+        }
+    }
+
+    return mapView
 }

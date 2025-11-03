@@ -18,7 +18,8 @@ internal class SearchInteractorImpl @Inject constructor(
         ResultWrapper.Success(
             SearchScreenModel(
                 defaultSearchHint = "Поиск",
-                buttonTextForListOpen = "Показать список",//Не нужно
+                buttonTextForListOpen = "Показать список",
+                buttonTextForMapOpen = "Карта",
                 dataSnackbarText = SearchScreenModel.DataSnackbarText(
                     dataSnackbarPermission = SearchScreenModel.DataSnackbarText.DataSnackbar(
                         message = "Необходимо разрешение на доступ к местоположению"
@@ -38,7 +39,7 @@ internal class SearchInteractorImpl @Inject constructor(
         )
 
 
-    override suspend fun getSportActivityList(filterData: SearchDestination.SearchFilterData): ResultWrapper<SearchSportActivityListModel, MotsiError>{
+    override suspend fun getSportActivityList(filterData: SearchDestination.SearchFilterData): ResultWrapper<SearchSportActivityListModel, MotsiError> {
 //        = repository.getSearchList()
         return ResultWrapper.Success(
             SearchSportActivityListModel(

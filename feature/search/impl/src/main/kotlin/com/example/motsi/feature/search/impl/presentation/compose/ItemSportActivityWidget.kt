@@ -3,6 +3,7 @@ package com.example.motsi.feature.search.impl.presentation.compose
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -52,6 +54,10 @@ internal fun ItemSportActivity(
                 shape = RoundedCornerShape(12.dp),
                 ambientColor = Tokens.BackgroundSecondary.getColor()
             )
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
             .background(
                 color = Tokens.BackgroundSecondary.getColor(),
                 shape = RoundedCornerShape(16.dp)
@@ -59,14 +65,10 @@ internal fun ItemSportActivity(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { onClick() }
-        ) {
+            modifier = Modifier.fillMaxWidth()) {
 
             UserPics(
                 modifier = Modifier
-
                     .weight(1f)
                     .padding(12.dp),
                 sportActivityItem.participantList

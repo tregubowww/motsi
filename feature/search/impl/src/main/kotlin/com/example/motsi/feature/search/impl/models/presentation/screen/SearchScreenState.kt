@@ -6,4 +6,11 @@ import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 
 internal data class SearchScreenState (
     val loadingState: LoadingState<SearchScreenModel, MotsiError> = LoadingState.Idle,
-)
+    val screenState: ScreenState = ScreenState.MAP_AND_LIST
+){
+    enum class ScreenState{
+        MAP,
+        MAP_AND_LIST,
+        LIST
+    }
+}

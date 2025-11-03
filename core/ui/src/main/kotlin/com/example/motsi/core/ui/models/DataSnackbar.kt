@@ -4,7 +4,6 @@ import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarVisuals
 
 data class DataSnackbar(
-    val id: Long = System.currentTimeMillis(),
     override val message: String,
     override val duration: SnackbarDuration = SnackbarDuration.Short,
     override val actionLabel: String? = null,

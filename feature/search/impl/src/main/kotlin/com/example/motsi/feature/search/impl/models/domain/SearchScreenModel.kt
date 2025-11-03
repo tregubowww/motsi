@@ -2,9 +2,10 @@ package com.example.motsi.feature.search.impl.models.domain
 
 internal data class SearchScreenModel(
     val defaultSearchHint: String,
-    val buttonTextForListOpen: String?,
-    val dataSnackbarText: DataSnackbarText
-){
+    val buttonTextForListOpen: String,
+    val dataSnackbarText: DataSnackbarText,
+    val buttonTextForMapOpen: String
+) {
     data class DataSnackbarText(
         val dataSnackbarPermission: DataSnackbar,
         val dataSnackbarInternet: DataSnackbar,

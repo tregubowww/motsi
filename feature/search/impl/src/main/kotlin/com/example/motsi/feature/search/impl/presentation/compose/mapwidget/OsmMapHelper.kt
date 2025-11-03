@@ -21,12 +21,14 @@ import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 internal fun getMapView(
     context: Context,
     onChangeGeoPoint: (Double, Double, Double, Float) -> Unit,
-    onMapClick: () -> Unit
+    onMapClick: () -> Unit,
+    colorBackground: Int
 ): MapView =
     MapView(context).apply {
         setUseDataConnection(true)
-        setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)// Вид карты
+        setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
         setMultiTouchControls(true)
+        setBackgroundColor(colorBackground)
         minZoomLevel = 3.0
         maxZoomLevel = 20.0
         zoomController.setVisibility(
@@ -68,38 +70,37 @@ internal fun getMapView(
 internal fun MapView.updateUserLocationPlacemark(
     userLocationPlacemark: GeoPoint?,
 ) {
-    // Удаляем старый маркер геопозиции пользователя
-    this.overlays.removeAll {
-        it is Marker && it.id == MarkerTypeId.USER_LOCATION.name
-    }
+    if (!isAttachedToWindowCompat()) return
+
+    overlays.removeAll { it is Marker && it.id == MarkerTypeId.USER_LOCATION.name }
 
     userLocationPlacemark?.let { userGeoPoint ->
-        val marker = Marker(this).apply {
-            position = userGeoPoint
-            icon = createUserLocationBitmap().toDrawable(context.resources)
-            setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            id = MarkerTypeId.USER_LOCATION.name
-        }
-
-        overlays.add(marker)
-
+        createAndAddMarker(userGeoPoint)
         controller?.animateTo(userGeoPoint, 17.0, 500L)
         post { mapOrientation = 0f }
-
-        invalidate()
     }
+}
+
+internal fun MapView.createAndAddMarker(geoPoint: GeoPoint) {
+    val marker = Marker(this).apply {
+        position = geoPoint
+        icon = createUserLocationBitmap().toDrawable(context.resources)
+        setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+        id = MarkerTypeId.USER_LOCATION.name
+    }
+    overlays.add(marker)
+    invalidate()
 }
 
 internal fun MapView.updateActivityMarkers(
     listActivityState: SearchSportActivityListModel,
     context: Context
 ) {
-    // Сохраняем маркер геопозиции пользователя
+    if (!isAttachedToWindowCompat()) return
+
     val userLocationMarkers =
         overlays.filter { it is Marker && it.id == MarkerTypeId.USER_LOCATION.name }
-
-    // Удаляем ВСЕ маркеры
-    this.overlays.removeAll { it is Marker }
+    overlays.removeAll { it is Marker }
 
     listActivityState.sportActivityList.forEach { markerData ->
         val marker = Marker(this).apply {
@@ -114,17 +115,19 @@ internal fun MapView.updateActivityMarkers(
             setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
             id = MarkerTypeId.SPORT_ACTIVITY.name
         }
-
-        // Сперка рисуются маркеры активностей
         overlays.add(marker)
-
-
     }
-    // Отрисовка маркера геопозиции пользователя поверх всех остальных меток
-    overlays.addAll(userLocationMarkers)
 
+    overlays.addAll(userLocationMarkers)
     invalidate()
-    postInvalidateDelayed(16)
+}
+
+private fun MapView.isAttachedToWindowCompat(): Boolean {
+    return if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+        this.isAttachedToWindow
+    } else {
+        this.windowToken != null
+    }
 }
 
 private enum class MarkerTypeId {
