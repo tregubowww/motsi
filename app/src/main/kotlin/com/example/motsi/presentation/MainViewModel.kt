@@ -1,8 +1,8 @@
 package com.example.motsi.presentation
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.motsi.core.common.models.presentation.LoadingState
-import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.domain.MainInteractor
 import com.example.motsi.models.domain.MainModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 internal class MainViewModel @Inject constructor(
     private val interactor: MainInteractor,
-) : BaseViewModel() {
+) : ViewModel() {
 
     val mainModel: StateFlow<MainModel> get() = _mainModel.asStateFlow()
     private val _mainModel =
@@ -27,9 +27,5 @@ internal class MainViewModel @Inject constructor(
                  (interactor.getMainModel().handleState() as? LoadingState.Success)?.let { _mainModel.value = it.data }
             }
         }
-    }
-
-    override fun onRelease() {
-//        nothing
     }
 }

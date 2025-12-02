@@ -196,3 +196,21 @@ fun Title1Primary(
         overflow = overflow
     )
 }
+
+@Composable
+fun Title1Secondary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis
+
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextSecondary.getColor(),
+        style = MotsiTheme.textAppearance.Title1,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}

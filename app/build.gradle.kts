@@ -49,10 +49,11 @@ dependencies {
     implementation(project(":core:di"))
 
     // регион feature в алфавитном порядке
-    implementation(project(":feature:addsportactivity:impl"))
     implementation(project(":feature:activitydetails:impl"))
     implementation(project(":feature:messages:impl"))
+    implementation(project(":feature:mysportactivities:impl"))
     implementation(project(":feature:search:impl"))
+    implementation(project(":feature:wizard:impl"))
 
 
 }

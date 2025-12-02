@@ -4,9 +4,9 @@ import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -23,7 +23,7 @@ import com.example.motsi.core.ui.theming.Tokens
 fun BaseIconTextField(
     modifier: Modifier = Modifier,
     onFieldClick: () -> Unit = {},
-    @DrawableRes icon: Int,
+    @DrawableRes icon: Int?,
     title: String,
     subtitle: String? = null,
     isDividerVisible: Boolean = false
@@ -32,15 +32,18 @@ fun BaseIconTextField(
         modifier = modifier
             .clickable(onClick = onFieldClick)
             .fillMaxWidth()
+            .defaultMinSize(minHeight = 70.dp)
             .padding(vertical = 8.dp, horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            painter = painterResource(id = icon),
-            tint = Tokens.IconPrimary.getColor(),
-            contentDescription = null,
-            modifier = Modifier.padding(start = 8.dp)
-        )
+        icon?.let {
+            Icon(
+                painter = painterResource(id = icon),
+                tint = Tokens.IconPrimary.getColor(),
+                contentDescription = null,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
 
         Column(
             modifier = Modifier
@@ -54,7 +57,6 @@ fun BaseIconTextField(
         }
 
         Icon(
-            modifier = Modifier.size(14.dp),
             painter = painterResource(id = R.drawable.ic_arrow_forward_24dp),
             tint = Tokens.IconPrimary.getColor(),
             contentDescription = null,

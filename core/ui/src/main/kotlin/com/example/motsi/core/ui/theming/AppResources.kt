@@ -15,7 +15,9 @@ object AppResources {
         "ic_filter" to R.drawable.ic_filter_24dp,
         "ic_lock_fill" to R.drawable.ic_lock_black_fill_24dp,
         "ic_search" to R.drawable.ic_search_24dp,
-        "ic_sport_type_run" to R.drawable.ic_sport_type_run_fill_24dp
+        "ic_sport_type_run" to R.drawable.ic_sport_type_run_fill_24dp,
+        "ic_cross" to R.drawable.ic_cross_24dp,
+        "ic_back" to R.drawable.ic_back_24dp
     )
 
     private fun String.normalizeIcon(): String =

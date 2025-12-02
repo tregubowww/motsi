@@ -12,6 +12,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
 
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.core.ktx)

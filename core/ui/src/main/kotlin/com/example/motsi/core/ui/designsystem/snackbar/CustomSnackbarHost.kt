@@ -6,9 +6,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.motsi.core.common.models.domain.SnackbarType
 import com.example.motsi.core.ui.models.DataSnackbar
 import com.example.motsi.core.ui.theming.Body2Secondary
 import com.example.motsi.core.ui.theming.Body3Brand
@@ -18,7 +20,6 @@ import com.example.motsi.core.ui.theming.Tokens
 fun CustomSnackbarHost(
     modifier: Modifier = Modifier,
     hostState: SnackbarHostState,
-    onAction: (() -> Unit)? = null,
 ) {
     SnackbarHost(hostState = hostState, modifier = modifier) { snackbarData ->
         val data = snackbarData.visuals as? DataSnackbar
@@ -29,11 +30,10 @@ fun CustomSnackbarHost(
             shape = RoundedCornerShape(24.dp),
             containerColor = Tokens.BackgroundPrimary.getColor(),
             action = {
-                if (data?.type == DataSnackbar.SnackbarType.Action && !data.actionLabel.isNullOrEmpty()) {
+                if (data?.type == SnackbarType.Action && !data.actionLabel.isNullOrEmpty()) {
                     Body3Brand(
                         text = data.actionLabel,
                         modifier = Modifier.clickable {
-                            onAction?.invoke()
                             snackbarData.performAction()
                         }
                     )
@@ -48,3 +48,14 @@ fun CustomSnackbarHost(
     }
 }
 
+suspend fun SnackbarHostState.showMotsiSnackbar(
+    dataSnackbar: DataSnackbar,
+    onDismissed: () -> Unit = {},
+    onActionPerformed: () -> Unit = {},
+) {
+    val result = this.showSnackbar(dataSnackbar)
+    when (result) {
+        SnackbarResult.Dismissed -> onDismissed.invoke()
+        SnackbarResult.ActionPerformed -> onActionPerformed.invoke()
+    }
+}

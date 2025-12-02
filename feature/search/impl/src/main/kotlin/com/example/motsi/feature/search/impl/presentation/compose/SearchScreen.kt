@@ -2,7 +2,6 @@ package com.example.motsi.feature.search.impl.presentation.compose
 
 import android.content.Intent
 import android.provider.Settings
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -33,9 +32,6 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.repeatOnLifecycle
 import com.example.motsi.api.SportActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
@@ -43,7 +39,9 @@ import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.designsystem.buttons.IconTextButton
 import com.example.motsi.core.ui.designsystem.snackbar.CustomSnackbarHost
+import com.example.motsi.core.ui.designsystem.snackbar.showMotsiSnackbar
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import com.example.motsi.feature.search.impl.models.presentation.SearchIntent
@@ -92,7 +90,6 @@ internal fun SearchScreen(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun SearchScreenSuccess(
@@ -110,7 +107,6 @@ private fun SearchScreenSuccess(
     val context = LocalContext.current
     val sheetState = rememberStandardBottomSheetState(skipHiddenState = false)
     val coroutineScope = rememberCoroutineScope()
-    val lifecycleOwner = LocalLifecycleOwner.current
 
     Scaffold(
         modifier = Modifier,
@@ -138,13 +134,6 @@ private fun SearchScreenSuccess(
         snackbarHost = {
             CustomSnackbarHost(
                 hostState = snackbarHostState,
-                onAction = {
-                    try {
-                        context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-                    } catch (e: Exception) {
-                        Log.e("SearchScreen", "Cannot open location settings", e)
-                    }
-                }
             )
         }
     ) { padding ->
@@ -166,23 +155,25 @@ private fun SearchScreenSuccess(
                 sheetState = sheetState
             )
 
+            CollectEffect(viewModel.effect) { effect ->
+                when (effect) {
+                    is SearchScreenEffect.NavigateToSearchTips -> {
+                        navController.navigate(SearchTipsDestination(effect.entryData))
+                    }
 
-            LaunchedEffect(lifecycleOwner) {
-                lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                    viewModel.effect.collect { effect ->
-                        when (effect) {
-                            is SearchScreenEffect.NavigateToSearchTips -> {
-                                navController.navigate(SearchTipsDestination(effect.entryData))
-                            }
-
-                            is SearchScreenEffect.ShowSnackbar -> {
-                                snackbarHostState.showSnackbar(effect.dataSnackbar)
-                            }
-
-                            is SearchScreenEffect.NavigateToActivityDetails -> {
-                                navController.navigate(SportActivityDetailsGraph(effect.activityId))
-                            }
+                    is SearchScreenEffect.ShowSnackbar -> {
+                        coroutineScope.launch {
+                            snackbarHostState.showMotsiSnackbar(
+                                effect.dataSnackbar,
+                                onActionPerformed = {
+                                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
+                                }
+                            )
                         }
+                    }
+
+                    is SearchScreenEffect.NavigateToActivityDetails -> {
+                        navController.navigate(SportActivityDetailsGraph(effect.activityId))
                     }
                 }
             }

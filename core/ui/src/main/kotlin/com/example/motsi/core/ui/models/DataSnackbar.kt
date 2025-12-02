@@ -2,6 +2,7 @@ package com.example.motsi.core.ui.models
 
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarVisuals
+import com.example.motsi.core.common.models.domain.SnackbarType
 
 data class DataSnackbar(
     override val message: String,
@@ -9,11 +10,4 @@ data class DataSnackbar(
     override val actionLabel: String? = null,
     override val withDismissAction: Boolean = false,
     val type: SnackbarType = SnackbarType.Default,
-) : SnackbarVisuals{
-    sealed interface SnackbarType {
-        data object Default : SnackbarType
-        data object Action : SnackbarType
-        data object Success : SnackbarType
-        data object Error : SnackbarType
-    }
-}
+) : SnackbarVisuals

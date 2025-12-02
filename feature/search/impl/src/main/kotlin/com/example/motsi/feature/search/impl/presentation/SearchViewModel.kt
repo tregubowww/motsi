@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.SheetValue
 import androidx.lifecycle.viewModelScope
+import com.example.motsi.core.common.models.domain.SnackbarType
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.BaseViewModel
 import com.example.motsi.core.common.presentation.EffectHandler
@@ -172,7 +173,7 @@ internal class SearchViewModel @Inject constructor(
                 showSnackbar(
                     message = dataSnackbar?.dataSnackbarLocation?.message.orEmpty(),
                     actionLabel = dataSnackbar?.dataSnackbarLocation?.actionLabel.orEmpty(),
-                    type = DataSnackbar.SnackbarType.Action
+                    type = SnackbarType.Action
                 )
                 return
             }
@@ -214,7 +215,7 @@ internal class SearchViewModel @Inject constructor(
         }
     }
 
-    private fun showSnackbar(message: String, actionLabel: String = "", type: DataSnackbar.SnackbarType = DataSnackbar.SnackbarType.Default) {
+    private fun showSnackbar(message: String, actionLabel: String = "", type: SnackbarType = SnackbarType.Default) {
         if (message.isEmpty()) return
         SearchScreenEffect.ShowSnackbar(
             DataSnackbar(
