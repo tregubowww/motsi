@@ -26,6 +26,7 @@ import com.example.motsi.core.ui.designsystem.badge.Badge
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.feature.mysportactivities.api.MySportActivitiesGraph
 import com.example.motsi.feature.search.api.SearchGraph
+import com.example.motsi.feature.userprofile.api.UserProfileGraph
 import com.example.motsi.messages.api.MessagesGraph
 
 @Composable
@@ -71,7 +72,7 @@ internal fun BottomNavBarWidget(
         )
         BottomBarIcon(
             navController = navController,
-            route = MessagesGraph,
+            route = UserProfileGraph,
             icon = com.example.motsi.core.ui.R.drawable.ic_avatar_fill_24dp,
             badge = null,
         )

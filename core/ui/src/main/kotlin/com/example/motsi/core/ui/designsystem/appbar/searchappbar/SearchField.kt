@@ -89,7 +89,7 @@ fun SearchField(
             tint = if (textFieldValue.text.isEmpty())
                 Tokens.IconSecondary.getColor()
             else
-                Tokens.IconPrimaryReverse.getColor(),
+                Tokens.IconPrimaryInverse.getColor(),
             modifier = Modifier
                 .padding(start = 16.dp)
                 .size(20.dp)

@@ -24,9 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
@@ -37,12 +37,14 @@ import com.example.motsi.core.ui.designsystem.badge.Badge
 import com.example.motsi.core.ui.designsystem.buttons.BaseButton
 import com.example.motsi.core.ui.theming.AppResources
 import com.example.motsi.core.ui.theming.Body3Primary
+import com.example.motsi.core.ui.theming.Footnote1Primary
 import com.example.motsi.core.ui.theming.Footnote2Secondary
 import com.example.motsi.core.ui.theming.Title1Primary
-import com.example.motsi.core.ui.theming.Footnote1Primary
 import com.example.motsi.core.ui.theming.Tokens
+import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.core.ui.utils.LifecycleEffect
 import com.example.motsi.impl.models.domain.SportActivityDetailsScreenModel
+import com.example.motsi.impl.models.presentation.SportActivityDetailsScreenEffect
 import com.example.motsi.impl.models.presentation.SportActivityDetailsScreenIntent
 import com.example.motsi.impl.presentation.SportActivityDetailsViewModel
 
@@ -85,6 +87,7 @@ private fun Success(
 ) {
     val navController = LocalAppNavController.current
     val screenState by viewModel.screenState.collectAsState()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
     Scaffold(
         modifier = Modifier,
@@ -101,7 +104,11 @@ private fun Success(
                             R.drawable.ic_send_24dp,
                         iconTint =
                             Tokens.IconPrimary.getColor(),
-                        onClick = { viewModel.onScreenIntent(SportActivityDetailsScreenIntent.SendSportActivity) }
+                        onClick = {
+                            viewModel.dispatch(
+                                (SportActivityDetailsScreenIntent.ClickOnIconSendSportActivity)
+                            )
+                        }
                     ),
                     AppBarAction(
                         iconRes = if (screenState.isFavorites) {
@@ -115,13 +122,42 @@ private fun Success(
                         } else {
                             Tokens.IconPrimary.getColor()
                         },
-                        onClick = { viewModel.onScreenIntent(SportActivityDetailsScreenIntent.ChangeFavoritesStatus) }
+                        onClick = {
+                            viewModel.dispatch(
+                                SportActivityDetailsScreenIntent.ClickOnFavoritesStatus
+                            )
+                        }
                     ),
                 )
             )
         },
         bottomBar = bottomNavBar
     ) { padding ->
+
+        CollectEffect(viewModel.effect) { effect ->
+            when (effect) {
+                is SportActivityDetailsScreenEffect.SendSportActivity -> {
+                    /*TODO() отпрарвка ссылки*/
+                }
+
+                is SportActivityDetailsScreenEffect.ShowInfoAboutPrivateStatus -> {
+                    /*TODO() показать штору о приватном статусе */
+                }
+
+                is SportActivityDetailsScreenEffect.ShowInfoLevelSportActivity -> {
+                    /*TODO() показать штору об уровне*/
+                }
+
+                is SportActivityDetailsScreenEffect.AddSportActivity -> {
+                    /*TODO() добавить активность*/
+                }
+
+                is SportActivityDetailsScreenEffect.OpenChatSportActivity -> {
+                    /*TODO открыть чат активности*/
+                }
+            }
+        }
+
         Column(
             modifier = Modifier
                 .padding(padding)
@@ -168,7 +204,9 @@ private fun Success(
                                 .clickable(
                                     role = Role.Button,
                                     onClick = {
-                                        viewModel.onScreenIntent(SportActivityDetailsScreenIntent.ShowInfoAboutPrivateStatus)
+                                        viewModel.dispatch(
+                                            SportActivityDetailsScreenIntent.ClickOnIconPrivateStatus
+                                        )
                                     }
                                 )
                         )
@@ -176,10 +214,12 @@ private fun Success(
                 }
                 if (model.level != null) {
                     Badge(
-                        color =  AppResources.color(model.level.color),
+                        color = AppResources.color(model.level.color),
                         text = model.level.text,
                         onClick = {
-                            viewModel.onScreenIntent(SportActivityDetailsScreenIntent.ShowInfoLevelSportActivity)
+                            viewModel.dispatch(
+                                SportActivityDetailsScreenIntent.ClickOnIconLevelSportActivity
+                            )
                         }
                     )
                 }
@@ -212,17 +252,20 @@ private fun Success(
                     text = model.buttons.titleChat,
                     color = Tokens.BackgroundBrand,
                     onClick = {
-                        viewModel.onScreenIntent(SportActivityDetailsScreenIntent.OpenChatSportActivity)
+                        viewModel.dispatch(
+                            SportActivityDetailsScreenIntent.ClickOnOpenChatSportActivity
+                        )
                     }
                 )
                 BaseButton(
                     modifier = Modifier
-                        .weight(1f)
-                        ,
+                        .weight(1f),
                     text = model.buttons.titleAddSportActivity,
                     color = Tokens.BackgroundBrand2,
                     onClick = {
-                        viewModel.onScreenIntent(SportActivityDetailsScreenIntent.AddSportActivity)
+                        viewModel.dispatch(
+                            SportActivityDetailsScreenIntent.ClickOnAddSportActivity
+                        )
                     }
                 )
             }

@@ -7,5 +7,5 @@ import com.example.motsi.core.wizard.impl.presentation.widgets.searchwizardwidge
 
 internal interface WizardInternalApi : WizardApi {
     fun viewModelFactory(): ViewModelProvider.Factory
-    fun viewModelSearchWizardWidgetViewModelFactory(): SearchWizardWidgetViewModel.Factory
+    fun searchWizardWidgetViewModelFactory(): SearchWizardWidgetViewModel.Factory
 }

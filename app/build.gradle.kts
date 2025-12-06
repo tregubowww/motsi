@@ -54,6 +54,6 @@ dependencies {
     implementation(project(":feature:mysportactivities:impl"))
     implementation(project(":feature:search:impl"))
     implementation(project(":feature:wizard:impl"))
-
+    implementation(project(":feature:userprofile:impl"))
 
 }

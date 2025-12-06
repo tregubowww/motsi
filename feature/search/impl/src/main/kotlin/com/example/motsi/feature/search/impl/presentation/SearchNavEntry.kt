@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
+import com.example.motsi.core.common.presentation.utils.assistedViewModel
 import com.example.motsi.core.di.holder.getFeatureApi
 import com.example.motsi.core.navigation.presentation.SharedSplashScreenViewModel
 import com.example.motsi.core.navigation.presentation.FeatureNavEntry
@@ -34,8 +35,9 @@ class SearchNavEntry @Inject constructor() : FeatureNavEntry {
                 val factory = api.viewModelFactory()
 
 //                костыль для сериализации SearchFilterData может быть в более новых версиях compose navigation  поправится и добавится возможность использовать разные типы
-                val searchFilterDataNavType = MotsiNavType(SearchDestination.SearchFilterData.serializer())
-                composable<SearchDestination>( typeMap = mapOf(typeOf<SearchDestination.SearchFilterData>() to searchFilterDataNavType)) { entry ->
+                val searchFilterDataNavType =
+                    MotsiNavType(SearchDestination.SearchFilterData.serializer())
+                composable<SearchDestination>(typeMap = mapOf(typeOf<SearchDestination.SearchFilterData>() to searchFilterDataNavType)) { entry ->
 
                     val args = entry.toRoute<SearchDestination>()
                     val viewModel: SearchViewModel = viewModel(factory = factory)
@@ -52,11 +54,16 @@ class SearchNavEntry @Inject constructor() : FeatureNavEntry {
                     )
                 }
 
-                val searchTipListNavType = MotsiNavType(SearchTipsDestination.EntryData.serializer())
-                composable<SearchTipsDestination>( typeMap = mapOf(typeOf<SearchTipsDestination.EntryData>() to searchTipListNavType)) { entry ->
+                val searchTipListNavType =
+                    MotsiNavType(SearchTipsDestination.EntryData.serializer())
+                composable<SearchTipsDestination>(typeMap = mapOf(typeOf<SearchTipsDestination.EntryData>() to searchTipListNavType)) { entry ->
+                    val searchTipsViewModelFactory = api.searchTipsViewModelFactory()
                     val args = entry.toRoute<SearchTipsDestination>()
-                    val viewModel: SearchTipsViewModel = viewModel(factory = factory)
-
+                    val viewModel: SearchTipsViewModel = assistedViewModel(
+                        vmClass = SearchTipsViewModel::class.java,
+                        assistedFactory = { arg -> searchTipsViewModelFactory.create(arg) },
+                        args = args.entryData,
+                    )
                     SearchTipsScreen(
                         viewModel = viewModel,
                         bottomNavBar = bottomNavBar,

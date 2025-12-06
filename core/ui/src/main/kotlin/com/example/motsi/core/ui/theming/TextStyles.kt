@@ -6,12 +6,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
+fun Body1Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimary.getColor(),
+        style = MotsiTheme.textAppearance.Body1,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+@Composable
 fun Body3Primary(
     text: String,
     modifier: Modifier = Modifier,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis
-
 ) {
     Text(
         text = text,
@@ -120,8 +136,8 @@ fun Footnote2Primary(
     Text(
         text = text,
         modifier = modifier,
-        color = Tokens.TextPrimary.getColor(),
-        style = MotsiTheme.textAppearance.Footnote2,
+        color = Tokens.TextPrimaryInverse.getColor(),
+        style = MotsiTheme.textAppearance.Footnote1,
         maxLines = maxLines,
         overflow = overflow
     )
@@ -139,6 +155,23 @@ fun Footnote1Primary(
         text = text,
         modifier = modifier,
         color = Tokens.TextSecondary.getColor(),
+        style = MotsiTheme.textAppearance.Footnote1,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun Footnote1Secondary2(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimaryInverse.getColor(),
         style = MotsiTheme.textAppearance.Footnote1,
         maxLines = maxLines,
         overflow = overflow
@@ -192,6 +225,24 @@ fun Title1Primary(
         modifier = modifier,
         color = Tokens.TextPrimary.getColor(),
         style = MotsiTheme.textAppearance.Title1,
+        maxLines = maxLines,
+        overflow = overflow
+    )
+}
+
+@Composable
+fun Headline2Primary(
+    text: String,
+    modifier: Modifier = Modifier,
+    maxLines: Int = Int.MAX_VALUE,
+    overflow: TextOverflow = TextOverflow.Ellipsis
+
+) {
+    Text(
+        text = text,
+        modifier = modifier,
+        color = Tokens.TextPrimaryInverse.getColor(),
+        style = MotsiTheme.textAppearance.Headline2,
         maxLines = maxLines,
         overflow = overflow
     )

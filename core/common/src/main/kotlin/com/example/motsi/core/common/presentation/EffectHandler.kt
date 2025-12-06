@@ -1,8 +1,10 @@
 package com.example.motsi.core.common.presentation
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 // Эффекты
 class EffectHandler<E : Any> {
@@ -15,4 +17,11 @@ class EffectHandler<E : Any> {
 
     suspend fun emit(effect: E) = _effect.emit(effect)
     fun tryEmit(effect: E) = _effect.tryEmit(effect)
+}
+
+fun <E : Any> E.emitTo(
+    scope: CoroutineScope,
+    handler: EffectHandler<E>
+) = scope.launch {
+    handler.emit(this@emitTo)
 }

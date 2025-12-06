@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -37,7 +36,7 @@ internal fun SearchWizardWidget(
     modifier: Modifier = Modifier,
 ) {
     val api = getFeatureApi<WizardInternalApi>()
-    val assistedFactory = api.viewModelSearchWizardWidgetViewModelFactory()
+    val assistedFactory = api.searchWizardWidgetViewModelFactory()
     val viewModel = assistedViewModel(
         vmClass = SearchWizardWidgetViewModel::class.java,
         assistedFactory = { arg -> assistedFactory.create(arg) },

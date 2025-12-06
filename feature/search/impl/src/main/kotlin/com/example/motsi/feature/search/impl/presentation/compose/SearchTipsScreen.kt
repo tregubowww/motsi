@@ -30,8 +30,10 @@ import com.example.motsi.core.ui.designsystem.fields.BaseIconTextField
 import com.example.motsi.core.ui.theming.AppResources
 import com.example.motsi.core.ui.theming.Body3Brand
 import com.example.motsi.core.ui.theming.Tokens
-import com.example.motsi.core.ui.utils.LifecycleEffect
+import com.example.motsi.core.ui.utils.CollectEffect
+import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import com.example.motsi.feature.search.impl.models.presentation.SearchTipsDestination
+import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListEffect
 import com.example.motsi.feature.search.impl.models.presentation.tips.SearchTipListIntent
 import com.example.motsi.feature.search.impl.presentation.SearchTipsViewModel
 
@@ -41,10 +43,31 @@ internal fun SearchTipsScreen(
     bottomNavBar: @Composable () -> Unit,
     entryData: SearchTipsDestination.EntryData,
 ) {
-
-    LifecycleEffect(onCreate = { viewModel.initViewModel(entryData) })
     val navController = LocalAppNavController.current
-    val listTipsState by viewModel.tipListState.collectAsState()
+    val listTipsState by viewModel.screenState.collectAsState()
+
+
+    CollectEffect(viewModel.effect) { effect ->
+        when (effect) {
+            is SearchTipListEffect.NavigateToSearchScreenWithNewData -> {
+                effect.navController.popBackStack()
+                effect.navController.navigate(
+                    SearchDestination(
+                        filterData = SearchDestination.SearchFilterData(
+                            type = effect.type,
+                            value = effect.value
+                        )
+                    )
+                ) {
+                    launchSingleTop = true
+                }
+            }
+
+            is SearchTipListEffect.NavigateToBackStack -> {
+                effect.navController.popBackStack()
+            }
+        }
+    }
 
     Scaffold(
         modifier = Modifier,
@@ -76,7 +99,7 @@ internal fun SearchTipsScreen(
                         itemContent = { index, item ->
                             BaseIconTextField(
                                 onFieldClick = {
-                                    viewModel.onTipListIntent(
+                                    viewModel.dispatch(
                                         SearchTipListIntent.TipClick(
                                             navController,
                                             item.type,
@@ -84,7 +107,7 @@ internal fun SearchTipsScreen(
                                         )
                                     )
                                 },
-                                icon =  AppResources.iconRes(item.icon),
+                                icon = AppResources.iconRes(item.icon),
                                 title = item.tipTitle,
                                 subtitle = item.categoryTitle,
                                 isDividerVisible = index != state.data.tipList.lastIndex
@@ -102,8 +125,6 @@ internal fun SearchTipsScreen(
                 //nothing
             }
         }
-
-
     }
 }
 
@@ -128,10 +149,10 @@ private fun TipListAppBar(
                 .weight(1f)
                 .padding(horizontal = 16.dp, vertical = 6.dp),
             query = searchQuery,
-            onTextChange = { text -> viewModel.onTipListIntent(SearchTipListIntent.OnSearchQueryChange(text)) },
+            onTextChange = { text -> viewModel.dispatch(SearchTipListIntent.OnSearchQueryChange(text)) },
             hint = searchHint,
             onKeyboardSearchButtonClick = { text ->
-                viewModel.onTipListIntent(
+                viewModel.dispatch(
                     SearchTipListIntent.TipClick(navController, null, text)
                 )
             }
@@ -141,7 +162,7 @@ private fun TipListAppBar(
             modifier = Modifier
                 .padding(end = 16.dp)
                 .clickable(onClick = {
-                    viewModel.onTipListIntent(
+                    viewModel.dispatch(
                         SearchTipListIntent.BackClick(navController)
                     )
                 }),

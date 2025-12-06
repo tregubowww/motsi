@@ -6,7 +6,6 @@ import com.example.motsi.core.di.FeatureScope
 import com.example.motsi.core.navigation.presentation.SharedSplashScreenViewModel
 import com.example.motsi.core.di.viewmodel.ViewModelFactory
 import com.example.motsi.core.di.viewmodel.ViewModelKey
-import com.example.motsi.feature.search.impl.presentation.SearchTipsViewModel
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
 import dagger.Binds
 import dagger.Module
@@ -24,11 +23,6 @@ internal interface SearchViewModelModule {
     @IntoMap
     @ViewModelKey(SearchViewModel::class)
     fun bindSearchViewModel(vm: SearchViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(SearchTipsViewModel::class)
-    fun bindSearchTipsViewModel(vm: SearchTipsViewModel): ViewModel
 
     @FeatureScope
     @Binds

@@ -1,7 +1,6 @@
 package com.example.motsi.feature.search.impl.presentation.compose
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -11,25 +10,20 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import coil.compose.AsyncImage
+import com.example.motsi.core.ui.designsystem.userpics.UserPics
 import com.example.motsi.core.ui.theming.AppResources
 import com.example.motsi.core.ui.theming.Body3Primary
 import com.example.motsi.core.ui.theming.Body3Secondary
@@ -71,7 +65,8 @@ internal fun ItemSportActivity(
                 modifier = Modifier
                     .weight(1f)
                     .padding(12.dp),
-                sportActivityItem.participantList
+                iconSize = 50,
+                urlPicsList = sportActivityItem.participantList.map { it.urlUserPic }
             )
             Column {
                 Icon(
@@ -166,48 +161,6 @@ internal fun ItemSportActivity(
                     tint = Tokens.BackgroundSecondary.getColor(),
                     modifier = Modifier
                         .size(50.dp)
-                )
-            }
-        }
-    }
-}
-
-@Composable
-private fun UserPics(
-    modifier: Modifier,
-    participantList: List<SearchSportActivityListModel.SportActivity.Participant>
-) {
-    Box(modifier = modifier) {
-        participantList.take(9).forEachIndexed { index, item ->
-            val offset = if (index < 6) {
-                (index * 35).dp
-            } else {
-                ((6 * 35) + ((index - 6) * 15)).dp
-            }
-
-            Box(
-                modifier = Modifier
-                    .offset(x = offset)
-                    .zIndex((participantList.size - index).toFloat())
-                    .size(52.dp)
-                    .border(
-                        width = 2.dp,
-                        color = Tokens.BackgroundSecondary.getColor(),
-                        shape = CircleShape
-                    )
-                    .clip(CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                AsyncImage(
-                    model = item.urlUserPic,
-                    contentDescription = null,
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(50.dp)
-                        .clip(CircleShape)
-                        .background(Tokens.BackgroundSecondary.getColor()),
-                    error = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp),
-                    placeholder = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp)
                 )
             }
         }

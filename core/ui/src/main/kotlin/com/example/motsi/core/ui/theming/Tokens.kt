@@ -5,6 +5,7 @@ enum class Tokens : ColorToken {
     Background,
     BackgroundBrand,
     BackgroundBrand2,
+    BackgroundGray,
     BackgroundPrimary,
     BackgroundSecondary,
     BackgroundSecondary2,
@@ -18,7 +19,9 @@ enum class Tokens : ColorToken {
     IconBrand2,
     IconFavorites,
     IconPrimary,
-    IconPrimaryReverse,
+    IconWhite,
+    IconPrimaryInverse,
+    IconRating,
     IconSecondary,
     ;
 
