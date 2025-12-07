@@ -53,8 +53,8 @@ fun BaseAppBar(
         }
         Title1Primary(modifier = Modifier
             .weight(1f)
-            .wrapContentWidth(Alignment.CenterHorizontally)
-            .padding(horizontal = 8.dp), text = title)
+            .wrapContentWidth(Alignment.Start)
+            .padding(horizontal = 16.dp), text = title)
         Row(modifier = Modifier.padding(end = 16.dp)) {
             if (actions.isEmpty()) {
                 Spacer(modifier = Modifier.padding(end = 24.dp))

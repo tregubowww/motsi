@@ -18,8 +18,8 @@ import com.example.motsi.core.ui.designsystem.appbar.searchappbar.BaseAppBar
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.feature.userprofile.impl.models.domain.UserProfileScreenModel
-import com.example.motsi.feature.userprofile.impl.models.presentation.UserProfileScreenIntent
 import com.example.motsi.feature.userprofile.impl.models.presentation.UserProfileScreenEffect
+import com.example.motsi.feature.userprofile.impl.models.presentation.UserProfileScreenIntent
 import com.example.motsi.feature.userprofile.impl.presentation.UserProfileViewModel
 import com.example.motsi.feature.userprofile.impl.presentation.compose.widgets.FollowersWidget
 import com.example.motsi.feature.userprofile.impl.presentation.compose.widgets.SportTypesWidget
@@ -68,6 +68,7 @@ private fun SuccessUserProfileScreen(
         topBar = {
             BaseAppBar(
                 modifier = Modifier.background(color = Tokens.Background.getColor()),
+                title = screenModel.userInformation.name,
                 actions = setOf(
                     AppBarAction(
                         iconRes = R.drawable.ic_send_24dp,
@@ -120,7 +121,7 @@ private fun SuccessUserProfileScreen(
 
         Column(
             modifier = Modifier
-                .background(Tokens.BackgroundSecondary2.getColor())
+                .background(Tokens.BackgroundSecondary.getColor())
                 .padding(padding)
                 .verticalScroll(scrollState)
                 .fillMaxSize()
@@ -132,3 +133,5 @@ private fun SuccessUserProfileScreen(
         }
     }
 }
+
+

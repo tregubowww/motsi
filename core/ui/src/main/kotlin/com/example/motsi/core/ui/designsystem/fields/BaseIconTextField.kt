@@ -2,6 +2,7 @@ package com.example.motsi.core.ui.designsystem.fields
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
@@ -48,11 +49,12 @@ fun BaseIconTextField(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(horizontal = 16.dp)
+                .padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
             Title1Primary(text = title, maxLines = 2)
-            subtitle?.let {
-                Body3Secondary(text = it, maxLines = 1)
+            if (subtitle?.isNotBlank() == true){
+                Body3Secondary(text = subtitle, maxLines = 1)
             }
         }
 
@@ -67,7 +69,7 @@ fun BaseIconTextField(
         HorizontalDivider(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 50.dp, end = 16.dp),
+                .padding(start = 16.dp, end = 16.dp),
             color = Tokens.TextSecondary.getColor(),
         )
     }

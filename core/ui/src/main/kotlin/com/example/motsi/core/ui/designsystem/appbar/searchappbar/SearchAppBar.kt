@@ -12,14 +12,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.motsi.core.ui.R
+import com.example.motsi.core.ui.theming.Tokens
 
 @Composable
 fun SearchAppBar(
     modifier: Modifier = Modifier,
+    backgroundColorSearchField: Color = Tokens.BackgroundSecondary.getColor(),
     onTextChange: (String) -> Unit = {},
     navigationItem: AppBarAction? = null,
     textSearch: String = "",
@@ -52,6 +55,7 @@ fun SearchAppBar(
         }
 
         SearchField(
+            background = backgroundColorSearchField,
             modifier = Modifier
                 .weight(1f)
                 .padding(horizontal = 8.dp, vertical = 6.dp),

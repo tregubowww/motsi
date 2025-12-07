@@ -8,8 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,7 +17,7 @@ import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.common.presentation.utils.assistedViewModel
 import com.example.motsi.core.di.holder.getFeatureApi
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchField
-import com.example.motsi.core.ui.theming.Title1Primary
+import com.example.motsi.core.ui.designsystem.chip.TipChip
 import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.core.wizard.impl.di.WizardInternalApi
 import com.example.motsi.core.wizard.impl.models.domain.WizardScreenModel
@@ -86,20 +84,18 @@ internal fun SearchWizardWidget(
                 FlowRow(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        .padding(horizontal =  16.dp, vertical = 8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     state.data.forEach { item ->
-                        Button(
-                            onClick = { viewModel.dispatch(SearchWizardIntent.ClickTip(item)) },
-//                                colors = colors,
-//                                shape = shape,
-//                                contentPadding = contentPadding,
-                            elevation = ButtonDefaults.buttonElevation(0.dp) // плоский стиль, как у чипа
-                        ) {
-                            Title1Primary(text = item.title)
-                        }
+
+                        TipChip(
+                            text = item.title,
+                            onClick = {
+                                viewModel.dispatch(SearchWizardIntent.ClickTip(item))
+                            }
+                        )
                     }
                 }
             }

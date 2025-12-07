@@ -27,7 +27,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.motsi.core.ui.R
-import com.example.motsi.core.ui.theming.Headline2Primary
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.feature.userprofile.impl.models.domain.UserProfileScreenModel
 import kotlinx.coroutines.launch
@@ -117,13 +116,6 @@ internal fun UserPhotoWidget(
                 modifier = Modifier.align(Alignment.BottomStart),
                 screenWidth = screenWidth
             )
-
-            Headline2Primary(
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(16.dp),
-                text = screenModel.userInformation.name, maxLines = 1
-            )
         }
     }
 }
@@ -139,11 +131,11 @@ private fun BlurBox(
             .height(screenWidth / 5)
             .background(
                 brush = Brush.verticalGradient(
-                    0.0f to Tokens.BackgroundGray.getColor().copy(alpha = 0f),
-                    0.2f to Tokens.BackgroundGray.getColor().copy(alpha = 0.4f),
-                    0.4f to Tokens.BackgroundGray.getColor().copy(alpha = 0.6f),
-                    0.6f to Tokens.BackgroundGray.getColor().copy(alpha = 0.8f),
-                    1.0f to Tokens.BackgroundGray.getColor()
+                    0.0f to Tokens.BackgroundSecondary.getColor().copy(alpha = 0f),
+                    0.2f to Tokens.BackgroundSecondary.getColor().copy(alpha = 0.4f),
+                    0.4f to Tokens.BackgroundSecondary.getColor().copy(alpha = 0.6f),
+                    0.6f to Tokens.BackgroundSecondary.getColor().copy(alpha = 0.8f),
+                    1.0f to Tokens.BackgroundSecondary.getColor()
                 )
             )
     )

@@ -6,7 +6,6 @@ fun darkThemeTokensMap(): Map<Tokens, Color> = mapOf(
     Tokens.Background to Black,
     Tokens.BackgroundBrand to Blue2,
     Tokens.BackgroundBrand2 to Lime3,
-    Tokens.BackgroundGray to Gray7,
     Tokens.BackgroundPrimary to White,
     Tokens.BackgroundSecondary to Graphite1,
     Tokens.BackgroundSecondary2 to Graphite2,

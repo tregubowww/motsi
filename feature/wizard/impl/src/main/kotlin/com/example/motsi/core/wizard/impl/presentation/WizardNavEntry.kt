@@ -5,13 +5,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.toRoute
 import com.example.motsi.core.di.holder.getFeatureApi
 import com.example.motsi.core.navigation.presentation.FeatureNavEntry
 import com.example.motsi.core.navigation.presentation.featureEntry
 import com.example.motsi.core.wizard.api.WizardGraph
 import com.example.motsi.core.wizard.impl.di.WizardHolder
 import com.example.motsi.core.wizard.impl.di.WizardInternalApi
-import com.example.motsi.core.wizard.impl.models.presentation.WizardDestination
+import com.example.motsi.core.wizard.impl.models.presentation.WizardStepDestination
 import javax.inject.Inject
 
 class WizardNavEntry @Inject constructor() : FeatureNavEntry {
@@ -20,22 +21,31 @@ class WizardNavEntry @Inject constructor() : FeatureNavEntry {
         bottomNavBar: @Composable () -> Unit
     ) {
         featureEntry<WizardInternalApi>(WizardHolder) {
-            navigation<WizardGraph>(startDestination = WizardDestination) {
+
+            navigation<WizardGraph>(
+                startDestination = WizardStepDestination(step = 1)
+            ) {
+
                 val api = getFeatureApi<WizardInternalApi>()
                 val factory = api.viewModelFactory()
 
-                composable<WizardDestination> {
-                    val viewModel: WizardScreenViewModel =
-                        viewModel<WizardScreenViewModel>(factory = factory)
+                composable<WizardStepDestination> { entry ->
+                    val step =
+                        entry.toRoute<WizardStepDestination>().step
 
-                    WizardScreen(
-                        viewModel = viewModel,
+                    val viewModel: WizardScreenViewModel =
+                        viewModel(factory = factory)
+
+                    WizardStepScreen(
+                        step = step,
+                        viewModel = viewModel
                     )
                 }
             }
         }
     }
 }
+
 
 
 

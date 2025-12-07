@@ -4,8 +4,8 @@ package com.example.motsi.core.ui.theming
 enum class Tokens : ColorToken {
     Background,
     BackgroundBrand,
+    BackgroundBrandChip,
     BackgroundBrand2,
-    BackgroundGray,
     BackgroundPrimary,
     BackgroundSecondary,
     BackgroundSecondary2,

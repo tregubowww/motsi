@@ -124,6 +124,7 @@ private fun SearchScreenSuccess(
                     )
 
                 },
+                backgroundColorSearchField = Tokens.Background.getColor(),
                 hint = searchHint,
                 textSearch = searchQuery,
                 onTextChange = {},
@@ -148,7 +149,7 @@ private fun SearchScreenSuccess(
                 showWidgetFullScreen = { coroutineScope.launch { sheetState.hide() } }
             )
 
-            ListActivity(
+            ListSportActivity(
                 viewModel = viewModel,
                 padding = padding,
                 screenModel = model,
@@ -183,7 +184,7 @@ private fun SearchScreenSuccess(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ListActivity(
+private fun ListSportActivity(
     viewModel: SearchViewModel,
     padding: PaddingValues,
     screenModel: SearchScreenModel,
@@ -249,16 +250,14 @@ private fun ListActivity(
                                 .fillMaxSize()
                                 .background(Tokens.Background.getColor()),
                             userScrollEnabled = screenState.screenState == SearchScreenState.ScreenState.LIST,
-                            contentPadding = PaddingValues(8.dp)
+                            contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             items(
                                 items = listActivityState.data.sportActivityList,
                                 key = { item -> item.id }
                             ) { item ->
                                 ItemSportActivity(
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .padding(top = 16.dp),
+                                    modifier = Modifier.padding(top = 12.dp),
                                     sportActivityItem = item,
                                     onClick = {
                                         viewModel.dispatch(

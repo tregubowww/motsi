@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.motsi.core.common.models.data.ResultWrapper
 import com.example.motsi.core.common.models.presentation.LoadingState
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.example.motsi.core.common.presentation.UiReducer
 
 /**
  * Создаёт ViewModel через AssistedInject-фабрику в Compose.
@@ -31,20 +31,24 @@ fun <VM : ViewModel, Arg> assistedViewModel(
 )
 
 fun <T, E> ResultWrapper<T, E>.handleState(
-    stateFlow: MutableStateFlow<LoadingState<T, E>>
+    stateFlow: UiReducer<LoadingState<T, E>>
 ) {
     when (this) {
-        is ResultWrapper.Success -> stateFlow.value = LoadingState.Success(value)
-        is ResultWrapper.Error -> stateFlow.value = LoadingState.Error(error)
+        is ResultWrapper.Success -> stateFlow.update { LoadingState.Success(value) }
+        is ResultWrapper.Error -> stateFlow.update { LoadingState.Error(error) }
     }
 }
 
-fun <T, E> ResultWrapper<T, E>.handleState(eventOnSuccess:(T)-> Unit = {}, eventOnError:(E)-> Unit = {}) =
+fun <T, E> ResultWrapper<T, E>.handleState(
+    eventOnSuccess: (T) -> Unit = {},
+    eventOnError: (E) -> Unit = {}
+) =
     when (this) {
         is ResultWrapper.Success -> {
             eventOnSuccess.invoke(value)
             LoadingState.Success(value)
         }
+
         is ResultWrapper.Error -> {
             eventOnError.invoke(error)
             LoadingState.Error(error)

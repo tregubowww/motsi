@@ -18,10 +18,10 @@ internal class MySportActivitiesInteractorImpl @Inject constructor() :
                 ),
                 pageList = persistentListOf(
                     MySportActivitiesModel.Page(
-                        title = "title"
+                        title = "Участие"
                     ),
                     MySportActivitiesModel.Page(
-                        title = "title"
+                        title = "Проведение"
                     )
                 )
             )

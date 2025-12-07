@@ -39,7 +39,6 @@ internal class WizardInteractorImpl @Inject constructor() :
                                 validators = null,
                                 properties = mapOf(
                                     "TITLE_KEY" to "Соревнования",
-                                    "ICON_KEY" to "ic_filter_24",
                                     "DIVIDER_FLAG_KEY" to "true"
                                 ),
                                 items = null,
@@ -54,8 +53,7 @@ internal class WizardInteractorImpl @Inject constructor() :
                                 type = "IconTextWidget",
                                 validators = null,
                                 properties = mapOf(
-                                    "TITLE_KEY" to "Соревнования",
-                                    "ICON_KEY" to "ic_filter_24",
+                                    "TITLE_KEY" to "Тренировка",
                                     "DIVIDER_FLAG_KEY" to "false"
                                 ),
                                 items = null,
@@ -93,8 +91,34 @@ internal class WizardInteractorImpl @Inject constructor() :
                                 items = persistentListOf(
                                     Item(
                                         id = "1",
-                                        title = "Соревнования",
+                                        title = "Бег по шоссе",
                                         icon = "ic_filter_24",
+                                        actions = mapOf(
+                                            "ON_FIELD_CLICK_ACTION_KEY" to Action.NextScreen(
+                                                properties = mapOf("id" to "1")
+                                            )
+                                        ),
+                                        subtitle = null,
+                                        description = null,
+                                        validators = null,
+                                    ),
+                                    Item(
+                                        id = "2",
+                                        title = "Бег по стадиону",
+                                        icon = null,
+                                        actions = mapOf(
+                                            "ON_FIELD_CLICK_ACTION_KEY" to Action.NextScreen(
+                                                properties = mapOf("id" to "1")
+                                            )
+                                        ),
+                                        subtitle = null,
+                                        description = null,
+                                        validators = null,
+                                    ),
+                                    Item(
+                                        id = "3",
+                                        title = "Трэйлранинг",
+                                        icon = null,
                                         actions = mapOf(
                                             "ON_FIELD_CLICK_ACTION_KEY" to Action.NextScreen(
                                                 properties = mapOf("id" to "1")

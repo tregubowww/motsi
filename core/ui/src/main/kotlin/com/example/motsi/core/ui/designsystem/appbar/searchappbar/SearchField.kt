@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
@@ -46,6 +47,7 @@ fun SearchField(
     onTextChange: (String) -> Unit,
     modifier: Modifier = Modifier,
     hint: String,
+    background: Color = Tokens.Background.getColor(),
     isEnabled: Boolean = true,
     isNeedToFocused: Boolean = true,
     keyboardOptions: KeyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
@@ -80,7 +82,7 @@ fun SearchField(
                 onClick = onSearchFieldClick,
                 role = Role.Button
             )
-            .background(Tokens.BackgroundSecondary.getColor()),
+            .background(background),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
