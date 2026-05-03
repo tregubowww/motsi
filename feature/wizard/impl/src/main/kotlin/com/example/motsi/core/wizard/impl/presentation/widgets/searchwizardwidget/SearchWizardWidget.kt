@@ -18,19 +18,20 @@ import com.example.motsi.core.common.presentation.utils.assistedViewModel
 import com.example.motsi.core.di.holder.getFeatureApi
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchField
 import com.example.motsi.core.ui.designsystem.chip.TipChip
+import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.core.wizard.impl.di.WizardInternalApi
-import com.example.motsi.core.wizard.impl.models.domain.WizardScreenModel
+import com.example.motsi.core.wizard.impl.models.domain.WizardCoordinatorModel
 import com.example.motsi.core.wizard.impl.models.presentation.searchwizard.SearchWizardEffect
 import com.example.motsi.core.wizard.impl.models.presentation.searchwizard.SearchWizardIntent
-import com.example.motsi.core.wizard.impl.presentation.consts.FIELD_ACTION_KEY
+import com.example.motsi.core.wizard.impl.presentation.consts.WIZARD_FIELD_ACTION_KEY
 
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 internal fun SearchWizardWidget(
-    widgetModel: WizardScreenModel.Widget,
-    onAction: (action: WizardScreenModel.Action) -> Unit,
+    widgetModel: WizardCoordinatorModel.Widget,
+    onAction: (action: WizardCoordinatorModel.Action) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val api = getFeatureApi<WizardInternalApi>()
@@ -46,7 +47,7 @@ internal fun SearchWizardWidget(
     CollectEffect(viewModel.effect) { effect ->
         when (effect) {
             is SearchWizardEffect.OnClickItem -> {
-                effect.item.actions?.get(FIELD_ACTION_KEY)?.let { onAction.invoke(it) }
+                effect.item.actions?.get(WIZARD_FIELD_ACTION_KEY)?.let { onAction.invoke(it) }
             }
         }
     }
@@ -59,6 +60,7 @@ internal fun SearchWizardWidget(
             modifier = Modifier
                 .padding(horizontal = 16.dp, vertical = 6.dp)
                 .height(45.dp),
+            background = Tokens.BackgroundSecondary.getColor(),
             query = "",
             onTextChange = { text ->
                 viewModel.dispatch(

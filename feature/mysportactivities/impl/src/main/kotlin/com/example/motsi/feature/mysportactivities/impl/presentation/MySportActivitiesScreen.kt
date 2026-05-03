@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,12 +14,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -31,10 +34,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.motsi.api.SportActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
 import com.example.motsi.core.navigation.presentation.compose.LocalAppNavController
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.BaseAppBar
 import com.example.motsi.core.ui.designsystem.buttons.BaseButton
+import com.example.motsi.core.ui.designsystem.fields.ItemSportActivity
+import com.example.motsi.core.ui.models.ItemSportActivityButton
+import com.example.motsi.core.ui.theming.AppResources
 import com.example.motsi.core.ui.theming.Title1Primary
 import com.example.motsi.core.ui.theming.Title1Secondary
 import com.example.motsi.core.ui.theming.Tokens
@@ -76,10 +83,10 @@ internal fun MySportActivitiesScreen(
                             modifier = Modifier
                                 .background(Tokens.Background.getColor())
                                 .padding(16.dp),
-                            text = state.data.addSportActivity.bottomBarButtonTitle,
+                            text = state.data.addSportActivityButton.bottomBarButtonTitle,
                             color = Tokens.BackgroundBrand,
                             onClick = {
-                                viewModel.dispatch(MySportActivitiesIntent.AddSportActivity)
+                                viewModel.dispatch(MySportActivitiesIntent.ClickAddSportActivityButton)
                             }
                         )
                         bottomNavBar.invoke()
@@ -91,15 +98,21 @@ internal fun MySportActivitiesScreen(
                         is MySportActivitiesScreenEffect.OpenAddSportActivityScreen -> {
                             navController.navigate(WizardGraph(effect.url))
                         }
+
+                        is MySportActivitiesScreenEffect.OpenSportActivityDetailsScreen -> {
+                            navController.navigate(SportActivityDetailsGraph(effect.id))
+                        }
                     }
                 }
                 Column(
                     modifier = Modifier
+                        .background(color = Tokens.Background.getColor())
                         .padding(padding)
+                        .padding(top = 12.dp)
                         .fillMaxSize(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Pager(state.data.pageList)
+                    Pager(state.data.pageList, viewModel)
                 }
             }
         }
@@ -113,10 +126,13 @@ internal fun MySportActivitiesScreen(
 }
 
 @Composable
-internal fun Pager(pages: ImmutableList<MySportActivitiesModel.Page>) {
+internal fun Pager(
+    pages: ImmutableList<MySportActivitiesModel.Page>,
+    viewModel: MySportActivitiesViewModel
+) {
     val pagerState = rememberPagerState { pages.size }
     val coroutine = rememberCoroutineScope()
-
+    val scrollState = rememberLazyListState()
     Column(
         Modifier
             .fillMaxSize()
@@ -136,12 +152,45 @@ internal fun Pager(pages: ImmutableList<MySportActivitiesModel.Page>) {
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.weight(1f)
-        ) { page ->
-            Box(
-                Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+        ) { _ ->
+            LazyColumn(
+                state = scrollState,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Tokens.Background.getColor()),
+                contentPadding = PaddingValues(vertical = 8.dp)
             ) {
-                Text("Страница $page")
+                val page = pages[pagerState.currentPage]
+                items(
+                    items = page.items,
+                    key = { item -> item.id }
+                ) { item ->
+                    ItemSportActivity(
+                        urlPicsList = item.participantList.map { it.urlUserPic },
+                        title = item.title,
+                        onClickItem = {
+                            viewModel.dispatch(
+                                    MySportActivitiesIntent.ClickSportActivityItem(
+                                        id = item.id
+                                    )
+                            )
+                        },
+                        subtitle = item.subtitle,
+                        subtitleIcon = ItemSportActivityButton(
+                            icon = AppResources.icon(item.descriptionActivityIcon),
+                            tint = Tokens.IconPrimary.getColor(),
+                            onClick = {
+                                TODO("клик на кнопке приватности")
+                            }
+                        ),
+                        description = item.description,
+                        logo = ItemSportActivityButton(
+                            icon = AppResources.icon(item.logoIcon),
+                            tint = AppResources.color(item.logoColor),
+                            onClick = {}
+                        )
+                    )
+                }
             }
         }
     }

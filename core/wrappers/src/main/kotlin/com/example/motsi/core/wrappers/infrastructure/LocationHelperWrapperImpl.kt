@@ -7,24 +7,19 @@ import android.location.LocationManager
 import android.os.Build
 import androidx.annotation.RequiresPermission
 import androidx.core.content.ContextCompat
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flow
-import javax.inject.Inject
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
-import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.google.android.gms.tasks.CancellationTokenSource
+import kotlinx.coroutines.suspendCancellableCoroutine
+import javax.inject.Inject
+import kotlin.coroutines.resume
 
 class LocationHelperWrapperImpl @Inject constructor(
     private val context: Context
 ): LocationHelperWrapper {
 
     // Проверка разрешений
-    override fun hasLocationPermission(): Boolean {
+    private fun hasLocationPermission(): Boolean {
         return ContextCompat.checkSelfPermission(
             context,
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -37,32 +32,38 @@ class LocationHelperWrapperImpl @Inject constructor(
 
     // Получение текущего местоположения (suspend)
     @RequiresPermission(anyOf = [Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION])
-    override suspend fun getCurrentLocationOrNull(): Location? = suspendCancellableCoroutine { cont ->
-        val fusedLocationClient: FusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(context)
+    override suspend fun getCurrentLocationOrNull(): Location? =
+        suspendCancellableCoroutine { cont ->
+            val client = LocationServices.getFusedLocationProviderClient(context)
 
-        if (!hasLocationPermission()) {
-            cont.resume(null)
-            return@suspendCancellableCoroutine
-        }
+            if (!hasLocationPermission()) {
+                cont.resume(null)
+                return@suspendCancellableCoroutine
+            }
 
-        fusedLocationClient.getCurrentLocation(
-            Priority.PRIORITY_HIGH_ACCURACY,
-            CancellationTokenSource().token
-        ).addOnSuccessListener { location ->
-            cont.resume(location)
-        }.addOnFailureListener {
-            cont.resume(null)
-        }
-    }
+            val tokenSource = CancellationTokenSource()
+            cont.invokeOnCancellation { tokenSource.cancel() }
 
-    // Flow для отслеживания включения/выключения геолокации
-    override fun locationEnabledFlow(pollIntervalMs: Long): Flow<Boolean> = flow {
-        while (true) {
-            emit(isLocationEnabled())
-            delay(pollIntervalMs)
+            client.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                tokenSource.token
+            ).addOnSuccessListener { location ->
+                if (location != null) {
+                    cont.resume(location)
+                } else {
+                    // fallback
+                    client.lastLocation
+                        .addOnSuccessListener { last ->
+                            cont.resume(last)
+                        }
+                        .addOnFailureListener {
+                            cont.resume(null)
+                        }
+                }
+            }.addOnFailureListener {
+                cont.resume(null)
+            }
         }
-    }.distinctUntilChanged()
 
     // Проверка включена ли геолокация
     override fun isLocationEnabled(): Boolean {

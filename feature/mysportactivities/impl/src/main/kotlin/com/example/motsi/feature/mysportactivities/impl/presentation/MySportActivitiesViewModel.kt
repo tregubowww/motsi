@@ -34,10 +34,9 @@ internal class MySportActivitiesViewModel @Inject constructor(
 
     override fun dispatch(intent: MySportActivitiesIntent) {
         when (intent) {
-            is MySportActivitiesIntent.AddSportActivity -> {
+            is MySportActivitiesIntent.ClickAddSportActivityButton -> {
                 val url =
-                    (screenState.value.loadingState as? LoadingState.Success)?.data?.addSportActivity?.urlStartWizardAddSportActivity
-
+                    (screenState.value.loadingState as? LoadingState.Success)?.data?.addSportActivityButton?.urlStartWizardAddSportActivity
                 url?.let {
                     viewModelScope.launch {
                         effectHandler.emit(
@@ -46,6 +45,16 @@ internal class MySportActivitiesViewModel @Inject constructor(
                             )
                         )
                     }
+                }
+            }
+
+            is MySportActivitiesIntent.ClickSportActivityItem -> {
+                viewModelScope.launch {
+                    effectHandler.emit(
+                        MySportActivitiesScreenEffect.OpenSportActivityDetailsScreen(
+                            intent.id
+                        )
+                    )
                 }
             }
         }

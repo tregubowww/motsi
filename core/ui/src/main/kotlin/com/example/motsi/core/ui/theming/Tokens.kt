@@ -3,6 +3,7 @@ package com.example.motsi.core.ui.theming
 @kotlinx.parcelize.Parcelize
 enum class Tokens : ColorToken {
     Background,
+    Transparent,
     BackgroundBrand,
     BackgroundBrandChip,
     BackgroundBrand2,

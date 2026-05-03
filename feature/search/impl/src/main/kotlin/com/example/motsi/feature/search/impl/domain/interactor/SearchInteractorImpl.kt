@@ -2,11 +2,11 @@ package com.example.motsi.feature.search.impl.domain.interactor
 
 import com.example.motsi.core.common.models.data.ResultWrapper
 import com.example.motsi.core.network.models.domain.MotsiError
+import com.example.motsi.feature.search.impl.models.domain.SearchFilterModel
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
 import com.example.motsi.feature.search.impl.models.domain.SearchSportActivityListModel
 import com.example.motsi.feature.search.impl.models.domain.SearchTip
 import com.example.motsi.feature.search.impl.models.domain.SearchTipsListModel
-import com.example.motsi.feature.search.impl.models.presentation.SearchDestination
 import kotlinx.collections.immutable.persistentListOf
 import javax.inject.Inject
 
@@ -39,15 +39,46 @@ internal class SearchInteractorImpl @Inject constructor(
         )
 
 
-    override suspend fun getSportActivityList(filterData: SearchDestination.SearchFilterData): ResultWrapper<SearchSportActivityListModel, MotsiError> {
+    override suspend fun getSportActivityList(filterData: SearchFilterModel): ResultWrapper<SearchSportActivityListModel, MotsiError> {
 //        = repository.getSearchList()
         return ResultWrapper.Success(
             SearchSportActivityListModel(
                 searchQuery = null,
                 searchHint = "Поиск в Москве",
                 cityLocation = SearchSportActivityListModel.SportActivity.CityLocation(
-                    Pair(44.791101, 38.621272),
+                    Pair(44.597459, 38.036565),
                     14.0
+                ),
+                mapData = SearchSportActivityListModel.MapData(
+                    zoom = 14f,
+                    markers = persistentListOf(
+                        SearchSportActivityListModel.MapData.Marker(
+                            id = "1",
+                            locationPoint = Pair(44.597632, 38.034804),
+                            description = "" ,
+                            type = "Dot"
+                        ),
+                        SearchSportActivityListModel.MapData.Marker(
+                            id = "2",
+                            locationPoint = Pair(44.597041, 38.035365),
+                            description = "" ,
+                            type = "Dot"
+                        ) ,
+                        SearchSportActivityListModel.MapData.Marker(
+                            id = "3",
+                            locationPoint = Pair(44.597459, 38.036565),
+                            description = "" ,
+                            type = "Dot"
+                        )
+                        ,
+                        SearchSportActivityListModel.MapData.Marker(
+                            id = "4",
+                            locationPoint = Pair(44.596253, 38.034183),
+                            description = "" ,
+                            type = "Dot"
+                        )
+                    ),
+
                 ),
 
                 sportActivityList = persistentListOf(
@@ -92,18 +123,15 @@ internal class SearchInteractorImpl @Inject constructor(
                                 "https://bookmaker-ratings.ru/wp-content/uploads/2017/07/1498632318_theboodlestenniseventw0nh96ark6fx.jpg",
                             )
                         ),
-                        typeSport = "Бег",
-                        descriptionActivity = "Интервальная тренировка",
-                        dateText = "18 августа 14:00",
-                        locationText = "Крымская ул. 22",
-                        iconTypeSport = "ic_sport_type_run_24",
-                        colorTypeSport = "type_sport_color_run",
+                        title = "Бег",
+                        subtitle = "Интервальная тренировка",
+                        description = "18 августа 14:00 \n Крымская ул. 22",
+                        logoIcon = "ic_sport_type_run_24",
+                        logoColor = "type_sport_color_run",
                         privateStatus = SearchSportActivityListModel.SportActivity.PrivateStatus.PRIVATE,
-                        mapData = SearchSportActivityListModel.SportActivity.MapData(
-                            locationPoint = Pair(44.785820, 38.681040),
-                            zoom = 14f,
-                            iconMark = "ic_clock_history_20"
-                        )
+                        descriptionActivityIcon = "ic_lock_fill_24",
+                        isLiked = false,
+                        isAdd = false,
                     ),
                     SearchSportActivityListModel.SportActivity(
                         id = "2",
@@ -124,18 +152,15 @@ internal class SearchInteractorImpl @Inject constructor(
                                 "https://avatars.mds.yandex.net/i?id=402ace28b60f991145720a96a00d0a9b_l-5434761-images-thumbs&n=13"
                             )
                         ),
-                        iconTypeSport = "ic_sport_type_run_24",
-                        typeSport = "Бег",
-                        descriptionActivity = "Интервальная тренировка",
-                        dateText = "18 августа 14:00",
-                        locationText = "Крымская ул. 22",
-                        colorTypeSport = "type_sport_color_run",
+                        logoIcon = "ic_sport_type_run_24",
+                        title = "Бег",
+                        subtitle = "Интервальная тренировка",
+                        descriptionActivityIcon = "ic_lock_fill_24",
+                        description = "18 августа 14:00 \n Крымская ул. 22",
+                        logoColor = "type_sport_color_run",
                         privateStatus = SearchSportActivityListModel.SportActivity.PrivateStatus.OPEN,
-                        mapData = SearchSportActivityListModel.SportActivity.MapData(
-                            locationPoint = Pair(44.792234, 38.650809),
-                            zoom = 14f,
-                            iconMark = "ic_filter_24"
-                        )
+                        isLiked = true,
+                        isAdd = false,
                     ),
                     SearchSportActivityListModel.SportActivity(
                         id = "3",
@@ -156,18 +181,15 @@ internal class SearchInteractorImpl @Inject constructor(
                                 "https://avatars.mds.yandex.net/i?id=402ace28b60f991145720a96a00d0a9b_l-5434761-images-thumbs&n=13"
                             )
                         ),
-                        iconTypeSport = "ic_sport_type_run_24",
-                        typeSport = "Бег",
-                        descriptionActivity = "Интервальная тренировка",
-                        dateText = "18 августа 14:00",
-                        locationText = "Крымская ул. 22",
-                        colorTypeSport = "type_sport_color_run",
+                        logoIcon = "ic_sport_type_run_24",
+                        title = "Бег",
+                        subtitle = "Интервальная тренировка",
+                        description = "18 августа 14:00 \n Крымская ул. 22",
+                        logoColor = "type_sport_color_run",
                         privateStatus = SearchSportActivityListModel.SportActivity.PrivateStatus.OPEN,
-                        mapData = SearchSportActivityListModel.SportActivity.MapData(
-                            locationPoint = Pair(44.748344, 38.673590),
-                            zoom = 14f,
-                            iconMark = "ic_search_20"
-                        )
+                        descriptionActivityIcon = "ic_lock_fill_24",
+                        isLiked = false,
+                        isAdd = true,
                     )
                 ),
                 historyTipList = persistentListOf(

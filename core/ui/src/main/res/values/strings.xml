@@ -2,4 +2,9 @@
     <string name="app_name">motsi</string>
     <string name="search_title">Поиск</string>
     <string name="cancel">Отменить</string>
+    <string name="dataSnackBarPermission">Необходимо разрешение на доступ к местоположению</string>
+    <string name="dataSnackBarInternet">Нет подключения к интернету. Попробуйте позже</string>
+    <string name="dataSnackBarLocation">Источники определания координат недоступны. Пожалуйста, проверьте настройки</string>
+    <string name="dataSnackBarLocationActionLabel">Настройки</string>
+    <string name="dataSnackbarLoadingLocation">Дождитесь определения геопозиции</string>
 </resources>

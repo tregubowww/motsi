@@ -3,10 +3,10 @@ package com.example.motsi.feature.search.impl.models.presentation.map
 import android.content.Context
 
 internal sealed class SearchMapIntent {
-    data class OnLocationClick(val context: Context) :
+    data class OnGetMobileLocationClick(val context: Context) :
         SearchMapIntent()
 
-    data class ChangeGeoPoint(
+    data class OnCameraMoved(
         val latitude: Double,
         val longitude: Double,
         val zoom: Double,
@@ -14,7 +14,8 @@ internal sealed class SearchMapIntent {
     ) :
         SearchMapIntent()
 
-    data object OnShowUserGeoposition : SearchMapIntent()
+    data object OnShowMobileGeoPosition : SearchMapIntent()
     data class UpdateAlpha(val alpha: Float) : SearchMapIntent()
+    data class OnPointClick(val id: String) : SearchMapIntent()
 }
 

@@ -22,6 +22,7 @@ fun Badge(
     modifier: Modifier = Modifier,
     color: Color,
     text: String,
+    isClickable: Boolean = false,
     onClick: () -> Unit = {},
     contentPadding: PaddingValues = PaddingValues(horizontal = 4.dp, vertical = 2.dp)
 ) {
@@ -31,9 +32,15 @@ fun Badge(
             .sizeIn(minWidth = 15.dp, minHeight = 15.dp)
             .wrapContentSize(Alignment.Center)
             .clip(RoundedCornerShape(percent = 50))
-            .clickable(
-                role = Role.Button,
-                onClick = onClick
+            .then(
+                if (isClickable) {
+                    Modifier.clickable(
+                        role = Role.Button,
+                        onClick = onClick
+                    )
+                } else {
+                    Modifier
+                }
             ),
         contentAlignment = Alignment.Center
     ) {

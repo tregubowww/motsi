@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.update
  * @param T тип состояния (должен быть ненулевым)
  * @param initialValue начальное значение состояния
  */
-class UiReducer<T : Any>(initialValue: T) {
+class UiReducer<T : Any?>(initialValue: T) {
     private val _stateFlow = MutableStateFlow(initialValue)
     val state: StateFlow<T> = _stateFlow.asStateFlow()
 
@@ -32,3 +32,4 @@ class UiReducer<T : Any>(initialValue: T) {
      */
     fun current(): T = _stateFlow.value
 }
+

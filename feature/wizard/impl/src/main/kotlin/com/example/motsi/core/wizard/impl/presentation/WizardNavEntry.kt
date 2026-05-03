@@ -33,10 +33,10 @@ class WizardNavEntry @Inject constructor() : FeatureNavEntry {
                     val step =
                         entry.toRoute<WizardStepDestination>().step
 
-                    val viewModel: WizardScreenViewModel =
+                    val viewModel: WizardCoordinatorViewModel =
                         viewModel(factory = factory)
 
-                    WizardStepScreen(
+                    WizardCoordinator(
                         step = step,
                         viewModel = viewModel
                     )

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="markers_cache_tag" type="id"/>
+    <item name="markers_text_tag" type="id"/>
+    <item name="user_location_icon_tag" type="id"/>
+    <item name="user_location_marker_tag" type="id"/>
+</resources>

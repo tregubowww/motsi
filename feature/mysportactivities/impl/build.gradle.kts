@@ -9,6 +9,7 @@ android {
 dependencies {
     api(project(":feature::mysportactivities:api"))
     implementation(project(":feature:wizard:api"))
+    implementation(project(":feature:activitydetails:api"))
 
     implementation(libs.maps.mobile)
     implementation(libs.coil)

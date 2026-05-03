@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 fun darkThemeTokensMap(): Map<Tokens, Color> = mapOf(
     Tokens.Background to Black,
+    Tokens.Transparent to Transparent,
     Tokens.BackgroundBrand to Blue2,
     Tokens.BackgroundBrand2 to Lime3,
     Tokens.BackgroundPrimary to White,

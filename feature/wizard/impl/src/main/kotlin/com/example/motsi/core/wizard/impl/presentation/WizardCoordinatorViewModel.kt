@@ -9,24 +9,24 @@ import com.example.motsi.core.common.presentation.utils.handleState
 import com.example.motsi.core.network.models.domain.MotsiError
 import com.example.motsi.core.wizard.impl.di.WizardHolder
 import com.example.motsi.core.wizard.impl.interactor.WizardInteractor
-import com.example.motsi.core.wizard.impl.models.domain.WizardScreenModel
+import com.example.motsi.core.wizard.impl.models.domain.WizardCoordinatorModel
 import com.example.motsi.core.wizard.impl.models.presentation.wizardcoordinator.WizardCoordinatorIntent
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-internal class WizardScreenViewModel @Inject constructor(
+internal class WizardCoordinatorViewModel @Inject constructor(
     private val interactor: WizardInteractor,
 ) : BaseViewModel<WizardCoordinatorIntent>() {
 
     private val reducer =
-        UiReducer<LoadingState<WizardScreenModel, MotsiError>>(LoadingState.Loading)
+        UiReducer<LoadingState<WizardCoordinatorModel, MotsiError>>(LoadingState.Loading)
 
-    val state: StateFlow<LoadingState<WizardScreenModel, MotsiError>> = reducer.state
+    val state: StateFlow<LoadingState<WizardCoordinatorModel, MotsiError>> = reducer.state
 
-    private val effectHandler = EffectHandler<WizardScreenModel.Action>()
-    val effect: SharedFlow<WizardScreenModel.Action> = effectHandler.effect
+    private val effectHandler = EffectHandler<WizardCoordinatorModel.Action>()
+    val effect: SharedFlow<WizardCoordinatorModel.Action> = effectHandler.effect
 
     fun loadStep(
         step: Int,

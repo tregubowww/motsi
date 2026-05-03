@@ -10,7 +10,7 @@ import com.example.motsi.core.common.presentation.validator.ValidateState
 import com.example.motsi.core.common.presentation.validator.validate
 import com.example.motsi.core.network.models.domain.MotsiError
 import com.example.motsi.core.wizard.impl.interactor.WizardInteractor
-import com.example.motsi.core.wizard.impl.models.domain.WizardScreenModel
+import com.example.motsi.core.wizard.impl.models.domain.WizardCoordinatorModel
 import com.example.motsi.core.wizard.impl.models.presentation.searchwizard.SearchWizardEffect
 import com.example.motsi.core.wizard.impl.models.presentation.searchwizard.SearchWizardIntent
 import dagger.assisted.Assisted
@@ -24,12 +24,12 @@ import kotlinx.coroutines.launch
 
 internal class SearchWizardWidgetViewModel @AssistedInject constructor(
     val interactor: WizardInteractor,
-    @Assisted val widgetModel: WizardScreenModel.Widget
+    @Assisted val widgetModel: WizardCoordinatorModel.Widget
 ) : BaseViewModel<SearchWizardIntent>() {
 
     private val itemListReducer =
-        UiReducer<LoadingState<List<WizardScreenModel.Widget.Item>, MotsiError>>(LoadingState.Loading)
-    val itemListState: StateFlow<LoadingState<List<WizardScreenModel.Widget.Item>, MotsiError>> get() = itemListReducer.state
+        UiReducer<LoadingState<List<WizardCoordinatorModel.Widget.Item>, MotsiError>>(LoadingState.Loading)
+    val itemListState: StateFlow<LoadingState<List<WizardCoordinatorModel.Widget.Item>, MotsiError>> get() = itemListReducer.state
 
     private val searchQueryReducer = UiReducer<ValidateState>(ValidateState.Valid(""))
     private val searchQuery: StateFlow<ValidateState> get() = searchQueryReducer.state
@@ -83,7 +83,7 @@ internal class SearchWizardWidgetViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(widgetModel: WizardScreenModel.Widget): SearchWizardWidgetViewModel
+        fun create(widgetModel: WizardCoordinatorModel.Widget): SearchWizardWidgetViewModel
     }
 
     private companion object {

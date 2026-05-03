@@ -88,10 +88,7 @@ fun SearchField(
         Icon(
             painter = painterResource(R.drawable.ic_search_24dp),
             contentDescription = null,
-            tint = if (textFieldValue.text.isEmpty())
-                Tokens.IconSecondary.getColor()
-            else
-                Tokens.IconPrimaryInverse.getColor(),
+            tint = Tokens.IconSecondary.getColor(),
             modifier = Modifier
                 .padding(start = 16.dp)
                 .size(20.dp)
@@ -104,7 +101,7 @@ fun SearchField(
                 onTextChange(it.text)
             },
             modifier = Modifier
-                .padding(start = 4.dp)
+                .padding(start = 6.dp)
                 .weight(1f)
                 .focusRequester(focusRequester),
             enabled = isEnabled,

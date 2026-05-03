@@ -80,8 +80,8 @@ internal fun UserPhotoWidget(
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
-                error = painterResource(R.drawable.ic_default_avatar_24dp),
-                placeholder = painterResource(R.drawable.ic_default_avatar_24dp)
+                error = painterResource(R.drawable.ic_avatar_fill_24dp),
+                placeholder = painterResource(R.drawable.ic_avatar_fill_24dp)
             )
         }
 

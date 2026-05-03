@@ -6,6 +6,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 
 /**
  * Удобный способ подписаться на Flow<Effect> с учётом жизненного цикла.
@@ -17,12 +18,12 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun <T> CollectEffect(
     effectFlow: Flow<T>,
-    onEffect: (T) -> Unit
+    onEffect: suspend (T) -> Unit
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    LaunchedEffect(lifecycleOwner) {
+    LaunchedEffect(effectFlow, lifecycleOwner) {
         lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
-            effectFlow.collect { effect ->
+            effectFlow.collectLatest { effect ->
                 onEffect(effect)
             }
         }

@@ -8,4 +8,8 @@ internal sealed class SearchListActivityIntent {
         SearchListActivityIntent()
 
     data class ClickSportActivity(val activityId: String) : SearchListActivityIntent()
+
+    data class ClickLikeSportActivity(val activityId: String) : SearchListActivityIntent()
+
+    data class ClickAddSportActivity(val activityId: String) : SearchListActivityIntent()
 }

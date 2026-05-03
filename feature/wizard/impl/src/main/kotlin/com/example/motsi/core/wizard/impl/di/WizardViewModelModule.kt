@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.motsi.core.di.FeatureScope
 import com.example.motsi.core.di.viewmodel.ViewModelFactory
 import com.example.motsi.core.di.viewmodel.ViewModelKey
-import com.example.motsi.core.wizard.impl.presentation.WizardScreenViewModel
+import com.example.motsi.core.wizard.impl.presentation.WizardCoordinatorViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -15,8 +15,8 @@ internal interface WizardViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(WizardScreenViewModel::class)
-    fun bindWizardScreenViewModel(vm: WizardScreenViewModel): ViewModel
+    @ViewModelKey(WizardCoordinatorViewModel::class)
+    fun bindWizardScreenViewModel(vm: WizardCoordinatorViewModel): ViewModel
 
     @FeatureScope
     @Binds

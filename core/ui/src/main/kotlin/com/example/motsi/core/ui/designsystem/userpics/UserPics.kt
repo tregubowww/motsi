@@ -62,9 +62,8 @@ fun UserPics(
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .clip(CircleShape)
-                        .background(Tokens.BackgroundSecondary.getColor()),
-                    error = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp),
-                    placeholder = painterResource(com.example.motsi.core.ui.R.drawable.ic_default_avatar_24dp)
+                        .background(Tokens.BackgroundSecondary2.getColor()),
+                    error = painterResource(com.example.motsi.core.ui.R.drawable.ic_avatar_fill_24dp)
                 )
             }
         }

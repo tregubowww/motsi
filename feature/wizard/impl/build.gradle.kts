@@ -1,3 +1,4 @@
+import com.example.motsi.ext.libs
 
 plugins {
     alias(libs.plugins.motsi.android.library)

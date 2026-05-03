@@ -8,22 +8,24 @@ data class SearchSportActivityListModel(
     val searchHint: String?,
     val cityLocation: SportActivity.CityLocation,
     val sportActivityList: ImmutableList<SportActivity> = persistentListOf(),
+    val mapData: MapData,
     val historyTipList: ImmutableList<SearchTip> = persistentListOf(),
 
-){
+    ) {
     data class SportActivity(
         val id: String,
-        val typeSport: String,
-        val descriptionActivity: String,
-        val dateText: String,
-        val locationText: String,
+        val title: String,
+        val subtitle: String,
+        val descriptionActivityIcon: String,
+        val description: String,
         val participantList: List<Participant>,
-        val iconTypeSport: String,
-        val colorTypeSport: String,
+        val logoIcon: String,
+        val logoColor: String,
         val privateStatus: PrivateStatus,
-        val mapData: MapData
-    ) {
-        enum class PrivateStatus{
+        val isLiked: Boolean,
+        val isAdd: Boolean,
+        ) {
+        enum class PrivateStatus {
             OPEN,
             PRIVATE
         }
@@ -36,13 +38,20 @@ data class SearchSportActivityListModel(
         data class Participant(
             val urlUserPic: String
         )
-        data class MapData(
-            val locationPoint: Pair<Double, Double>,
-            val zoom: Float = 0f,
-            val azimuth: Float = 0f,
-            val tilt: Float = 0f,
-            val iconMark: String
-        )
+
     }
 
+    data class MapData(
+        val zoom: Float = 0f,
+        val azimuth: Float = 0f,
+        val tilt: Float = 0f,
+        val markers: ImmutableList<Marker>,
+    ) {
+        data class Marker(
+            val id: String,
+            val locationPoint: Pair<Double, Double>,
+            val description: String,
+            val type: String
+        )
+    }
 }

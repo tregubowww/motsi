@@ -1,6 +1,6 @@
 package com.example.motsi.core.wizard.impl.models.presentation.searchwizard
 
-import com.example.motsi.core.wizard.impl.models.domain.WizardScreenModel
+import com.example.motsi.core.wizard.impl.models.domain.WizardCoordinatorModel
 
 internal sealed class SearchWizardIntent {
     data class ChangeSearchQuery(
@@ -8,6 +8,6 @@ internal sealed class SearchWizardIntent {
     ) : SearchWizardIntent()
 
     data class ClickTip(
-        val item: WizardScreenModel.Widget.Item,
+        val item: WizardCoordinatorModel.Widget.Item,
     ) : SearchWizardIntent()
 }

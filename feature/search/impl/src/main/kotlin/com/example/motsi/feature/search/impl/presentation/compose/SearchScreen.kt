@@ -14,6 +14,7 @@ import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
+import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberStandardBottomSheetState
@@ -31,6 +32,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.motsi.api.SportActivityDetailsGraph
 import com.example.motsi.core.common.models.presentation.LoadingState
@@ -38,8 +40,13 @@ import com.example.motsi.core.navigation.presentation.compose.LocalAppNavControl
 import com.example.motsi.core.ui.R
 import com.example.motsi.core.ui.designsystem.appbar.searchappbar.SearchAppBar
 import com.example.motsi.core.ui.designsystem.buttons.IconTextButton
+import com.example.motsi.core.ui.designsystem.fields.ItemSportActivity
+import com.example.motsi.core.ui.designsystem.mapwidget.MapWidget
+import com.example.motsi.core.ui.designsystem.mapwidget.MapWidgetActions
 import com.example.motsi.core.ui.designsystem.snackbar.CustomSnackbarHost
 import com.example.motsi.core.ui.designsystem.snackbar.showMotsiSnackbar
+import com.example.motsi.core.ui.models.ItemSportActivityButton
+import com.example.motsi.core.ui.theming.AppResources
 import com.example.motsi.core.ui.theming.Tokens
 import com.example.motsi.core.ui.utils.CollectEffect
 import com.example.motsi.feature.search.impl.models.domain.SearchScreenModel
@@ -51,8 +58,8 @@ import com.example.motsi.feature.search.impl.models.presentation.map.SearchMapIn
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenEffect
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenIntent
 import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState
+import com.example.motsi.feature.search.impl.models.presentation.screen.SearchScreenState.ScreenState
 import com.example.motsi.feature.search.impl.presentation.SearchViewModel
-import com.example.motsi.feature.search.impl.presentation.compose.mapwidget.MapWidget
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -107,6 +114,7 @@ private fun SearchScreenSuccess(
     val context = LocalContext.current
     val sheetState = rememberStandardBottomSheetState(skipHiddenState = false)
     val coroutineScope = rememberCoroutineScope()
+    val screenState by viewModel.screenState.collectAsState()
 
     Scaffold(
         modifier = Modifier,
@@ -124,7 +132,7 @@ private fun SearchScreenSuccess(
                     )
 
                 },
-                backgroundColorSearchField = Tokens.Background.getColor(),
+                backgroundColorSearchField = if (screenState.screenState == SearchScreenState.ScreenState.LIST) Tokens.BackgroundSecondary.getColor() else Tokens.Background.getColor(),
                 hint = searchHint,
                 textSearch = searchQuery,
                 onTextChange = {},
@@ -138,15 +146,57 @@ private fun SearchScreenSuccess(
             )
         }
     ) { padding ->
+        val mapState by viewModel.mapState.collectAsState()
         Box(
             modifier = Modifier
                 .background(Tokens.Background.getColor())
                 .fillMaxSize()
         ) {
             MapWidget(
-                viewModel = viewModel,
-                modifier = Modifier.padding(bottom = padding.calculateBottomPadding()),
-                showWidgetFullScreen = { coroutineScope.launch { sheetState.hide() } }
+                actions = MapWidgetActions(
+                    onMapClick = {
+                        coroutineScope.launch {
+                            sheetState.hide()
+                        }
+                    },
+                    onCameraMoved = { lat, lon, zoom, rotation ->
+                        viewModel.dispatch(
+                            SearchIntent.Map(
+                                SearchMapIntent.OnCameraMoved(
+                                    lat,
+                                    lon,
+                                    zoom,
+                                    rotation
+                                )
+                            )
+                        )
+                    },
+                    onShowMobileLocation = {
+                        viewModel.dispatch(
+                            SearchIntent.Map(
+                                SearchMapIntent.OnShowMobileGeoPosition
+                            )
+                        )
+                    },
+
+                    onGetMobileLocationClick = {
+                        viewModel.dispatch(
+                            SearchIntent.Map(
+                                SearchMapIntent.OnGetMobileLocationClick(context)
+                            )
+                        )
+                    },
+                    onPointClick = { id ->
+                        viewModel.dispatch(
+                            SearchIntent.Map(
+                                SearchMapIntent.OnPointClick(id)
+                            )
+                        )
+                    },
+                ),
+                snackBarFlow = viewModel.snackBar,
+                snackbarHostState = snackbarHostState,
+                state = mapState,
             )
 
             ListSportActivity(
@@ -217,7 +267,25 @@ private fun ListSportActivity(
     }
 
     LaunchedEffect(sheetState.currentValue) {
-        viewModel.dispatch(SearchIntent.Screen(SearchScreenIntent.ChangeScreenState(sheetState.currentValue)))
+        when (sheetState.currentValue) {
+            SheetValue.Hidden -> {
+                viewModel.dispatch(SearchIntent.Screen(SearchScreenIntent.ChangeScreenStateToMap))
+            }
+
+            SheetValue.PartiallyExpanded -> {
+                viewModel.dispatch(SearchIntent.Screen(SearchScreenIntent.ChangeScreenStateToMapAndList))
+            }
+
+            SheetValue.Expanded -> {
+                viewModel.dispatch(SearchIntent.Screen(SearchScreenIntent.ChangeScreenStateToList))
+            }
+        }
+    }
+
+    LaunchedEffect(screenState.screenState) {
+        if (screenState.screenState == ScreenState.MAP_AND_LIST && sheetState.currentValue != SheetValue.PartiallyExpanded) {
+            sheetState.partialExpand()
+        }
     }
 
     LaunchedEffect(alphaProgress) {
@@ -249,7 +317,7 @@ private fun ListSportActivity(
                             modifier = Modifier
                                 .fillMaxSize()
                                 .background(Tokens.Background.getColor()),
-                            userScrollEnabled = screenState.screenState == SearchScreenState.ScreenState.LIST,
+                            userScrollEnabled = screenState.screenState == ScreenState.LIST,
                             contentPadding = PaddingValues(vertical = 8.dp)
                         ) {
                             items(
@@ -257,9 +325,9 @@ private fun ListSportActivity(
                                 key = { item -> item.id }
                             ) { item ->
                                 ItemSportActivity(
-                                    modifier = Modifier.padding(top = 12.dp),
-                                    sportActivityItem = item,
-                                    onClick = {
+                                    urlPicsList = item.participantList.map { it.urlUserPic },
+                                    title = item.title,
+                                    onClickItem = {
                                         viewModel.dispatch(
                                             SearchIntent.List(
                                                 SearchListActivityIntent.ClickSportActivity(
@@ -267,7 +335,67 @@ private fun ListSportActivity(
                                                 )
                                             )
                                         )
-                                    }
+                                    },
+                                    subtitle = item.subtitle,
+                                    subtitleIcon = ItemSportActivityButton(
+                                        icon = AppResources.icon(item.descriptionActivityIcon),
+                                        tint = Tokens.IconPrimary.getColor(),
+                                        onClick = {
+                                            TODO("клик на кнопке приватности")
+                                        }
+                                    ),
+                                    description = item.description,
+                                    logo = ItemSportActivityButton(
+                                        icon = AppResources.icon(item.logoIcon),
+                                        tint = AppResources.color(item.logoColor),
+                                        onClick = {}
+                                    ),
+                                    rightButtons = persistentListOf(
+
+                                        ItemSportActivityButton(
+                                            icon = if (item.isLiked) {
+                                                painterResource(R.drawable.ic_like_fill_24dp)
+                                            } else {
+                                                painterResource(R.drawable.ic_like_24dp)
+                                            },
+                                            tint = if (item.isLiked) {
+                                                Tokens.IconFavorites.getColor()
+                                            } else {
+                                                Tokens.IconPrimary.getColor()
+                                            },
+                                            onClick = {
+                                                viewModel.dispatch(
+                                                    SearchIntent.List(
+                                                        SearchListActivityIntent.ClickLikeSportActivity(
+                                                            activityId = item.id
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                        ),
+
+                                        ItemSportActivityButton(
+                                            icon = if (item.isAdd) {
+                                                painterResource(R.drawable.ic_circleplus_fill_24dp)
+                                            } else {
+                                                painterResource(R.drawable.ic_circleplus_24dp)
+                                            },
+                                            tint = if (item.isLiked) {
+                                                Tokens.IconBrand1.getColor()
+                                            } else {
+                                                Tokens.IconBrand1.getColor()
+                                            },
+                                            onClick = {
+                                                viewModel.dispatch(
+                                                    SearchIntent.List(
+                                                        SearchListActivityIntent.ClickAddSportActivity(
+                                                            activityId = item.id
+                                                        )
+                                                    )
+                                                )
+                                            }
+                                        )
+                                    )
                                 )
                             }
                         }

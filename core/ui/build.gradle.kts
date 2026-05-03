@@ -13,6 +13,7 @@ android {
 
 dependencies {
     implementation(project(":core:common"))
+    implementation(project(":core:wrappers"))
 
     implementation(libs.kotlinx.collections.immutable)
     implementation(libs.androidx.core.ktx)
@@ -21,4 +22,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.coil)
     implementation(libs.coil.compose)
+    implementation(libs.org.osmdroid)
+    implementation(libs.androidx.preference.ktx)
+    implementation(libs.androidx.activity.compose)
 }
